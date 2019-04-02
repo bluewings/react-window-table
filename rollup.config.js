@@ -31,7 +31,7 @@ const rollupConfig = {
     }),
     babel({
       runtimeHelpers: true,
-      plugins: ['@babel/transform-runtime'],
+      // plugins: ['@babel/transform-runtime'],
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
     }),
     postcss({

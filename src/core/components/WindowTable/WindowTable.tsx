@@ -2,8 +2,10 @@ import * as React from 'react';
 import { Fragment, FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import { css } from 'emotion';
 // import template from './WindowTable.pug';
+import { useMetadata, Metadata, ItemPosition } from './hooks';
 
 import styles from './WindowTable.module.scss';
+import { Signer } from 'crypto';
 
 type ScrollEvent = SyntheticEvent<HTMLDivElement>;
 
@@ -32,6 +34,8 @@ enum ItemType {
 type WindowTableProps = {
   scrollTop?: number;
   scrollLeft?: number;
+  width?: number;
+  height?: number;
   // maxScrollY?: number
   // maxScrollX?: number
 
@@ -71,115 +75,19 @@ type WindowTableProps = {
   scrollbarY: Boolean;
 };
 
-// const WindowTable: FunctionComponent<{ name?: string }> = ({ name = 'Someone' }) => {
-//   return <h1>WindowTable</h1>;
-//   // return template({
-//   //   // variables
-//   //   name,
-//   // });
-// };
-
-type Metadata = {
-  dict: {
-    [key: number]: {
-      size: number;
-      offset: number;
-    };
-  };
-  totalCount: number;
-  totalSize: number;
-};
-
-enum ItemPosition {
-  PRE = '1',
-  CENTER = '2',
-  POST = '3',
-}
-
-function useMetadata(totalCount: number, size: number | Function, prefixCount: number, postfixCount: number): Metadata {
-  return useMemo(() => {
-    const dict: any = {};
-    let offset = 0;
-    const getSize = typeof size === 'function' ? size : () => size;
-
-    // let p1 = prefi
-    let p1 = prefixCount;
-
-    let p2 = totalCount - postfixCount;
-    let impQ = 0;
-
-    let preOffset = 0;
-    let postOffset = 0;
-    let preWidth = 0;
-    let postSize = 0;
-
-    for (let itemIndex = 0; itemIndex < totalCount; itemIndex += 1) {
-      const size = getSize(itemIndex);
-      let position;
-      if (itemIndex === prefixCount) {
-        position = ItemPosition.CENTER;
-      }
-      // let position;
-      if (itemIndex < prefixCount) {
-        position = ItemPosition.PRE;
-      } else if (itemIndex < totalCount - postfixCount) {
-        position = ItemPosition.CENTER;
-      } else {
-        position = ItemPosition.POST;
-      }
-      if (p1 === itemIndex) {
-        impQ = offset;
-        preOffset = offset;
-      }
-      if (p2 === itemIndex) {
-        impQ = offset;
-        postOffset = offset;
-      }
-      dict[itemIndex] = {
-        size,
-        offset,
-        localOffset: offset - impQ,
-        position,
-      };
-      if (position === ItemPosition.PRE) {
-        preWidth += size;
-      }
-      if (position === ItemPosition.POST) {
-        postSize += size;
-      }
-      offset += size;
-    }
-    return {
-      dict,
-      totalCount,
-      totalSize: offset,
-      preOffset,
-      postOffset,
-      postSize,
-      ranges: {
-        pre: [0, prefixCount],
-        // main: [],
-        post: [totalCount - postfixCount, totalCount],
-      },
-    };
-  }, [totalCount, size]);
-}
-
-// type ItemType = ItemType.COLUMN | ItemType.ROW;
-
 function useHelpers(columnMetadata: Metadata, rowMetadata: Metadata) {
   return useMemo(() => {
-    const columnCount = columnMetadata.totalCount;
-    const rowCount = rowMetadata.totalCount;
+    const columnCount = columnMetadata.total.count;
+    const rowCount = rowMetadata.total.count;
     const getItemMetadata = (itemType: ItemType, itemIndex: number) => {
       // console.log(columnMetadataMap, rowMetadataMap);
-      return (itemType === ItemType.COLUMN ? columnMetadata : rowMetadata).dict[itemIndex];
+      return (itemType === ItemType.COLUMN ? columnMetadata : rowMetadata).meta[itemIndex];
     };
 
     const getItemCount = (itemType: ItemType) => (itemType === ItemType.ROW ? rowCount : columnCount);
 
     const getSize = (itemType: ItemType, count: number): number => {
-      const dict = (itemType === ItemType.COLUMN ? columnMetadata : rowMetadata).dict;
+      const dict = (itemType === ItemType.COLUMN ? columnMetadata : rowMetadata).meta;
       const itemCount = itemType === ItemType.COLUMN ? columnCount : rowCount;
       let size = 0;
       if (count > 0) {
@@ -202,7 +110,7 @@ function useHelpers(columnMetadata: Metadata, rowMetadata: Metadata) {
   }, [columnMetadata, rowMetadata]);
 }
 
-function useItems(rowRange, colRange, getCachedStyle: Function) {
+function useItems(rowRange: number[], colRange: number[], getCachedStyle: Function) {
   const [rowStartIndex, rowStopIndex] = rowRange;
   const [columnStartIndex, columnStopIndex] = colRange;
   return useMemo(() => {
@@ -226,6 +134,87 @@ function useItems(rowRange, colRange, getCachedStyle: Function) {
   }, [rowStartIndex, rowStopIndex, columnStartIndex, columnStopIndex]);
 }
 
+function useAllItems(
+  rowMetadata,
+  columnMetadata,
+  rowStartIndex,
+  rowStopIndex,
+  columnStartIndex,
+  columnStopIndex,
+  contentWidth,
+  contentHeight,
+  getCachedStyle,
+) {
+  const range = {
+    top: rowMetadata.pre.range,
+    bottom: rowMetadata.post.range,
+    left: columnMetadata.pre.range,
+    right: columnMetadata.post.range,
+    middle_v: [rowStartIndex, rowStopIndex + 1],
+    middle_h: [columnStartIndex, columnStopIndex + 1],
+  };
+
+  const allItems = [
+    {
+      key: 'top',
+      className: styles.stickyContainer,
+      style: { top: 0 },
+      items: useItems(range.top, range.middle_h, getCachedStyle),
+    },
+    {
+      key: 'bottom',
+      className: styles.stickyContainer,
+      style: { top: contentHeight - rowMetadata.post.size },
+      items: useItems(range.bottom, range.middle_h, getCachedStyle),
+    },
+    {
+      key: 'left',
+      className: styles.stickyContainer,
+      style: { left: 0 },
+      items: useItems(range.middle_v, range.left, getCachedStyle),
+    },
+    {
+      key: 'right',
+      className: styles.stickyContainer,
+      style: { left: contentWidth - columnMetadata.post.size },
+      items: useItems(range.middle_v, range.right, getCachedStyle),
+    },
+    {
+      key: 'top-left',
+      className: styles.stickyContainer,
+      style: { top: 0, left: 0 },
+      items: useItems(range.top, range.left, getCachedStyle),
+    },
+    {
+      key: 'top-right',
+      className: styles.stickyContainer,
+      style: { top: 0, left: contentWidth - columnMetadata.post.size },
+      items: useItems(range.top, range.right, getCachedStyle),
+    },
+    {
+      key: 'bottom-right',
+      className: styles.stickyContainer,
+      style: { top: contentHeight - rowMetadata.post.size, left: contentWidth - columnMetadata.post.size },
+      items: useItems(range.bottom, range.right, getCachedStyle),
+    },
+    {
+      key: 'bottom-left',
+      className: styles.stickyContainer,
+      style: { top: contentHeight - rowMetadata.post.size, left: 0 },
+      items: useItems(range.bottom, range.left, getCachedStyle),
+    },
+  ].filter((e) => e.items.length > 0);
+  return {
+    main: {
+      key: 'middle',
+      className: styles.inner,
+      style: { width: columnMetadata.total.size, height: rowMetadata.total.size },
+      items: useItems(range.middle_v, range.middle_h, getCachedStyle),
+    },
+    allItems,
+  };
+}
+
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   const { width, height } = props;
 
@@ -235,18 +224,18 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   const columnMetadata = useMetadata(columnCount, columnWidth, fixedLeftCount, fixedRightCount);
   const rowMetadata = useMetadata(rowCount, rowHeight, fixedTopCount, fixedBottomCount);
 
-  const totalWidth = columnMetadata.totalSize;
-  const totalHeight = rowMetadata.totalSize;
+  const totalWidth = columnMetadata.total.size;
+  const totalHeight = rowMetadata.total.size;
   const [contentWidth, contentHeight] = useMemo(() => {
     let contentWidth = width;
     let contentHeight = height;
-    const totalWidth = columnMetadata.totalSize;
-    const totalHeight = rowMetadata.totalSize;
+    const totalWidth = columnMetadata.total.size;
+    const totalHeight = rowMetadata.total.size;
     const scrollbarX = contentWidth < totalWidth;
     let scrollbarY = contentHeight < totalHeight;
 
     contentWidth -= scrollbarY ? scrollbarWidth : 0;
-    contentHeight -= scrollbarX ? scrollbarWidth : 0;
+    contentHeight -= scrollbarX ? scrollbarHeight : 0;
 
     if (totalHeight < contentHeight) {
       contentHeight = totalHeight;
@@ -258,7 +247,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     }
 
     return [contentWidth, contentHeight];
-  }, [width, height, columnMetadata.totalSize, rowMetadata.totalSize]);
+  }, [width, height, columnMetadata.total.size, rowMetadata.total.size]);
 
   const helpers = useHelpers(columnMetadata, rowMetadata);
 
@@ -439,12 +428,12 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   const r1Map = {
     [ItemPosition.PRE]: 'T',
     [ItemPosition.POST]: 'B',
-    [ItemPosition.CENTER]: '',
+    [ItemPosition.MID]: '',
   };
   const r2Map = {
     [ItemPosition.PRE]: 'L',
     [ItemPosition.POST]: 'R',
-    [ItemPosition.CENTER]: '',
+    [ItemPosition.MID]: '',
   };
 
   const getItemContent = (rowIndex: number, columnIndex: number) => {
@@ -488,70 +477,51 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   //   return items;
   // }, [rowStartIndex, rowStopIndex, columnStartIndex, columnStopIndex]);
 
-  // const ranges = {
+  // const range = {
   //   top: []
   // }
 
   // columnR
-  const ranges = {
-    left: columnMetadata.ranges.pre,
-    right: columnMetadata.ranges.post,
-    top: rowMetadata.ranges.pre,
-    bottom: rowMetadata.ranges.post,
-    mainV: [rowStartIndex, rowStopIndex + 1],
-    mainH: [columnStartIndex, columnStopIndex + 1],
+  const range = {
+    top: rowMetadata.pre.range,
+    bottom: rowMetadata.post.range,
+    left: columnMetadata.pre.range,
+    right: columnMetadata.post.range,
+    middle_v: [rowStartIndex, rowStopIndex + 1],
+    middle_h: [columnStartIndex, columnStopIndex + 1],
   };
 
-  const items = useItems(ranges.mainV, ranges.mainH, getCachedStyle);
-
-  const lItems = useItems(
-    ranges.mainV,
-    ranges.left,
-    // ranges.left,
+  const { main, allItems } = useAllItems(
+    rowMetadata,
+    columnMetadata,
+    rowStartIndex,
+    rowStopIndex,
+    columnStartIndex,
+    columnStopIndex,
+    contentWidth,
+    contentHeight,
     getCachedStyle,
   );
 
-  const tItems = useItems(ranges.top, ranges.mainH, getCachedStyle);
+  console.log(allItems);
 
-  // const {columnCount, rowCount} = props;
-  const tlItems = useItems(ranges.top, ranges.left, getCachedStyle);
+  // const items = useItems(range.middle_v, range.middle_h, getCachedStyle);
 
-  const bItems = useItems(ranges.bottom, ranges.mainH, getCachedStyle);
+  // const lItems = useItems(range.middle_v, range.left, getCachedStyle);
 
-  const rItems = useItems(ranges.mainV, ranges.right, getCachedStyle);
-  // const columnMetadata = useMetadata(props.columnCount, props.columnWidth);
-  // const rowMetadata = useMetadata(props.rowCount, props.rowHeight);
+  // const tItems = useItems(range.top, range.middle_h, getCachedStyle);
 
-  // const tlItems = [];
+  // const tlItems = useItems(range.top, range.left, getCachedStyle);
 
-  const brItems = useItems(
-    // 0,  - 1,
-    ranges.bottom,
-    ranges.right,
-    getCachedStyle,
-  );
+  // const bItems = useItems(range.bottom, range.middle_h, getCachedStyle);
 
-  const blItems = useItems(
-    // 0,  - 1,
+  // const rItems = useItems(range.middle_v, range.right, getCachedStyle);
 
-    ranges.bottom,
-    ranges.left,
-    getCachedStyle,
-  );
+  // const brItems = useItems(range.bottom, range.right, getCachedStyle);
 
-  const trItems = useItems(
-    // 0,  - 1,
-    ranges.top,
-    ranges.right,
-    getCachedStyle,
-  );
+  // const blItems = useItems(range.bottom, range.left, getCachedStyle);
 
-  // const rItems = useItems(
-  //   // 0,  - 1,
-  //   rowStartIndex, rowStopIndex,
-  //   columnCount - fixedRightCount,     columnCount - 1,
-  //   getCachedStyle,
-  // )
+  // const trItems = useItems(range.top, range.right, getCachedStyle);
 
   // for (let rowIndex = 0; rowIndex < fixedTopCount; rowIndex++) {
   //   for (let colIndex = 0; colIndex < fixedLeftCount; colIndex++) {
@@ -580,6 +550,17 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
       <div style={{ width, height }} className={styles.root} onScroll={handleScroll}>
         <div style={{ width: totalWidth, height: totalHeight }} className={styles.inner}>
+          {allItems.map((e) => {
+            return (
+              <div key={e.key} className={e.className} style={e.style}>
+                {e.items}
+              </div>
+            );
+          })}
+          {main.items}
+        </div>
+
+        {/* <div style={{ width: totalWidth, height: totalHeight }} className={styles.inner}>
           {items}
         </div>
         <div className={styles.stickyContainer} style={{ left: 0 }}>
@@ -592,27 +573,27 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           {tlItems}
         </div>
 
-        <div className={styles.stickyContainer} style={{ top: contentHeight - rowMetadata.postSize }}>
+        <div className={styles.stickyContainer} style={{ top: contentHeight - rowMetadata.post.size }}>
           {bItems}
         </div>
-        <div className={styles.stickyContainer} style={{ left: contentWidth - columnMetadata.postSize }}>
+        <div className={styles.stickyContainer} style={{ left: contentWidth - columnMetadata.post.size }}>
           {rItems}
         </div>
 
         <div
           className={styles.stickyContainer}
-          style={{ top: contentHeight - rowMetadata.postSize, left: contentWidth - columnMetadata.postSize }}
+          style={{ top: contentHeight - rowMetadata.post.size, left: contentWidth - columnMetadata.post.size }}
         >
           {brItems}
         </div>
 
-        <div className={styles.stickyContainer} style={{ top: contentHeight - rowMetadata.postSize, left: 0 }}>
+        <div className={styles.stickyContainer} style={{ top: contentHeight - rowMetadata.post.size, left: 0 }}>
           {blItems}
         </div>
 
-        <div className={styles.stickyContainer} style={{ top: 0, left: contentWidth - columnMetadata.postSize }}>
+        <div className={styles.stickyContainer} style={{ top: 0, left: contentWidth - columnMetadata.post.size }}>
           {trItems}
-        </div>
+        </div> */}
         {/* <pre>{JSON.stringify({ contentWidth, contentHeight }, null, 2)}</pre> */}
       </div>
       <pre>{JSON.stringify({ columnMeta: columnMetadata }, null, 2)}</pre>

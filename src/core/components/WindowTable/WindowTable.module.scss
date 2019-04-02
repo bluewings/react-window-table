@@ -2,17 +2,17 @@
   position: relative;
   // border: 1px solid red;
   overflow: auto;
--webkit-overflow-scrolling: touch;
-will-change: transform;
+// -webkit-overflow-scrolling: touch;
+// will-change: transform;
   // overflow: 'auto',
   // WebkitOverflowScrolling: 'touch',
   // willChange: 'transform',
 }
 .inner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // overflow: hidden;
   // background: rgba(0,0,0,.1);
   // background: linear-gradient(-45deg, #073963 0%,#8fb3da 100%);
   // background: linear-gradient(-45deg, #fff 0%, #000 100%);
@@ -26,4 +26,5 @@ will-change: transform;
 .stickyContainer {
   position: sticky;
   width: 0;
+  z-index:1;
 }

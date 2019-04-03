@@ -1,0 +1,76 @@
+---
+name: Examples
+---
+
+import { useState } from 'react';
+import { Playground, Props } from 'docz';
+import Greeting from '../src/core/Greeting';
+import { WindowTable } from '../src/core';
+
+# Examples
+
+
+## Basic usage
+
+<WindowTable
+  height={200}
+  rowCount={5}
+  rowHeight={30}
+  columnCount={100}
+  columnWidth={100}
+  fixedTopCount={1}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={1}
+  overscanCount={0}
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+
+## Basic usage
+
+<WindowTable
+  height={300}
+  rowCount={100}
+  rowHeight={30}
+  columnCount={5}
+  columnWidth={100}
+  fixedTopCount={1}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={1}
+  overscanCount={0}
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+
+
+## Basic usage
+
+<WindowTable
+  height={300}
+  rowCount={5}
+  rowHeight={30}
+  columnCount={5}
+  columnWidth={100}
+  fixedTopCount={1}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={1}
+  overscanCount={0}
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+

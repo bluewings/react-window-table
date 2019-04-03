@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
-import useMetadata, { Metadata, ItemPosition } from './useMetadata';
+import useMetadata, { 
+  useMetadataFixed,
+  Metadata, ItemPosition } from './useMetadata';
 
 export enum ItemType {
   COLUMN,
@@ -62,7 +64,7 @@ function useRangeHelper({
     };
 
     const getStartIndex = (itemType: ItemType, offset: number) => {
-      // const { fixedTopCount, fixedLeftCount, getItemMetadata } = this.props;
+      
       const itemIndex = itemType === ItemType.ROW ? fixedTopCount : fixedLeftCount;
       const itemMetadata = getItemMetadata(itemType, itemIndex);
       // console.log(itemType, itemIndex, itemMetadata);
@@ -141,8 +143,37 @@ function useHelpers(props: HelpersProps) {
     overscanCount,
   } = props;
 
-  const columnMetadata = useMetadata(columnCount, columnWidth, fixedLeftCount, fixedRightCount);
-  const rowMetadata = useMetadata(rowCount, rowHeight, fixedTopCount, fixedBottomCount);
+  let _columnMetadata = useMetadata(columnCount, columnWidth, fixedLeftCount, fixedRightCount);
+  let _rowMetadata = useMetadata(rowCount, rowHeight, fixedTopCount, fixedBottomCount);
+
+ 
+  const totalWidth = _columnMetadata.total.size;
+  const totalHeight = _rowMetadata.total.size;
+
+  const [contentWidth, contentHeight] = useMemo(() => {
+    let contentWidth = width;
+    let contentHeight = height;
+    const scrollbarX = contentWidth < totalWidth;
+    let scrollbarY = contentHeight < totalHeight;
+
+    contentWidth -= scrollbarY ? scrollbarWidth : 0;
+    contentHeight -= scrollbarX ? scrollbarHeight : 0;
+
+    if (totalHeight < contentHeight) {
+      contentHeight = totalHeight;
+    }
+
+    if (scrollbarX && !scrollbarY && contentHeight < totalHeight) {
+      scrollbarY = true;
+      contentWidth -= scrollbarWidth;
+    }
+
+    return [contentWidth, contentHeight];
+  }, [width, height, totalWidth, totalHeight, scrollbarWidth, scrollbarHeight]);
+
+  let columnMetadata = useMetadataFixed(_columnMetadata, contentWidth);
+  // let columnMetadata = _columnMetadata;
+  let rowMetadata = useMetadataFixed(_rowMetadata, contentHeight);
 
   const { getItemMetadata, getItemCount, getSize } = useMemo(() => {
     const columnCount = columnMetadata.total.count;
@@ -177,35 +208,11 @@ function useHelpers(props: HelpersProps) {
     };
   }, [columnMetadata, rowMetadata]);
 
-  const totalWidth = columnMetadata.total.size;
-  const totalHeight = rowMetadata.total.size;
-
-  const [contentWidth, contentHeight] = useMemo(() => {
-    let contentWidth = width;
-    let contentHeight = height;
-    const scrollbarX = contentWidth < totalWidth;
-    let scrollbarY = contentHeight < totalHeight;
-
-    contentWidth -= scrollbarY ? scrollbarWidth : 0;
-    contentHeight -= scrollbarX ? scrollbarHeight : 0;
-
-    if (totalHeight < contentHeight) {
-      contentHeight = totalHeight;
-    }
-
-    if (scrollbarX && !scrollbarY && contentHeight < totalHeight) {
-      scrollbarY = true;
-      contentWidth -= scrollbarWidth;
-    }
-
-    return [contentWidth, contentHeight];
-  }, [width, height, totalWidth, totalHeight, scrollbarWidth, scrollbarHeight]);
-
   const { getStartIndex, getStopIndex } = useRangeHelper({
-    fixedTopCount,
-    fixedBottomCount,
-    fixedLeftCount,
-    fixedRightCount,
+    fixedTopCount: rowMetadata.pre.count,
+    fixedBottomCount: rowMetadata.post.count,
+    fixedLeftCount: columnMetadata.pre.count,
+    fixedRightCount: columnMetadata.post.count,
     contentWidth,
     contentHeight,
     getItemCount,

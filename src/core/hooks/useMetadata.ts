@@ -62,67 +62,62 @@ function useMetadata(count: number, size: number | Function, preCount: number, p
       // left: column.position === ItemPosition.POST ? column.localOffset : column.offset,
 
       // meta[itemIndex] = { size, offset: offset_, localOffset, position };
-      meta[itemIndex] = { size, offset: offset_, localOffset };
+      meta[itemIndex] = { size, offset: offset_, localOffset, offset_: offset };
       sizes[position] += size;
       offset += size;
     }
     return {
       meta,
-      pre: { size: sizes[ItemPosition.PRE], range: [0, preCount] },
+      pre: { count: preCount, size: sizes[ItemPosition.PRE], range: [0, preCount] },
       mid: { size: sizes[ItemPosition.MID], range: [preCount, count - postCount] },
-      post: { size: sizes[ItemPosition.POST], range: [count - postCount, count] },
-      total: { size: offset, count },
+      post: { count: preCount, size: sizes[ItemPosition.POST], range: [count - postCount, count] },
+      total: { size: offset, count, range: [0, count] },
     };
   }, [count, size]);
 }
 
-// function useScrollbarSize(): number[] {
-//   const scrollDiv = useRef<HTMLDivElement>();
-//   const [info, setInfo] = useState(() => {
-//     scrollDiv.current = document.createElement('div');
-//     scrollDiv.current.className = css({
-//       position: 'absolute',
-//       top: -9999,
-//       width: 100,
-//       height: 100,
-//       overflow: 'scroll',
-//     });
-//     document.body.appendChild(scrollDiv.current);
-//     const { offsetWidth, offsetHeight, clientWidth, clientHeight } = scrollDiv.current;
-//     return { offsetWidth, offsetHeight, clientWidth, clientHeight };
-//   });
+function useMetadataFixed (metadata, contentWidth) {
 
-//   const timer = useRef<number>();
-//   useEffect(() => {
-//     if (info.offsetWidth > 0 && info.offsetHeight > 0) {
-//       return;
-//     }
-//     function sizeCheck() {
-//       timer.current && cancelAnimationFrame(timer.current);
-//       if (scrollDiv.current) {
-//         const { offsetWidth, offsetHeight, clientWidth, clientHeight } = scrollDiv.current;
-//         if (offsetWidth > 0 && offsetHeight > 0) {
-//           setInfo({ offsetWidth, offsetHeight, clientWidth, clientHeight });
-//           document.body.removeChild(scrollDiv.current);
-//           scrollDiv.current = undefined;
-//           return;
-//         }
-//       }
-//       timer.current = requestAnimationFrame(sizeCheck);
-//     }
-//     sizeCheck();
-//     return () => {
-//       timer.current && cancelAnimationFrame(timer.current);
-//       scrollDiv.current && document.body.removeChild(scrollDiv.current);
-//     };
-//   }, []);
 
-//   return useMemo(() => [info.offsetWidth - info.clientWidth, info.offsetHeight - info.clientHeight], [
-//     info.offsetWidth,
-//     info.clientWidth,
-//     info.offsetHeight,
-//     info.clientHeight,
-//   ]);
-// }
+// console.log(contentWidth, metadata.total.size)
+  return useMemo(() => {
+    if (contentWidth >= metadata.total.size ) {
+      console.log(contentWidth, metadata.total.size)
+      // const mi
+      metadata = {
+        // ...metadata,
+        meta: Object.keys(metadata.meta).reduce((accum, key) => {
+          let value = metadata.meta[key];
+          
+  
+          let _value = {
+            ...value,
+            offset: value.offset_,
+            localOffset: value.offset_,
+            V: true,
+            // position: ItemPosition.MID
+          }
+          // console.log(key, value, _value);
+  
+          return {
+            ...accum,
+            [key]: _value
+          }
+        }, {}),
+        pre: { count: 0, size: 0, range: [0, 0] },
+        mid: { ...metadata.total },
+        post: { count: 0, size: 0, range: [metadata.total.count, 0] },
+        total: metadata.total,
+      }
+      console.log(metadata)
+    }
+    return metadata;
+  }, [metadata, contentWidth > metadata.total.size])
+  
+ 
+  // return metadata
+}
 
 export default useMetadata;
+
+export { useMetadataFixed }

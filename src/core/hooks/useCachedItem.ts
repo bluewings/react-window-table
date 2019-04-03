@@ -8,6 +8,10 @@ function useCachedItem(props) {
   const getItemStyle = (rowIndex: number, columnIndex: number) => {
     const row = getItemMetadata(ItemType.ROW, rowIndex);
     const column = getItemMetadata(ItemType.COLUMN, columnIndex);
+    // if (columnIndex === 4) {
+    //   console.log(columnIndex, column, { position: 'absolute', top: row.offset, height: row.size, left: column.offset, width: column.size });
+    // }
+
     return { position: 'absolute', top: row.offset, height: row.size, left: column.offset, width: column.size };
   };
 
@@ -16,8 +20,10 @@ function useCachedItem(props) {
   const cached = useMemo(() => {
     cached__tmp.current = {};
 
+    console.log('%c CACHE CLEARED!!!', 'background:yellow')
+
     return cached__tmp;
-  }, [columnCount, columnWidth, rowCount, rowHeight, props.children]);
+  }, [columnCount, columnWidth, rowCount, rowHeight, props.children, getItemMetadata]);
 
   const { children } = props;
 
@@ -51,7 +57,7 @@ function useCachedItem(props) {
       }
       return cached.current[key];
     };
-  }, [cached.current, getItemContent]);
+  }, [cached.current, getItemContent, getItemMetadata]);
 
   return getCachedStyle;
 }

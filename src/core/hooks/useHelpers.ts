@@ -141,6 +141,7 @@ function useHelpers(props: HelpersProps) {
     scrollbarWidth,
     scrollbarHeight,
     overscanCount,
+    fillRemainingSpace,
   } = props;
 
   let _columnMetadata = useMetadata(columnCount, columnWidth, fixedLeftCount, fixedRightCount);
@@ -171,9 +172,9 @@ function useHelpers(props: HelpersProps) {
     return [contentWidth, contentHeight];
   }, [width, height, totalWidth, totalHeight, scrollbarWidth, scrollbarHeight]);
 
-  let columnMetadata = useMetadataFixed(_columnMetadata, contentWidth);
+  let columnMetadata = useMetadataFixed(_columnMetadata, contentWidth, fillRemainingSpace);
   // let columnMetadata = _columnMetadata;
-  let rowMetadata = useMetadataFixed(_rowMetadata, contentHeight);
+  let rowMetadata = useMetadataFixed(_rowMetadata, contentHeight, false);
 
   const { getItemMetadata, getItemCount, getSize } = useMemo(() => {
     const columnCount = columnMetadata.total.count;
@@ -208,13 +209,15 @@ function useHelpers(props: HelpersProps) {
     };
   }, [columnMetadata, rowMetadata]);
 
+  console.log(columnMetadata.contentSize, contentWidth);
+
   const { getStartIndex, getStopIndex } = useRangeHelper({
     fixedTopCount: rowMetadata.pre.count,
     fixedBottomCount: rowMetadata.post.count,
     fixedLeftCount: columnMetadata.pre.count,
     fixedRightCount: columnMetadata.post.count,
-    contentWidth,
-    contentHeight,
+    contentWidth: columnMetadata.contentSize || contentWidth,
+    contentHeight: rowMetadata.contentSize || contentWidth,
     getItemCount,
     getItemMetadata,
 

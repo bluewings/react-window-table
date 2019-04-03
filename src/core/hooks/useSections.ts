@@ -56,6 +56,8 @@ function useSections(
     // ],
   };
 
+  console.log(range);
+
   const sections = [
     {
       key: 'top',

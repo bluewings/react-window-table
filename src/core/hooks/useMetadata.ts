@@ -76,43 +76,74 @@ function useMetadata(count: number, size: number | Function, preCount: number, p
   }, [count, size]);
 }
 
-function useMetadataFixed (metadata, contentWidth) {
+function useMetadataFixed (metadata, contentWidth, fillRemainingSpace) {
 
+  let mass = contentWidth - metadata.total.size;
+  if (mass < 0) {
+    mass = -1;
+  }
 
 // console.log(contentWidth, metadata.total.size)
   return useMemo(() => {
-    if (contentWidth >= metadata.total.size ) {
+    if (mass >= 0) {
       console.log(contentWidth, metadata.total.size)
-      // const mi
       metadata = {
-        // ...metadata,
         meta: Object.keys(metadata.meta).reduce((accum, key) => {
           let value = metadata.meta[key];
-          
-  
           let _value = {
             ...value,
             offset: value.offset_,
             localOffset: value.offset_,
             V: true,
-            // position: ItemPosition.MID
           }
-          // console.log(key, value, _value);
-  
           return {
             ...accum,
             [key]: _value
           }
         }, {}),
         pre: { count: 0, size: 0, range: [0, 0] },
-        mid: { ...metadata.total },
+        mid: { ...metadata.total,
+        
+          // range: [0, metadata.total.count],
+        },
         post: { count: 0, size: 0, range: [metadata.total.count, 0] },
         total: metadata.total,
       }
-      console.log(metadata)
+      
+      if (mass > 0) {
+        // console.log(mass, metadata.total.size);
+        const contentSize = metadata.total.size + mass;
+        metadata = {
+          ...metadata,
+          // contentSize,
+          
+          meta: {
+            ...metadata.meta,
+            [metadata.total.count]: {
+              size: mass,
+              localOffset: metadata.total.size,
+              offset: metadata.total.size,
+            }
+          },
+          total: {
+            ...metadata.total,
+            count: metadata.total.count + 1,
+            size: contentSize,
+          },
+          mid: {
+            ...metadata.total,
+            count: metadata.total.count + 1,
+            range: [0, metadata.total.count + 1],
+            size: contentSize,
+          },
+        }
+        console.log('-=-=-=-=-')
+        console.log(metadata);
+        
+      }
     }
     return metadata;
-  }, [metadata, contentWidth > metadata.total.size])
+  }, [metadata, mass, fillRemainingSpace])
   
  
   // return metadata

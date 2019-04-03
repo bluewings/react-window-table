@@ -74,6 +74,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     scrollbarWidth,
     scrollbarHeight,
     overscanCount: props.overscanCount,
+    fillRemainingSpace: props.fillRemainingSpace,
   });
 
   const { columnMetadata, rowMetadata, totalWidth, totalHeight, contentWidth, contentHeight } = helpers;
@@ -83,6 +84,8 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   const [rowStartIndex, rowStopIndex] = getRange(ItemType.ROW, scrollTop, verticalScrollDirection);
   const [columnStartIndex, columnStopIndex] = getRange(ItemType.COLUMN, scrollLeft, horizontalScrollDirection);
 
+  console.log('getRange', columnStartIndex, columnStopIndex)
+
   const getCachedStyle = useCachedItem({
     getItemMetadata,
     columnCount,
@@ -91,7 +94,12 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     rowHeight,
     children: props.children,
   });
-
+console.log({
+  contentWidth,
+    contentHeight,
+    columnStartIndex,
+    columnStopIndex,
+})
   const { center, sections } = useSections(
     rowMetadata,
     columnMetadata,

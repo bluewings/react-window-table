@@ -12,7 +12,7 @@ import { WindowTable } from '../src/core';
 
 ## Basic usage
 
-<WindowTable
+<!--WindowTable
   height={200}
   rowCount={5}
   rowHeight={30}
@@ -29,7 +29,7 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTable-->
 
 ## Basic usage
 
@@ -43,7 +43,8 @@ import { WindowTable } from '../src/core';
   fixedLeftCount={1}
   fixedRightCount={1}
   fixedBottomCount={1}
-  overscanCount={0}
+  overscanCount={1}
+  fillRemainingSpace={true}
 >
 {({ columnIndex, rowIndex, style }) => (
   <div className="cell" style={style}>
@@ -55,7 +56,7 @@ import { WindowTable } from '../src/core';
 
 ## Basic usage
 
-<WindowTable
+<!--WindowTable
   height={300}
   rowCount={5}
   rowHeight={30}
@@ -72,5 +73,5 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTable-->
 

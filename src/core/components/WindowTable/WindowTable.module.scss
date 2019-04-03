@@ -1,30 +1,68 @@
-.root {
+.container {
   position: relative;
-  // border: 1px solid red;
+}
+
+.root {
+  position: absolute;
+  // top: 50px;
+  top: 0;
+  left: 0;
   overflow: auto;
-// -webkit-overflow-scrolling: touch;
-// will-change: transform;
-  // overflow: 'auto',
-  // WebkitOverflowScrolling: 'touch',
-  // willChange: 'transform',
+  -webkit-overflow-scrolling: touch;
+  will-change: transform;
 }
-.inner {
-  // position: absolute;
-  // top: 0;
-  // left: 0;
-  // overflow: hidden;
-  // background: rgba(0,0,0,.1);
-  // background: linear-gradient(-45deg, #073963 0%,#8fb3da 100%);
-  // background: linear-gradient(-45deg, #fff 0%, #000 100%);
-}
+
 .odd {
   background: #eee;
 }
+
 .even {
   background: #fff;
 }
-.stickyContainer {
+.center {
+  > div {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid black;
+  }
+}
+
+.sticky {
   position: sticky;
   width: 0;
-  z-index:1;
+  z-index: 1;
+  // pointer-events: none;
+  &:global(.top-left),
+  &:global(.top-right),
+  &:global(.bottom-left),
+  &:global(.bottom-right) {
+    > div {
+      // background-color: skyblue;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+  &:global(.top) {
+    chasw: 97;
+    > div {
+      // background-color: lightyellow;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+  &:global(.left) {
+    > div {
+      // background-color: lightgreen;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+  &:global(.right) {
+    > div {
+      // background-color: lightblue;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+  &:global(.bottom) {
+    > div {
+      // background-color: silver;
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
 }

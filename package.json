@@ -46,7 +46,7 @@
   },
   "scripts": {
     "start": "cra-rewired -s react-scripts -m start -c config/webpack.custom.dev.js",
-    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json,css}'",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json,css,scss}'",
     "build": "rollup -c",
     "prebuild": "rm -rf dist/*",
     "test": "react-scripts test",

@@ -3,6 +3,7 @@ name: Introduction
 route: /
 ---
 
+import { useState } from 'react';
 import { Playground, Props } from 'docz';
 import Greeting from '../src/core/Greeting';
 import { WindowTable } from '../src/core';
@@ -16,17 +17,25 @@ import { WindowTable } from '../src/core';
 ## Basic usage
 
 <Playground>
+  {() => {
+    const [colWidth, setColWidth] = useState(50);
+
+    setTimeout(() => {
+setColWidth(100);
+    }, 1000);
+
+return (
   <WindowTable
-    width={597}
-    height={397}
+    height={500}
     rowCount={100}
     rowHeight={50}
-    columnCount={20}
-    columnWidth={80}
-    fixedTopCount={1}
-    fixedLeftCount={1}
-    fixedRightCount={1}
-    fixedBottomCount={1}
+    columnCount={100}
+    columnWidth={colWidth}
+    fixedTopCount={3}
+    fixedLeftCount={3}
+    fixedRightCount={3}
+    fixedBottomCount={3}
+    overscanCount={0}
   >
   {({ columnIndex, rowIndex, style }) => (
     <div className="cell" style={style}>
@@ -34,4 +43,7 @@ import { WindowTable } from '../src/core';
     </div>
   )}
   </WindowTable>
+)
+  }}
+
 </Playground>

@@ -110,7 +110,7 @@ function useMetadataFixed (metadata, contentWidth, fillRemainingSpace) {
         total: metadata.total,
       }
       
-      if (mass > 0) {
+      if (mass > 0 && fillRemainingSpace) {
         // console.log(mass, metadata.total.size);
         const contentSize = metadata.total.size + mass;
         metadata = {

@@ -28,18 +28,18 @@ return (
   <WindowTable
     height={500}
     rowCount={100}
-    rowHeight={50}
+    rowHeight={30}
     columnCount={100}
     columnWidth={colWidth}
     fixedTopCount={1}
     fixedLeftCount={2}
     fixedRightCount={3}
     fixedBottomCount={4}
-    overscanCount={0}
+    
     
   >
-  {({ columnIndex, rowIndex, style }) => (
-    <div className="cell" style={style}>
+  {({ columnIndex, rowIndex, style, className }) => (
+    <div className={className} style={style}>
       {rowIndex} , {columnIndex}
     </div>
   )}

@@ -40,11 +40,12 @@ function useCachedItem(props) {
 
   const getItemContent = useMemo(() => {
     if (typeof children === 'function') {
-      return (rowIndex: number, columnIndex: number, key: string, style: any, isFiller: boolean) => {
+      return (rowIndex: number, columnIndex: number, key: string, className: string, style: any, isFiller: boolean) => {
         // @ts-ignore
         return createElement(children, {
           columnIndex,
           rowIndex,
+          className,
           key,
           style,
           isFiller,
@@ -56,14 +57,16 @@ function useCachedItem(props) {
 
   const getCachedStyle = useMemo(() => {
     // console.log('%c NEW FUNC !!!', 'background:yellow');
-    return (rowIndex: number, colIndex: number) => {
+    return (rowIndex: number, colIndex: number, rowTypes, colTypes) => {
       // return getItemStyle(rowIndex, colIndex);
       const key = rowIndex + '_' + colIndex;
       if (!cached.current[key]) {
         const { style, isFiller, rowIndex: _rowIndex, columnIndex: _colIndex } = getItemStyle(rowIndex, colIndex);
         const key = rowIndex + '_' + colIndex;
+        const className = [...rowTypes.map((e) => 'row-' + e), ...colTypes.map((e) => 'col-' + e)].join(' ');
         cached.current[key] = {
-          content: getItemContent(_rowIndex, _colIndex, key, style, isFiller),
+          className,
+          content: getItemContent(_rowIndex, _colIndex, key, className, style, isFiller),
           style,
         };
       }

@@ -11,9 +11,24 @@ function useItems(rowRange: number[], colRange: number[], getCachedStyle: Functi
     const items = [];
 
     for (let rowIndex = rowStartIndex; rowIndex < rowStopIndex; rowIndex++) {
+      let rowType = [];
+      if (rowIndex === rowStartIndex) {
+        rowType.push('first');
+      }
+      if (rowIndex === rowStopIndex - 1) {
+        rowType.push('last');
+      }
       for (let colIndex = columnStartIndex; colIndex < columnStopIndex; colIndex++) {
         const key = rowIndex + '_' + colIndex;
-        const { content, style } = getCachedStyle(rowIndex, colIndex);
+
+        let colType = [];
+        if (colIndex === columnStartIndex) {
+          colType.push('first');
+        }
+        if (colIndex === columnStopIndex - 1) {
+          colType.push('last');
+        }
+        const { content, style } = getCachedStyle(rowIndex, colIndex, rowType, colType);
         items.push(content);
 
         //   <div key={key} style={style} className={(rowIndex + colIndex) % 2 ? styles.odd : styles.even}>
@@ -55,8 +70,6 @@ function useSections(
 
     // ],
   };
-
-  console.log(range);
 
   const sections = [
     {

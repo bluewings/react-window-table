@@ -77,3 +77,19 @@
     }
   }
 }
+
+.guidelines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  > div {
+    position: absolute;
+    border: 5px solid blue;
+  }
+}
+.guideline {
+  position: sticky;
+  float: left;
+  border: 5px solid blue;
+}

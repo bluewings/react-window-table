@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Fragment, FunctionComponent, useEffect, useMemo, SyntheticEvent, useState, useRef } from 'react';
-import { useCachedItem, useOffsetSize, useHelpers, useMetadata, useScrollbarSize, useSections } from '../../hooks';
+import { useCachedItem, useGuidelines, useHelpers, useOffsetSize, useScrollbarSize, useSections } from '../../hooks';
 import { ItemType, ScrollDirection } from '../../hooks/useHelpers';
 
 import styles from './WindowTable.module.scss';
@@ -114,6 +114,10 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     getCachedStyle,
   );
 
+  const guidelines = useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight);
+
+  // console.log(columnMetadata);
+
   return (
     <div ref={container} className={styles.container} style={{ height: offsetHeight }}>
       {/* <pre>
@@ -130,6 +134,11 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           fixedRightCount
         })}
       </pre> */}
+      {/* <div className={styles.guidelines} style={{ width: clientWidth, height: clientHeight }}>
+        {guidelines.map((guideline) => {
+          return <div className={guideline.className} style={guideline.style} />;
+        })}
+      </div> */}
       <div style={{ width: offsetWidth, height: offsetHeight }} className={styles.root} onScroll={handleScroll}>
         <div style={{ width: scrollWidth, height: scrollHeight }}>
           {sections.map((section) => (
@@ -137,6 +146,11 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
               {section.items}
             </div>
           ))}
+          {/* {guidelines.map(guideline => {
+        return (
+          <div className={styles.guideline.className} style={guideline.style} />
+        )
+      })} */}
           <div className={styles.center}>{center.items}</div>
         </div>
       </div>

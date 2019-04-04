@@ -64,7 +64,6 @@ function useRangeHelper({
     const getStartIndex = (itemType: ItemType, offset: number) => {
       const itemIndex = itemType === ItemType.ROW ? fixedTopCount : fixedLeftCount;
       const itemMetadata = getItemMetadata(itemType, itemIndex);
-      // console.log(itemType, itemIndex, itemMetadata);
       return findNearestItem(itemType, offset + itemMetadata.offset);
     };
 
@@ -84,17 +83,17 @@ function useRangeHelper({
         stopIndex += 1;
         currOffset += getItemMetadata(itemType, stopIndex).size;
       }
-      if (ItemType.ROW === itemType) {
-        console.log('%c-=-=-=-=-=-=-=-=-=-', 'background:red;color:#fff');
-        console.log({
-          startIndex,
-          stopIndex,
-          postfixCount,
-          _currOffset,
-          maxOffset,
-          contentHeight,
-        });
-      }
+      // if (ItemType.ROW === itemType) {
+      //   console.log('%c-=-=-=-=-=-=-=-=-=-', 'background:red;color:#fff');
+      //   console.log({
+      //     startIndex,
+      //     stopIndex,
+      //     postfixCount,
+      //     _currOffset,
+      //     maxOffset,
+      //     contentHeight,
+      //   });
+      // }
 
       return stopIndex;
     };
@@ -197,7 +196,6 @@ function useHelpers(props: HelpersProps) {
     const columnCount = columnMetadata.total.count;
     const rowCount = rowMetadata.total.count;
     const getItemMetadata = (itemType: ItemType, itemIndex: number) => {
-      // console.log(columnMetadataMap, rowMetadataMap);
       return (itemType === ItemType.COLUMN ? columnMetadata : rowMetadata).meta[itemIndex];
     };
 
@@ -226,8 +224,6 @@ function useHelpers(props: HelpersProps) {
     };
   }, [columnMetadata, rowMetadata]);
 
-  console.log(columnMetadata.contentSize, clientWidth);
-
   const { getStartIndex, getStopIndex } = useRangeHelper({
     fixedTopCount: rowMetadata.pre.count,
     fixedBottomCount: rowMetadata.post.count,
@@ -245,7 +241,7 @@ function useHelpers(props: HelpersProps) {
 
   // const overscanCount = 2;
 
-  const _overscanCount = typeof overscanCount === 'number' ? overscanCount : 0;
+  const _overscanCount = typeof overscanCount === 'number' ? overscanCount : 2;
 
   const getRange = useMemo(() => {
     return (itemType: ItemType, offset: number, scrollDirection: ScrollDirection) => {

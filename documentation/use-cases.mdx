@@ -1,0 +1,34 @@
+---
+name: use cases
+---
+
+import { useState } from 'react';
+import { Playground, Props } from 'docz';
+import Greeting from '../src/core/Greeting';
+import { WindowTable } from '../src/core';
+
+# Use Cases
+
+## contentWidth < sum(fixedWidth)
+
+### shrink
+
+<WindowTable
+  height={300}
+  rowCount={100}
+  rowHeight={30}
+  columnCount={10}
+  columnWidth={150}
+  fixedTopCount={0}
+  fixedLeftCount={2}
+  fixedRightCount={2}
+  fixedBottomCount={0}
+  overscanCount={2}
+  
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>

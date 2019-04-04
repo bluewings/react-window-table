@@ -76,11 +76,25 @@ function useMetadata(count: number, size: number | Function, preCount: number, p
   }, [count, size]);
 }
 
-function useMetadataFixed(metadata, clientWidth, fillerColumn) {
-  let mass = clientWidth - metadata.total.size;
-  if (mass < 0) {
-    mass = -1;
-  }
+function useMetadataFixed(metadata, clientSize, fillerType, minVisibleScrollViewWidth) {
+  const totalSize = metadata.total.size;
+  const preSize = metadata.pre.size;
+  const postSize = metadata.post.size;
+  const mass = useMemo(() => {
+    let mass = clientSize - totalSize;
+    if (mass < 0) {
+      mass = -1;
+    }
+    // console.log(minVisibleScrollViewWidth);
+
+    if (preSize + postSize + (minVisibleScrollViewWidth || 0) > clientSize) {
+      mass = 0;
+    }
+    return mass;
+  }, [clientSize, totalSize, preSize, postSize, minVisibleScrollViewWidth]);
+  // mass = clientWidth -
+
+  // console.log( clientWidth , metadata.total.size, metadata.pre.size, metadata.post.size);
 
   // // console.log(contentWidth, metadata.total.size)
   return useMemo(() => {
@@ -109,7 +123,7 @@ function useMetadataFixed(metadata, clientWidth, fillerColumn) {
       };
 
       if (mass > 0) {
-        if (fillerColumn === true || fillerColumn === 'append') {
+        if (fillerType === true || fillerType === 'append') {
           // // console.log(mass, metadata.total.size);
           const contentSize = metadata.total.size + mass;
           metadata = {
@@ -137,7 +151,7 @@ function useMetadataFixed(metadata, clientWidth, fillerColumn) {
               size: contentSize,
             },
           };
-        } else if (fillerColumn === 'stretch') {
+        } else if (fillerType === 'stretch') {
           const contentSize = metadata.total.size + mass;
           const lastKey = metadata.total.count - 1;
           metadata = {
@@ -170,7 +184,7 @@ function useMetadataFixed(metadata, clientWidth, fillerColumn) {
       }
     }
     return metadata;
-  }, [metadata, mass, fillerColumn]);
+  }, [metadata, mass, fillerType]);
 
   // return metadata
 }

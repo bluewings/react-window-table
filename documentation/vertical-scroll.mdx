@@ -1,0 +1,168 @@
+---
+name: vertical scroll
+---
+
+import { useState } from 'react';
+import { Playground, Props } from 'docz';
+import Greeting from '../src/core/Greeting';
+import { WindowTable } from '../src/core';
+
+# Use Cases
+
+## scrollHeight < clientHeight
+
+### shrink
+
+<WindowTable
+  height={300}
+  rowCount={5}
+  rowHeight={30}
+  columnCount={5}
+  columnWidth={100}
+  fixedTopCount={2}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={2}
+  overscanCount={2}
+  fillerColumn='append'
+  fillerRow='append'
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+
+<br/>
+
+<!--WindowTable
+  height={300}
+  rowCount={5}
+  rowHeight={30}
+  columnCount={100}
+  columnWidth={100}
+  fixedTopCount={2}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={2}
+  overscanCount={2}
+  fillerRow='none'
+  
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+
+### dummy 열 추가
+
+<!--WindowTable
+  height={300}
+  rowCount={100}
+  rowHeight={30}
+  columnCount={5}
+  columnWidth={100}
+  fixedTopCount={2}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={4}
+  overscanCount={2}
+  fillerColumn={true}
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+
+### 마지막 열의 너비를 늘임
+
+<WindowTable
+  height={300}
+  rowCount={5}
+  rowHeight={30}
+  columnCount={100}
+  columnWidth={100}
+  fixedTopCount={2}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={4}
+  overscanCount={2}
+  fillerColumn='stretch'
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+
+### 비워둠 none
+
+<WindowTable
+  height={300}
+  rowCount={100}
+  rowHeight={30}
+  columnCount={5}
+  columnWidth={100}
+  fixedTopCount={2}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={4}
+  overscanCount={2}
+  fillerColumn='none'
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    
+    {(rowIndex === -1 || columnIndex === -1) ? null : rowIndex + ' , ' + columnIndex}
+  </div>
+)}
+</WindowTable>
+
+## scrollHeight < clientHeight
+
+<!--WindowTable
+  height={200}
+  rowCount={5}
+  rowHeight={30}
+  columnCount={100}
+  columnWidth={100}
+  fixedTopCount={1}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={1}
+  overscanCount={0}
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable-->
+
+## Basic usage
+
+<!--WindowTable
+  height={300}
+  rowCount={5}
+  rowHeight={30}
+  columnCount={5}
+  columnWidth={100}
+  fixedTopCount={1}
+  fixedLeftCount={1}
+  fixedRightCount={1}
+  fixedBottomCount={1}
+  overscanCount={0}
+>
+{({ columnIndex, rowIndex, style }) => (
+  <div className="cell" style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable-->
+

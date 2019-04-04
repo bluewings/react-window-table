@@ -23,7 +23,11 @@ type WindowTableProps = {
   fixedBottomCount?: number;
   overscanCount?: number;
 
-  fillerColumn?: 'none' | 'append' | 'stretch';
+  fillerColumn?: 'none' | 'append' | 'stretch' | 'shrink';
+  fillerRow?: 'none' | 'append' | 'stretch' | 'shrink';
+  /** 스크롤되는 뷰포트 너비가 특정값 이하로 떨어지면 fixedColumn 이 무효화된다. */
+  minVisibleScrollViewWidth: number;
+  minVisibleScrollViewHeight: number;
 
   // maxScrollY?: number
   // maxScrollX?: number
@@ -75,6 +79,9 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     scrollbarHeight,
     overscanCount: props.overscanCount,
     fillerColumn: props.fillerColumn,
+    fillerRow: props.fillerRow,
+    minVisibleScrollViewWidth: props.minVisibleScrollViewWidth,
+    minVisibleScrollViewHeight: props.minVisibleScrollViewHeight,
   });
 
   const {

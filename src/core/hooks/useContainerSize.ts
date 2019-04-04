@@ -9,10 +9,10 @@ type ElementRef = MutableRefObject<HTMLDivElement | null>;
 
 const DEFAULT_HEIGHT = 400;
 
-function useContainerSize(props: SizeProps, container: ElementRef) {
+function useOffsetSize(props: SizeProps, container: ElementRef) {
   const { width, height } = props;
-  const [containerWidth, setContainerWidth] = useState(typeof width === 'number' ? width : 0);
-  let containerHeight = typeof height === 'number' ? height : DEFAULT_HEIGHT;
+  const [offsetWidth, setOffsetWidth] = useState(typeof width === 'number' ? width : 0);
+  let offsetHeight = typeof height === 'number' ? height : DEFAULT_HEIGHT;
 
   const timer = useRef<number>();
   useEffect(() => {
@@ -23,8 +23,8 @@ function useContainerSize(props: SizeProps, container: ElementRef) {
       timer.current && cancelAnimationFrame(timer.current);
       if (container.current && container.current.parentElement) {
         const rect = container.current.parentElement.getBoundingClientRect();
-        if (containerWidth !== rect.width) {
-          setContainerWidth(rect.width);
+        if (offsetWidth !== rect.width) {
+          setOffsetWidth(rect.width);
         }
       }
       timer.current = requestAnimationFrame(checkSize);
@@ -33,8 +33,8 @@ function useContainerSize(props: SizeProps, container: ElementRef) {
     return () => {
       timer.current && cancelAnimationFrame(timer.current);
     };
-  }, [width, containerWidth]);
-  return [containerWidth, containerHeight];
+  }, [width, offsetWidth]);
+  return [offsetWidth, offsetHeight];
 }
 
-export default useContainerSize;
+export default useOffsetSize;

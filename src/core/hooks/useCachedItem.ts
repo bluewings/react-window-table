@@ -12,7 +12,18 @@ function useCachedItem(props) {
     //   console.log(columnIndex, column, { position: 'absolute', top: row.offset, height: row.size, left: column.offset, width: column.size });
     // }
 
-    return { position: 'absolute', top: row.offset, height: row.size, left: column.offset, width: column.size };
+    const style = { position: 'absolute', top: row.offset, height: row.size, left: column.offset, width: column.size };
+
+    if (row.filler || column.filler) {
+      style.overflow = 'hidden';
+    }
+
+    return {
+      isFiller: column.filler || row.filler,
+      rowIndex: row.filler ? -1 : rowIndex,
+      columnIndex: column.filler ? -1 : columnIndex,
+      style,
+    };
   };
 
   const cached__tmp = useRef<any>({});
@@ -20,7 +31,7 @@ function useCachedItem(props) {
   const cached = useMemo(() => {
     cached__tmp.current = {};
 
-    console.log('%c CACHE CLEARED!!!', 'background:yellow')
+    console.log('%c CACHE CLEARED!!!', 'background:yellow');
 
     return cached__tmp;
   }, [columnCount, columnWidth, rowCount, rowHeight, props.children, getItemMetadata]);
@@ -29,13 +40,14 @@ function useCachedItem(props) {
 
   const getItemContent = useMemo(() => {
     if (typeof children === 'function') {
-      return (rowIndex: number, columnIndex: number, key: string, style: any) => {
+      return (rowIndex: number, columnIndex: number, key: string, style: any, isFiller: boolean) => {
         // @ts-ignore
         return createElement(children, {
           columnIndex,
           rowIndex,
           key,
           style,
+          isFiller,
         });
       };
     }
@@ -48,10 +60,10 @@ function useCachedItem(props) {
       // return getItemStyle(rowIndex, colIndex);
       const key = rowIndex + '_' + colIndex;
       if (!cached.current[key]) {
-        const style = getItemStyle(rowIndex, colIndex);
+        const { style, isFiller, rowIndex: _rowIndex, columnIndex: _colIndex } = getItemStyle(rowIndex, colIndex);
         const key = rowIndex + '_' + colIndex;
         cached.current[key] = {
-          content: getItemContent(rowIndex, colIndex, key, style),
+          content: getItemContent(_rowIndex, _colIndex, key, style, isFiller),
           style,
         };
       }

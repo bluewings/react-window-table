@@ -70,23 +70,21 @@ function useMetadata(count: number, size: number | Function, preCount: number, p
       meta,
       pre: { count: preCount, size: sizes[ItemPosition.PRE], range: [0, preCount] },
       mid: { size: sizes[ItemPosition.MID], range: [preCount, count - postCount] },
-      post: { count: preCount, size: sizes[ItemPosition.POST], range: [count - postCount, count] },
+      post: { count: postCount, size: sizes[ItemPosition.POST], range: [count - postCount, count] },
       total: { size: offset, count, range: [0, count] },
     };
   }, [count, size]);
 }
 
-function useMetadataFixed (metadata, contentWidth, fillRemainingSpace) {
-
-  let mass = contentWidth - metadata.total.size;
+function useMetadataFixed(metadata, clientWidth, fillerColumn) {
+  let mass = clientWidth - metadata.total.size;
   if (mass < 0) {
     mass = -1;
   }
 
-// console.log(contentWidth, metadata.total.size)
+  // // console.log(contentWidth, metadata.total.size)
   return useMemo(() => {
     if (mass >= 0) {
-      console.log(contentWidth, metadata.total.size)
       metadata = {
         meta: Object.keys(metadata.meta).reduce((accum, key) => {
           let value = metadata.meta[key];
@@ -94,61 +92,89 @@ function useMetadataFixed (metadata, contentWidth, fillRemainingSpace) {
             ...value,
             offset: value.offset_,
             localOffset: value.offset_,
-            V: true,
-          }
+          };
           return {
             ...accum,
-            [key]: _value
-          }
+            [key]: _value,
+          };
         }, {}),
         pre: { count: 0, size: 0, range: [0, 0] },
-        mid: { ...metadata.total,
-        
+        mid: {
+          ...metadata.total,
+
           // range: [0, metadata.total.count],
         },
         post: { count: 0, size: 0, range: [metadata.total.count, 0] },
         total: metadata.total,
-      }
-      
-      if (mass > 0 && fillRemainingSpace) {
-        // console.log(mass, metadata.total.size);
-        const contentSize = metadata.total.size + mass;
-        metadata = {
-          ...metadata,
-          // contentSize,
-          
-          meta: {
-            ...metadata.meta,
-            [metadata.total.count]: {
-              size: mass,
-              localOffset: metadata.total.size,
-              offset: metadata.total.size,
-            }
-          },
-          total: {
-            ...metadata.total,
-            count: metadata.total.count + 1,
-            size: contentSize,
-          },
-          mid: {
-            ...metadata.total,
-            count: metadata.total.count + 1,
-            range: [0, metadata.total.count + 1],
-            size: contentSize,
-          },
+      };
+
+      if (mass > 0) {
+        if (fillerColumn === true || fillerColumn === 'append') {
+          // // console.log(mass, metadata.total.size);
+          const contentSize = metadata.total.size + mass;
+          metadata = {
+            ...metadata,
+            // contentSize,
+
+            meta: {
+              ...metadata.meta,
+              [metadata.total.count]: {
+                size: mass,
+                localOffset: metadata.total.size,
+                offset: metadata.total.size,
+                filler: true,
+              },
+            },
+            total: {
+              ...metadata.total,
+              count: metadata.total.count + 1,
+              size: contentSize,
+            },
+            mid: {
+              ...metadata.total,
+              count: metadata.total.count + 1,
+              range: [0, metadata.total.count + 1],
+              size: contentSize,
+            },
+          };
+        } else if (fillerColumn === 'stretch') {
+          const contentSize = metadata.total.size + mass;
+          const lastKey = metadata.total.count - 1;
+          metadata = {
+            ...metadata,
+            meta: {
+              ...metadata.meta,
+              [lastKey]: {
+                ...metadata.meta[lastKey],
+
+                size: metadata.meta[lastKey].size + mass,
+                // localOffset: metadata.total.size,
+                // offset: metadata.total.size,
+                // filler: true,
+              },
+            },
+            total: {
+              ...metadata.total,
+              size: contentSize,
+            },
+            mid: {
+              ...metadata.total,
+              size: contentSize,
+            },
+          };
+          // console.log('-=-=-=-=- case 2');
+          // console.log(metadata);
         }
-        console.log('-=-=-=-=-')
-        console.log(metadata);
-        
+        // console.log('-=-=-=-=-');
+        // console.log(metadata);
       }
     }
     return metadata;
-  }, [metadata, mass, fillRemainingSpace])
-  
- 
+  }, [metadata, mass, fillerColumn]);
+
   // return metadata
 }
 
 export default useMetadata;
 
-export { useMetadataFixed }
+export { useMetadataFixed };

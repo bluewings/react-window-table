@@ -20,12 +20,13 @@ import { WindowTable } from '../src/core';
   {() => {
     const [colWidth, setColWidth] = useState(50);
 
-    setTimeout(() => {
+    {/* setTimeout(() => {
 setColWidth(100);
-    }, 1000);
+    }, 1000); */}
 
 return (
   <WindowTable
+    width={600}
     height={500}
     rowCount={100}
     rowHeight={30}

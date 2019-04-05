@@ -1,62 +1,54 @@
-import { useEffect, useRef, useState, MutableRefObject } from 'react';
+import { useMemo, useRef } from 'react';
+import { css } from 'emotion';
+import useComputedStyle from './useComputedStyle';
+import styles from '../components/WindowTable/WindowTable.module.scss';
 
-type SizeProps = {
+type StyleProps = {
   width?: number;
   height?: number;
+  containerStyle?: object;
 };
-
-type ElementRef = MutableRefObject<HTMLDivElement | null>;
 
 const DEFAULT_HEIGHT = 400;
 
-function useOffsetSize(
-  props: SizeProps,
-  container: ElementRef,
-  { borderTopWidth, borderLeftWidth, borderRightWidth, borderBottomWidth },
-) {
-  const { width, height } = props;
-  const [parentWidth, setParentWidth] = useState(typeof width === 'number' ? width : 0);
-  const [offsetWidth, setOffsetWidth] = useState(typeof width === 'number' ? width : 0);
-  let parentHeight = typeof height === 'number' ? height : DEFAULT_HEIGHT;
-  let offsetHeight = parentHeight - borderTopWidth - borderBottomWidth;
+function useContainerStyle(objectStyles?: StringAnyMap): [string, number, number, number, number] {
+  const objectStylesHash = useMemo(() => JSON.stringify(objectStyles), [objectStyles]);
+  const className = useMemo(() => {
+    return objectStyles && typeof objectStyles === 'object' ? css(objectStyles) : '';
+  }, [objectStylesHash]);
 
-  // offsetHeight = offset
+  const { borderTopWidth, borderLeftWidth, borderRightWidth, borderBottomWidth } = useComputedStyle(className, [
+    'borderTopWidth',
+    'borderLeftWidth',
+    'borderRightWidth',
+    'borderBottomWidth',
+  ]);
 
-  const timer = useRef<number>();
-  useEffect(() => {
-    if (typeof width === 'number') {
-      return;
-    }
-    function checkSize() {
-      timer.current && cancelAnimationFrame(timer.current);
-      if (container.current && container.current.parentElement) {
-        const rect = container.current.parentElement.getBoundingClientRect();
-        const _width = rect.width - borderLeftWidth - borderRightWidth;
-        // const _width = rect.width;
+  return [className, borderTopWidth, borderLeftWidth, borderRightWidth, borderBottomWidth];
+}
 
-        if (parentWidth !== rect.width || offsetWidth !== _width) {
-          // console.log(rect.width, borderLeftWidth, borderRightWidth);
-          setParentWidth(rect.width);
-          setOffsetWidth(_width);
-        }
-      }
-      timer.current = requestAnimationFrame(checkSize);
-    }
-    checkSize();
-    return () => {
-      timer.current && cancelAnimationFrame(timer.current);
-    };
-  }, [width, offsetWidth, borderLeftWidth, borderRightWidth]);
-  // }, [width, offsetWidth]);
-  return [
-    parentWidth,
-    parentHeight,
-    offsetWidth,
-    offsetHeight,
-    // borderTopWidth,
-    // borderLeftWidth,
-    // borderRightWidth,
-  ];
+function useOffsetSize({ width, height, containerStyle }: StyleProps) {
+  const ref = useRef<HTMLElement>(null);
+
+  const [containerClassName, borderTop, borderLeft, borderRight, borderBottom] = useContainerStyle(containerStyle);
+
+  const { clientWidth } = useComputedStyle(() => ref.current && ref.current.parentElement, [], !width);
+  const [offsetWidth, innerWidth] = useMemo(() => {
+    const containerWidth = width || clientWidth;
+    return [containerWidth, containerWidth - borderLeft - borderRight];
+  }, [width, clientWidth, borderLeft, borderRight]);
+
+  const [offsetHeight, innerHeight] = useMemo(() => {
+    let offsetHeight = typeof height === 'number' ? height : DEFAULT_HEIGHT;
+    let innerHeight = offsetHeight - borderTop - borderBottom;
+    return [offsetHeight, innerHeight];
+  }, [height, borderTop, borderBottom]);
+
+  const className = useMemo(() => {
+    return [styles.container, containerClassName, css({ height: offsetHeight })].filter((e: any) => e).join(' ');
+  }, [containerClassName, offsetHeight]);
+
+  return { ref, className, offsetWidth, offsetHeight, innerWidth, innerHeight };
 }
 
 export default useOffsetSize;

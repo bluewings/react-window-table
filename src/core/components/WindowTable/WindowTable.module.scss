@@ -1,6 +1,9 @@
 .container {
   position: relative;
   box-sizing: border-box;
+  // box-shadow: black;pa
+  // padding: 50px;
+  // border-color:blue !important;
 }
 
 .root {
@@ -24,6 +27,7 @@
 .center {
   > div {
     background-color: rgba(255, 0, 0, 0.1);
+    background: #fff;
   }
 }
 
@@ -36,6 +40,7 @@
     box-sizing: border-box;
     border-left: 1px solid black;
     border-bottom: 1px solid black;
+    background: #fff;
   }
 }
 .sticky {
@@ -50,31 +55,35 @@
     > div {
       // background-color: skyblue;
       background-color: rgba(0, 0, 0, 0.1);
+      background: #fff;
     }
   }
   &:global(.top) {
-    chasw: 97;
     > div {
       // background-color: lightyellow;
       background-color: rgba(0, 0, 0, 0.1);
+      background: #fff;
     }
   }
   &:global(.left) {
     > div {
       // background-color: lightgreen;
       background-color: rgba(0, 0, 0, 0.1);
+      background: #fff;
     }
   }
   &:global(.right) {
     > div {
       // background-color: lightblue;
       background-color: rgba(0, 0, 0, 0.1);
+      background: #fff;
     }
   }
   &:global(.bottom) {
     > div {
       // background-color: silver;
       background-color: rgba(0, 0, 0, 0.1);
+      background: #fff;
     }
   }
 }

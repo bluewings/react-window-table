@@ -24,8 +24,8 @@ type HelpersProps = {
   fixedBottomCount: number;
   fixedLeftCount: number;
   fixedRightCount: number;
-  offsetWidth: number;
-  offsetHeight: number;
+  innerWidth: number;
+  innerHeight: number;
   scrollbarWidth: number;
   scrollbarHeight: number;
 };
@@ -169,8 +169,8 @@ function useHelpers(props: HelpersProps) {
     fixedBottomCount,
     fixedLeftCount,
     fixedRightCount,
-    offsetWidth: _offsetWidth,
-    offsetHeight: _offsetHeight,
+    innerWidth: _innerWidth,
+    innerHeight: _innerHeight,
     scrollbarWidth,
     scrollbarHeight,
     overscanCount,
@@ -186,13 +186,13 @@ function useHelpers(props: HelpersProps) {
   const scrollWidth = _columnMetadata.total.size;
   const scrollHeight = _rowMetadata.total.size;
 
-  const [clientWidth, clientHeight, offsetWidth, offsetHeight] = useMemo(() => {
-    let offsetWidth = _offsetWidth;
-    let offsetHeight = _offsetHeight;
+  const [clientWidth, clientHeight, innerWidth, innerHeight] = useMemo(() => {
+    let innerWidth = _innerWidth;
+    let innerHeight = _innerHeight;
 
-    let contentWidth = offsetWidth;
+    let contentWidth = innerWidth;
 
-    let contentHeight = offsetHeight;
+    let contentHeight = innerHeight;
     const scrollbarX = contentWidth < scrollWidth;
     let scrollbarY = contentHeight < scrollHeight;
 
@@ -211,26 +211,17 @@ function useHelpers(props: HelpersProps) {
     if (fillerColumn === 'shrink' && scrollWidth < contentWidth) {
       contentWidth = scrollWidth;
 
-      offsetWidth = scrollWidth + (scrollbarY ? scrollbarWidth : 0);
+      innerWidth = scrollWidth + (scrollbarY ? scrollbarWidth : 0);
     }
     // console.log(scrollHeight, contentHeight);
     if (fillerRow === 'shrink' && scrollHeight < contentHeight) {
       contentHeight = scrollHeight;
 
-      offsetHeight = scrollHeight + (scrollbarX ? scrollbarHeight : 0);
+      innerHeight = scrollHeight + (scrollbarX ? scrollbarHeight : 0);
     }
 
-    return [contentWidth, contentHeight, offsetWidth, offsetHeight];
-  }, [
-    _offsetWidth,
-    _offsetHeight,
-    scrollWidth,
-    scrollHeight,
-    scrollbarWidth,
-    scrollbarHeight,
-    fillerColumn,
-    fillerRow,
-  ]);
+    return [contentWidth, contentHeight, innerWidth, innerHeight];
+  }, [_innerWidth, _innerHeight, scrollWidth, scrollHeight, scrollbarWidth, scrollbarHeight, fillerColumn, fillerRow]);
 
   let columnMetadata = useMetadataFixed(_columnMetadata, clientWidth, fillerColumn, minVisibleScrollViewWidth);
   let rowMetadata = useMetadataFixed(_rowMetadata, clientHeight, fillerRow, minVisibleScrollViewHeight);
@@ -317,8 +308,8 @@ function useHelpers(props: HelpersProps) {
     scrollHeight,
     clientWidth,
     clientHeight,
-    offsetWidth,
-    offsetHeight,
+    innerWidth,
+    innerHeight,
     //     getStartIndex,
     // getStopIndex,
     getRange,

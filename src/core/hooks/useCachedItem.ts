@@ -8,9 +8,6 @@ function useCachedItem(props) {
   const getItemStyle = (rowIndex: number, columnIndex: number) => {
     const row = getItemMetadata(ItemType.ROW, rowIndex);
     const column = getItemMetadata(ItemType.COLUMN, columnIndex);
-    // if (columnIndex === 4) {
-    //   console.log(columnIndex, column, { position: 'absolute', top: row.offset, height: row.size, left: column.offset, width: column.size });
-    // }
 
     const style = { position: 'absolute', top: row.offset, height: row.size, left: column.offset, width: column.size };
 
@@ -56,9 +53,7 @@ function useCachedItem(props) {
   }, [children]);
 
   const getCachedStyle = useMemo(() => {
-    // console.log('%c NEW FUNC !!!', 'background:yellow');
     return (rowIndex: number, colIndex: number, rowTypes, colTypes) => {
-      // return getItemStyle(rowIndex, colIndex);
       const key = rowIndex + '_' + colIndex;
       if (!cached.current[key]) {
         const { style, isFiller, rowIndex: _rowIndex, columnIndex: _colIndex } = getItemStyle(rowIndex, colIndex);

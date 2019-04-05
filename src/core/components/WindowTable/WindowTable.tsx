@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Fragment, FunctionComponent, useEffect, useMemo, SyntheticEvent, useState, useRef } from 'react';
+import { css } from 'emotion';
 import { useCachedItem, useGuidelines, useHelpers, useOffsetSize, useScrollbarSize, useSections } from '../../hooks';
 import { ItemType, ScrollDirection } from '../../hooks/useHelpers';
 
@@ -29,6 +30,8 @@ type WindowTableProps = {
   minVisibleScrollViewWidth: number;
   minVisibleScrollViewHeight: number;
 
+  containerStyle?: any;
+
   // maxScrollY?: number
   // maxScrollX?: number
 
@@ -39,6 +42,88 @@ type WindowTableProps = {
   // containerStyle?: string;
   // guidelineStyle?: Function;
 };
+
+function useContainerStyle(style) {
+  const hashed = JSON.stringify(style);
+  const [{ borderTopWidth, borderLeftWidth, borderRightWidth, borderBottomWidth }, setBorderStyle] = useState({
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+  });
+
+  const className = useMemo(() => {
+    if (style && typeof style === 'object') {
+      return css(style);
+    }
+    return '';
+  }, [hashed]);
+
+  const timer = useRef<number>();
+  useEffect(() => {
+    if (!className) {
+      return;
+    }
+
+    let scrollDiv;
+    scrollDiv = document.createElement('div');
+    scrollDiv.className =
+      css({
+        position: 'absolute',
+        top: -9999,
+        width: 100,
+        height: 100,
+      }) +
+      ' ' +
+      className;
+    document.body.appendChild(scrollDiv);
+    function sizeCheck(doNotRemove) {
+      timer.current && cancelAnimationFrame(timer.current);
+      if (!scrollDiv) {
+        return;
+      }
+
+      const computed = window.getComputedStyle(scrollDiv);
+      const borderTopWidth = parseInt(computed.borderTopWidth, 10);
+      console.log('>', computed.borderTopWidth);
+      console.log('>', borderTopWidth);
+      if (!isNaN(borderTopWidth)) {
+        const borderLeftWidth = parseInt(computed.borderLeftWidth, 10) || 0;
+        const borderRightWidth = parseInt(computed.borderRightWidth, 10) || 0;
+        const borderBottomWidth = parseInt(computed.borderBottomWidth, 10) || 0;
+        if (!doNotRemove) {
+          document.body.removeChild(scrollDiv);
+          scrollDiv = null;
+        }
+        setBorderStyle({
+          borderTopWidth,
+          borderLeftWidth,
+          borderRightWidth,
+          borderBottomWidth,
+        });
+        return;
+      }
+
+      timer.current = requestAnimationFrame(sizeCheck);
+    }
+    // sizeCheck(true);
+    sizeCheck(true);
+    setTimeout(sizeCheck);
+
+    return () => {
+      timer.current && cancelAnimationFrame(timer.current);
+      scrollDiv && document.body.removeChild(scrollDiv);
+    };
+  }, [className]);
+
+  return {
+    className,
+    borderTopWidth,
+    borderLeftWidth,
+    borderRightWidth,
+    borderBottomWidth,
+  };
+}
 
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   const [{ scrollTop, scrollLeft, verticalScrollDirection, horizontalScrollDirection }, setScroll] = useState({
@@ -57,8 +142,28 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     });
   };
 
+  const {
+    className: containerStyle,
+    borderTopWidth,
+    borderLeftWidth,
+    borderRightWidth,
+    borderBottomWidth,
+  } = useContainerStyle(props.containerStyle);
+
+  console.log({
+    borderTopWidth,
+    borderLeftWidth,
+    borderRightWidth,
+    borderBottomWidth,
+  });
+
   const container = useRef<HTMLDivElement>(null);
-  const [_offsetWidth, _offsetHeight] = useOffsetSize(props, container);
+  const [parentWidth, parentHeight, _offsetWidth, _offsetHeight] = useOffsetSize(props, container, {
+    borderTopWidth,
+    borderLeftWidth,
+    borderRightWidth,
+    borderBottomWidth,
+  });
 
   const [scrollbarWidth, scrollbarHeight] = useScrollbarSize();
   const { columnCount, columnWidth, rowCount, rowHeight } = props;
@@ -126,7 +231,15 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   // console.log(columnMetadata);
 
   return (
-    <div ref={container} className={styles.container} style={{ height: offsetHeight }}>
+    <div ref={container} className={containerStyle + ' ' + styles.container} style={{ height: parentHeight }}>
+      {/* <pre>
+        {JSON.stringify({
+          borderTopWidth,
+          borderLeftWidth,
+          borderRightWidth,
+          borderBottomWidth,
+        })}
+      </pre> */}
       {/* <pre>
         {JSON.stringify({
           rowStartIndex,

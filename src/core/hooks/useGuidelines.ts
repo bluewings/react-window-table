@@ -2,22 +2,10 @@ import { useMemo } from 'react';
 
 function useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight) {
   return useMemo(() => {
-    console.log({
-      rowMetadata,
-      columnMetadata,
-    });
-
     const top = rowMetadata.pre.count && rowMetadata.pre.size;
     const left = columnMetadata.pre.count && columnMetadata.pre.size;
     const bottom = rowMetadata.post.count && rowMetadata.post.size;
     const right = columnMetadata.post.count && columnMetadata.post.size;
-
-    console.log({
-      top,
-      left,
-      right,
-      bottom,
-    });
 
     const lines = [
       top && {
@@ -38,8 +26,6 @@ function useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight) {
       },
     ].filter((e) => e);
     return lines;
-
-    // console.log(lines)
   }, [rowMetadata, columnMetadata, clientWidth, clientHeight]);
 }
 

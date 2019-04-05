@@ -9,10 +9,18 @@ type ElementRef = MutableRefObject<HTMLDivElement | null>;
 
 const DEFAULT_HEIGHT = 400;
 
-function useOffsetSize(props: SizeProps, container: ElementRef) {
+function useOffsetSize(
+  props: SizeProps,
+  container: ElementRef,
+  { borderTopWidth, borderLeftWidth, borderRightWidth, borderBottomWidth },
+) {
   const { width, height } = props;
+  const [parentWidth, setParentWidth] = useState(typeof width === 'number' ? width : 0);
   const [offsetWidth, setOffsetWidth] = useState(typeof width === 'number' ? width : 0);
-  let offsetHeight = typeof height === 'number' ? height : DEFAULT_HEIGHT;
+  let parentHeight = typeof height === 'number' ? height : DEFAULT_HEIGHT;
+  let offsetHeight = parentHeight - borderTopWidth - borderBottomWidth;
+
+  // offsetHeight = offset
 
   const timer = useRef<number>();
   useEffect(() => {
@@ -23,8 +31,13 @@ function useOffsetSize(props: SizeProps, container: ElementRef) {
       timer.current && cancelAnimationFrame(timer.current);
       if (container.current && container.current.parentElement) {
         const rect = container.current.parentElement.getBoundingClientRect();
-        if (offsetWidth !== rect.width) {
-          setOffsetWidth(rect.width);
+        const _width = rect.width - borderLeftWidth - borderRightWidth;
+        // const _width = rect.width;
+
+        if (parentWidth !== rect.width || offsetWidth !== _width) {
+          // console.log(rect.width, borderLeftWidth, borderRightWidth);
+          setParentWidth(rect.width);
+          setOffsetWidth(_width);
         }
       }
       timer.current = requestAnimationFrame(checkSize);
@@ -33,8 +46,17 @@ function useOffsetSize(props: SizeProps, container: ElementRef) {
     return () => {
       timer.current && cancelAnimationFrame(timer.current);
     };
-  }, [width, offsetWidth]);
-  return [offsetWidth, offsetHeight];
+  }, [width, offsetWidth, borderLeftWidth, borderRightWidth]);
+  // }, [width, offsetWidth]);
+  return [
+    parentWidth,
+    parentHeight,
+    offsetWidth,
+    offsetHeight,
+    // borderTopWidth,
+    // borderLeftWidth,
+    // borderRightWidth,
+  ];
 }
 
 export default useOffsetSize;

@@ -43,17 +43,30 @@ function useRangeHelper({
   getSize,
 }) {
   const helper2 = useMemo(() => {
+    // console.log({
+    //   fixedTopCount,
+    //   fixedBottomCount,
+    //   fixedLeftCount,
+    //   fixedRightCount,
+    //   contentWidth,
+    //   contentHeight,
+    //   getItemCount,
+    //   getItemMetadata,
+    //   getSize,
+    // }
+
+    // )
     // binary search
     const findNearestItem = (itemType: ItemType, offset: number) => {
       let low = 0;
       let high = getItemCount(itemType) - 1;
 
-      if (itemType === ItemType.COLUMN) {
-        console.log({
-          low,
-          high,
-        });
-      }
+      // if (itemType === ItemType.COLUMN) {
+      //   console.log({
+      //     low,
+      //     high,
+      //   });
+      // }
       while (low <= high) {
         const middle = low + Math.floor((high - low) / 2);
         const currentOffset = getItemMetadata(itemType, middle).offset_;
@@ -65,16 +78,16 @@ function useRangeHelper({
           high = middle - 1;
         }
       }
-      console.log(low);
+      // console.log(low);
       return low > 0 ? low - 1 : 0;
     };
 
     const getStartIndex = (itemType: ItemType, offset: number) => {
       const itemIndex = itemType === ItemType.ROW ? fixedTopCount : fixedLeftCount;
       const itemMetadata = getItemMetadata(itemType, itemIndex);
-      if (itemType === ItemType.COLUMN) {
-        console.log(itemIndex, offset, itemMetadata.offset);
-      }
+      // if (itemType === ItemType.COLUMN) {
+      //   console.log(itemIndex, offset, itemMetadata.offset);
+      // }
 
       return findNearestItem(itemType, offset + itemMetadata.offset);
     };
@@ -130,7 +143,6 @@ function useRangeHelper({
     return {
       getStartIndex,
       getStopIndex,
-      // getOverscanCount,
     };
   }, [
     fixedTopCount,
@@ -141,9 +153,9 @@ function useRangeHelper({
     contentHeight,
     getItemCount,
     getItemMetadata,
-
     getSize,
   ]);
+
   return helper2;
 }
 
@@ -179,6 +191,7 @@ function useHelpers(props: HelpersProps) {
     let offsetHeight = _offsetHeight;
 
     let contentWidth = offsetWidth;
+
     let contentHeight = offsetHeight;
     const scrollbarX = contentWidth < scrollWidth;
     let scrollbarY = contentHeight < scrollHeight;
@@ -200,7 +213,7 @@ function useHelpers(props: HelpersProps) {
 
       offsetWidth = scrollWidth + (scrollbarY ? scrollbarWidth : 0);
     }
-    console.log(scrollHeight, contentHeight);
+    // console.log(scrollHeight, contentHeight);
     if (fillerRow === 'shrink' && scrollHeight < contentHeight) {
       contentHeight = scrollHeight;
 
@@ -283,9 +296,6 @@ function useHelpers(props: HelpersProps) {
   const getRange = useMemo(() => {
     return (itemType: ItemType, offset: number, scrollDirection: ScrollDirection) => {
       const startIndex = getStartIndex(itemType, offset);
-      if (itemType === ItemType.COLUMN) {
-        console.log(startIndex);
-      }
 
       const stopIndex = getStopIndex(itemType, startIndex, offset);
       // const scrollDirection === ScrollDirection.FORWARD

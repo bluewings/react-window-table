@@ -20,14 +20,21 @@ type HelpersProps = {
   columnWidth: number | Function;
   rowCount: number;
   rowHeight: number | Function;
-  fixedTopCount: number;
-  fixedBottomCount: number;
-  fixedLeftCount: number;
-  fixedRightCount: number;
+
+  fixedTopCount?: number;
+  fixedLeftCount?: number;
+  fixedRightCount?: number;
+  fixedBottomCount?: number;
+  overscanCount?: number;
+
   innerWidth: number;
   innerHeight: number;
   scrollbarWidth: number;
   scrollbarHeight: number;
+  fillerColumn?: string;
+  fillerRow?: string;
+  minVisibleScrollViewWidth?: number;
+  minVisibleScrollViewHeight?: number;
 };
 
 function useRangeHelper({
@@ -159,26 +166,51 @@ function useRangeHelper({
   return helper2;
 }
 
+function useDefaultProps(props: any) {
+  return useMemo(() => {
+    return {
+      fixedTopCount: ~~props.fixedTopCount,
+      fixedLeftCount: ~~props.fixedLeftCount,
+      fixedRightCount: ~~props.fixedRightCount,
+      fixedBottomCount: ~~props.fixedBottomCount,
+      minVisibleScrollViewWidth: ~~props.minVisibleScrollViewWidth,
+      minVisibleScrollViewHeight: ~~props.minVisibleScrollViewHeight,
+      overscanCount: ~~props.overscanCount,
+    };
+  }, [
+    props.fixedTopCount,
+    props.fixedLeftCount,
+    props.fixedRightCount,
+    props.fixedBottomCount,
+    props.minVisibleScrollViewWidth,
+    props.minVisibleScrollViewHeight,
+    props.overscanCount,
+  ]);
+}
+
 function useHelpers(props: HelpersProps) {
   const {
     columnCount,
     columnWidth,
     rowCount,
     rowHeight,
-    fixedTopCount,
-    fixedBottomCount,
-    fixedLeftCount,
-    fixedRightCount,
     innerWidth: _innerWidth,
     innerHeight: _innerHeight,
     scrollbarWidth,
     scrollbarHeight,
-    overscanCount,
     fillerColumn,
     fillerRow,
+  } = props;
+
+  const {
+    fixedTopCount,
+    fixedLeftCount,
+    fixedRightCount,
+    fixedBottomCount,
     minVisibleScrollViewWidth,
     minVisibleScrollViewHeight,
-  } = props;
+    overscanCount,
+  } = useDefaultProps(props);
 
   let _columnMetadata = useMetadata(columnCount, columnWidth, fixedLeftCount, fixedRightCount);
   let _rowMetadata = useMetadata(rowCount, rowHeight, fixedTopCount, fixedBottomCount);

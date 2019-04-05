@@ -18,7 +18,7 @@ import { WindowTable } from '../src/core';
 
 <Playground>
   {() => {
-    const [colWidth, setColWidth] = useState(50);
+    const [colWidth, setColWidth] = useState(100);
 
     {/* setTimeout(() => {
 setColWidth(100);
@@ -26,27 +26,31 @@ setColWidth(100);
 
 return (
   <WindowTable
-    width={600}
-    height={500}
+    
+    height={300}
     rowCount={100}
-    rowHeight={30}
+    rowHeight={37}
     columnCount={100}
     columnWidth={colWidth}
     fixedTopCount={1}
-    fixedLeftCount={2}
-    fixedRightCount={3}
-    fixedBottomCount={4}
+    fixedLeftCount={1}
+    fixedRightCount={0}
+    fixedBottomCount={0}
     minVisibleScrollViewWidth={100}
     containerStyle={{
-      border: "5px solid red",
-      borderRightWidth: "100px",
-      borderBottom: "20px solid red",
+      border: "1px solid #e8e8e8",
+      borderLeft: 'none',
+      '.cell': {
+        
+        fontSize: 12,
+        padding: 8
+      }
     }}
     
     
   >
   {({ columnIndex, rowIndex, style, className }) => (
-    <div className={className} style={style}>
+    <div className={'cell ' + className} style={style}>
       {rowIndex} , {columnIndex}
     </div>
   )}

@@ -61,32 +61,46 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   };
   const containerInfo = useContainerInfo(props);
 
-  console.log(containerInfo);
+  // console.log(containerInfo);
 
   // const { offsetWidth, offsetHeight } = container;
 
   const [scrollbarWidth, scrollbarHeight] = useScrollbarSize();
-  const { columnCount, columnWidth, rowCount, rowHeight } = props;
-  let { fixedTopCount = 0, fixedBottomCount = 0, fixedLeftCount = 0, fixedRightCount = 0 } = props;
 
-  const helpers = useHelpers({
+  const {
     columnCount,
     columnWidth,
     rowCount,
     rowHeight,
-    fixedTopCount,
-    fixedBottomCount,
-    fixedLeftCount,
-    fixedRightCount,
+    overscanCount,
+    fillerColumn,
+    fillerRow,
+    minVisibleScrollViewWidth,
+    minVisibleScrollViewHeight,
+  } = props;
+  let { fixedTopCount = 0, fixedBottomCount = 0, fixedLeftCount = 0, fixedRightCount = 0 } = props;
+
+  const helpers = useHelpers({
+    ...props,
+    // columnCount,
+    // columnWidth,
+    // rowCount,
+    // rowHeight,
+    // fixedTopCount,
+    // fixedBottomCount,
+    // fixedLeftCount,
+    // fixedRightCount,
+
+    // overscanCount,
+    // fillerColumn,
+    // fillerRow,
+    // minVisibleScrollViewWidth,
+    // minVisibleScrollViewHeight,
+
     innerWidth: containerInfo.innerWidth,
     innerHeight: containerInfo.innerHeight,
     scrollbarWidth,
     scrollbarHeight,
-    overscanCount: props.overscanCount,
-    fillerColumn: props.fillerColumn,
-    fillerRow: props.fillerRow,
-    minVisibleScrollViewWidth: props.minVisibleScrollViewWidth,
-    minVisibleScrollViewHeight: props.minVisibleScrollViewHeight,
   });
 
   const {
@@ -126,39 +140,12 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     getCachedStyle,
   );
 
-  const guidelines = useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight);
+  // const guidelines = useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight);
 
   // console.log(columnMetadata);
 
   return (
     <div ref={containerInfo.ref} className={containerInfo.className} style={{ width: containerInfo.offsetWidth }}>
-      {/* <pre>
-        {JSON.stringify({
-          borderTopWidth,
-          borderLeftWidth,
-          borderRightWidth,
-          borderBottomWidth,
-        })}
-      </pre> */}
-      {/* <pre>
-        {JSON.stringify({
-          rowStartIndex,
-          rowStopIndex,
-          columnStartIndex,
-          columnStopIndex,
-        })}
-      </pre>
-      <pre>
-        {JSON.stringify({
-          fixedBottomCount,
-          fixedRightCount
-        })}
-      </pre> */}
-      {/* <div className={styles.guidelines} style={{ width: clientWidth, height: clientHeight }}>
-        {guidelines.map((guideline) => {
-          return <div className={guideline.className} style={guideline.style} />;
-        })}
-      </div> */}
       <div style={{ width: innerWidth, height: innerHeight }} className={styles.root} onScroll={handleScroll}>
         <div style={{ width: scrollWidth, height: scrollHeight }}>
           {sections.map((section) => (
@@ -174,11 +161,6 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           <div className={styles.center}>{center.items}</div>
         </div>
       </div>
-
-      {/* <h4>
-        {horizontalScrollDirection}, {verticalScrollDirection},{scrollLeft}, {scrollTop}, {clientWidth},{' '}
-        {clientHeight}
-      </h4> */}
     </div>
   );
 };

@@ -9,6 +9,15 @@ type StyleProps = {
   containerStyle?: object;
 };
 
+type ContainerInfo = {
+  ref: HTMLElementRef;
+  className: string;
+  offsetWidth: number;
+  offsetHeight: number;
+  innerWidth: number;
+  innerHeight: number;
+};
+
 const DEFAULT_HEIGHT = 400;
 
 function useContainerStyle(objectStyles?: StringAnyMap): [string, number, number, number, number] {
@@ -27,7 +36,7 @@ function useContainerStyle(objectStyles?: StringAnyMap): [string, number, number
   return [className, borderTopWidth, borderLeftWidth, borderRightWidth, borderBottomWidth];
 }
 
-function useContainerInfo({ width, height, containerStyle }: StyleProps) {
+function useContainerInfo({ width, height, containerStyle }: StyleProps): ContainerInfo {
   const ref = useRef<HTMLElement>(null);
 
   const [containerClassName, borderTop, borderLeft, borderRight, borderBottom] = useContainerStyle(containerStyle);

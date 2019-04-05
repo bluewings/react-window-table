@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Fragment, FunctionComponent, useEffect, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import { css } from 'emotion';
-import { useCachedItem, useGuidelines, useHelpers, useOffsetSize, useScrollbarSize, useSections } from '../../hooks';
+import { useCachedItem, useGuidelines, useHelpers, useContainerInfo, useScrollbarSize, useSections } from '../../hooks';
 import { ItemType, ScrollDirection } from '../../hooks/useHelpers';
 
 import styles from './WindowTable.module.scss';
@@ -59,11 +59,11 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       horizontalScrollDirection: scrollLeft > nextScrollLeft ? ScrollDirection.BACKWARD : ScrollDirection.FORWARD,
     });
   };
-  const container = useOffsetSize(props);
+  const containerInfo = useContainerInfo(props);
 
-  console.log(container);
+  console.log(containerInfo);
 
-  const { offsetWidth, offsetHeight } = container;
+  // const { offsetWidth, offsetHeight } = container;
 
   const [scrollbarWidth, scrollbarHeight] = useScrollbarSize();
   const { columnCount, columnWidth, rowCount, rowHeight } = props;
@@ -78,8 +78,8 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     fixedBottomCount,
     fixedLeftCount,
     fixedRightCount,
-    innerWidth: container.innerWidth,
-    innerHeight: container.innerHeight,
+    innerWidth: containerInfo.innerWidth,
+    innerHeight: containerInfo.innerHeight,
     scrollbarWidth,
     scrollbarHeight,
     overscanCount: props.overscanCount,
@@ -131,7 +131,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   // console.log(columnMetadata);
 
   return (
-    <div ref={container.ref} className={container.className} style={{ width: container.offsetWidth }}>
+    <div ref={containerInfo.ref} className={containerInfo.className} style={{ width: containerInfo.offsetWidth }}>
       {/* <pre>
         {JSON.stringify({
           borderTopWidth,

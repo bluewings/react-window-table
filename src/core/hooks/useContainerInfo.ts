@@ -27,7 +27,7 @@ function useContainerStyle(objectStyles?: StringAnyMap): [string, number, number
   return [className, borderTopWidth, borderLeftWidth, borderRightWidth, borderBottomWidth];
 }
 
-function useOffsetSize({ width, height, containerStyle }: StyleProps) {
+function useContainerInfo({ width, height, containerStyle }: StyleProps) {
   const ref = useRef<HTMLElement>(null);
 
   const [containerClassName, borderTop, borderLeft, borderRight, borderBottom] = useContainerStyle(containerStyle);
@@ -51,4 +51,4 @@ function useOffsetSize({ width, height, containerStyle }: StyleProps) {
   return { ref, className, offsetWidth, offsetHeight, innerWidth, innerHeight };
 }
 
-export default useOffsetSize;
+export default useContainerInfo;

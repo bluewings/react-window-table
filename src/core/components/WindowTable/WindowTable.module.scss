@@ -96,11 +96,71 @@
   pointer-events: none;
   > div {
     position: absolute;
-    border: 5px solid blue;
+    // border: 5px solid blue;
+    box-sizing: border-box;
+
+    &:global(.guideline-top) {
+      height: 5px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+    &:global(.guideline-bottom) {
+      height: 5px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+    &:global(.guideline-left) {
+      width: 5px;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+    &:global(.guideline-right) {
+      width: 5px;
+      background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    }
   }
 }
-.guideline {
-  position: sticky;
-  float: left;
-  border: 5px solid blue;
+
+:global(.scroll-top) {
+  .guidelines {
+    > div {
+      &:global(.guideline-top) {
+        // height: 0;
+        background: none;
+      }
+    }
+  }
 }
+:global(.scroll-bottom) {
+  .guidelines {
+    > div {
+      &:global(.guideline-bottom) {
+        // height: 0;
+        background: none;
+      }
+    }
+  }
+}
+:global(.scroll-left) {
+  .guidelines {
+    > div {
+      &:global(.guideline-left) {
+        // height: 0;
+        background: none;
+      }
+    }
+  }
+}
+:global(.scroll-right) {
+  .guidelines {
+    > div {
+      &:global(.guideline-right) {
+        // height: 0;
+        background: none;
+      }
+    }
+  }
+}
+
+// .guideline {
+//   position: sticky;
+//   float: left;
+//   border: 5px solid blue;
+// }

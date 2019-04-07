@@ -17,7 +17,7 @@ const themeConfig = {
     ui: 'Roboto,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,sans-serif',
     mono: 'source-code-pro,Menlo,Monaco,Consolas,"Courier New",monospace',
   },
-  showPlaygroundEditor: true,
+  showPlaygroundEditor: false,
 };
 
 const htmlContext = {

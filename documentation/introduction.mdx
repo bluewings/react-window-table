@@ -17,6 +17,98 @@ import { WindowTable } from '../src/core';
 ## Basic usage
 
 <Playground>
+<WindowTable
+  height={300}
+  rowCount={30}
+  rowHeight={37}
+  columnCount={30}
+  columnWidth={70}
+>
+{({ rowIndex, columnIndex, className, style }) => (
+  <div className={className} style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+</Playground>
+
+## Fixed rows / columns
+
+<Playground>
+<WindowTable
+  height={300}
+  rowCount={30}
+  rowHeight={37}
+  columnCount={30}
+  columnWidth={70}
+  fixedTopCount={1}
+  fixedLeftCount={1}
+>
+{({ rowIndex, columnIndex, className, style }) => (
+  <div className={className} style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+</Playground>
+
+
+## Guidelines
+
+<Playground>
+<WindowTable
+  height={300}
+  rowCount={30}
+  rowHeight={37}
+  columnCount={30}
+  columnWidth={70}
+  fixedTopCount={1}
+  fixedLeftCount={1}
+  guideline={true}
+>
+{({ rowIndex, columnIndex, className, style }) => (
+  <div className={className} style={style}>
+    {rowIndex} , {columnIndex}
+  </div>
+)}
+</WindowTable>
+</Playground>
+
+## Variable width / height
+
+<Playground>
+{() => {
+  const columnWidths = new Array(50)
+    .fill(true)
+    .map(() => 75 + Math.round(Math.random() * 50));
+  const rowHeights = new Array(50)
+    .fill(true)
+    .map(() => 25 + Math.round(Math.random() * 50));
+
+  return (
+    <WindowTable
+      height={300}
+      rowCount={rowHeights.length}
+      rowHeight={index => rowHeights[index]}
+      columnCount={columnWidths.length}
+      columnWidth={index => columnWidths[index]}
+      fixedTopCount={1}
+      fixedLeftCount={1}
+      guideline={true}
+    >
+    {({ rowIndex, columnIndex, className, style }) => (
+      <div className={className} style={style}>
+        {rowIndex} , {columnIndex}
+      </div>
+    )}
+    </WindowTable>
+  )
+}}
+</Playground>
+
+
+
+<Playground>
   {() => {
     const [colWidth, setColWidth] = useState(100);
 
@@ -26,17 +118,13 @@ setColWidth(100);
 
 return (
   <WindowTable
-    
-    height={300}
-    rowCount={100}
+    height={37 * 6}
+    rowCount={30}
     rowHeight={37}
-    columnCount={100}
+    columnCount={50}
     columnWidth={colWidth}
-    fixedTopCount={1}
-    fixedLeftCount={1}
-    fixedRightCount={1}
-    fixedBottomCount={1}
     minVisibleScrollViewWidth={100}
+    fillerColumn='append'
     containerStyle={{
       border: "1px solid #e8e8e8",
       borderLeft: 'none',
@@ -66,3 +154,13 @@ return (
   }}
 
 </Playground>
+
+
+
+
+
+## Guidelines
+
+
+
+## Themes

@@ -98,6 +98,8 @@
     position: absolute;
     // border: 5px solid blue;
     box-sizing: border-box;
+    opacity: 1;
+    transition: opacity 0.2s linear;
 
     &:global(.guideline-top) {
       height: 5px;
@@ -123,7 +125,7 @@
     > div {
       &:global(.guideline-top) {
         // height: 0;
-        background: none;
+        opacity: 0;
       }
     }
   }
@@ -133,7 +135,7 @@
     > div {
       &:global(.guideline-bottom) {
         // height: 0;
-        background: none;
+        opacity: 0;
       }
     }
   }
@@ -143,7 +145,8 @@
     > div {
       &:global(.guideline-left) {
         // height: 0;
-        background: none;
+        // background: none;
+        opacity: 0;
       }
     }
   }
@@ -153,7 +156,7 @@
     > div {
       &:global(.guideline-right) {
         // height: 0;
-        background: none;
+        opacity: 0;
       }
     }
   }

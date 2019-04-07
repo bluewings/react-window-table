@@ -31,6 +31,7 @@ type WindowTableProps = {
   minVisibleScrollViewHeight: number;
 
   containerStyle?: any;
+  guideline?: boolean;
 
   // maxScrollY?: number
   // maxScrollX?: number
@@ -121,8 +122,8 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     const classNames = [
       scrollTop === 0 && 'scroll-top',
       scrollLeft === 0 && 'scroll-left',
-      scrollTop === scrollHeight - clientHeight && 'scroll-bottom',
-      scrollLeft === scrollWidth - clientWidth && 'scroll-right',
+      scrollTop >= scrollHeight - clientHeight && 'scroll-bottom',
+      scrollLeft >= scrollWidth - clientWidth && 'scroll-right',
     ]
       .filter((e) => e)
       .join(' ');
@@ -153,11 +154,13 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           <div className={styles.center}>{center.items}</div>
         </div>
       </div>
-      <div className={styles.guidelines} style={{ width: clientWidth, height: clientHeight }}>
-        {guidelines.map((guideline) => {
-          return <div className={guideline.className} style={guideline.style} />;
-        })}
-      </div>
+      {props.guideline && (
+        <div className={styles.guidelines} style={{ width: clientWidth, height: clientHeight }}>
+          {guidelines.map((guideline) => {
+            return <div className={guideline.className} style={guideline.style} />;
+          })}
+        </div>
+      )}
     </div>
   );
 };

@@ -8,19 +8,19 @@ function useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight) {
     const right = columnMetadata.post.count && columnMetadata.post.size;
 
     const lines = [
-      top && {
+      {
         className: 'guideline-top',
         style: { width: clientWidth, top, left: 0 },
       },
-      bottom && {
+      {
         className: 'guideline-bottom',
         style: { width: clientWidth, bottom, left: 0 },
       },
-      left && {
+      {
         className: 'guideline-left',
         style: { height: clientHeight, top: 0, left },
       },
-      right && {
+      {
         className: 'guideline-right',
         style: { height: clientHeight, top: 0, right },
       },

@@ -17,19 +17,24 @@ import { WindowTable } from '../src/core';
 ## Basic usage
 
 <Playground>
-<WindowTable
-  height={300}
-  rowCount={30}
-  rowHeight={37}
-  columnCount={30}
-  columnWidth={70}
->
-{({ rowIndex, columnIndex, className, style }) => (
-  <div className={className} style={style}>
-    {rowIndex} , {columnIndex}
-  </div>
-)}
-</WindowTable>
+{() => {
+  const Cell = ({ rowIndex, columnIndex, className, style }) => (
+      <div className={className} style={style}>
+        {rowIndex} , {columnIndex}
+      </div>
+    );
+  return (
+    <WindowTable
+      height={300}
+      rowCount={30}
+      rowHeight={37}
+      columnCount={30}
+      columnWidth={70}
+    >
+    {Cell}
+    </WindowTable>
+  );
+}}
 </Playground>
 
 ## Fixed rows / columns
@@ -105,6 +110,11 @@ import { WindowTable } from '../src/core';
   )
 }}
 </Playground>
+
+## Overscan
+
+
+## Classnames
 
 
 

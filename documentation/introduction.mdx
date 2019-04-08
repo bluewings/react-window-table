@@ -4,7 +4,8 @@ route: /
 ---
 
 import { useState } from 'react';
-import { Playground, Props } from 'docz';
+import { Props } from 'docz';
+import { Playground } from './resources';
 import Greeting from '../src/core/Greeting';
 import { WindowTable } from '../src/core';
 
@@ -27,9 +28,9 @@ import { WindowTable } from '../src/core';
     <WindowTable
       height={300}
       rowCount={30}
-      rowHeight={37}
+      rowHeight={40}
       columnCount={30}
-      columnWidth={70}
+      columnWidth={100}
     >
     {Cell}
     </WindowTable>
@@ -43,9 +44,9 @@ import { WindowTable } from '../src/core';
 <WindowTable
   height={300}
   rowCount={30}
-  rowHeight={37}
+  rowHeight={40}
   columnCount={30}
-  columnWidth={70}
+  columnWidth={100}
   fixedTopCount={1}
   fixedLeftCount={1}
 >
@@ -64,9 +65,9 @@ import { WindowTable } from '../src/core';
 <WindowTable
   height={300}
   rowCount={30}
-  rowHeight={37}
+  rowHeight={40}
   columnCount={30}
-  columnWidth={70}
+  columnWidth={100}
   fixedTopCount={1}
   fixedLeftCount={1}
   guideline={true}
@@ -130,7 +131,7 @@ return (
   <WindowTable
     height={37 * 6}
     rowCount={30}
-    rowHeight={37}
+    rowHeight={40}
     columnCount={50}
     columnWidth={colWidth}
     minVisibleScrollViewWidth={100}

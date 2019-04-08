@@ -22,4 +22,4 @@ declare interface NumberAnyMap extends NumberTMap<any> {}
 declare interface StringFunctionMap extends StringTMap<Function> {}
 declare interface NumberFunctionMap extends NumberTMap<Function> {}
 
-declare type ElementRef = MutableRefObject<HTMLElement | null>;
+declare type HTMLElementRef = MutableRefObject<HTMLElement | null>;

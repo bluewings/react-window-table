@@ -52,13 +52,21 @@ function useCachedItem(props) {
     return () => null;
   }, [children]);
 
+  // const getClassName = (rowIndex, colIndex)
+
   const getCachedStyle = useMemo(() => {
     return (rowIndex: number, colIndex: number, rowTypes, colTypes) => {
       const key = rowIndex + '_' + colIndex;
       if (!cached.current[key]) {
         const { style, isFiller, rowIndex: _rowIndex, columnIndex: _colIndex } = getItemStyle(rowIndex, colIndex);
         const key = rowIndex + '_' + colIndex;
-        const className = [...rowTypes.map((e) => 'row-' + e), ...colTypes.map((e) => 'col-' + e)].join(' ');
+        const className = [
+          'cell',
+          ...rowTypes.map((e) => 'row-' + e),
+          ...colTypes.map((e) => 'col-' + e),
+          rowIndex % 2 == 0 ? 'row-even' : 'row-odd',
+          colIndex % 2 == 0 ? 'col-even' : 'col-odd',
+        ].join(' ');
         cached.current[key] = {
           className,
           content: getItemContent(_rowIndex, _colIndex, key, className, style, isFiller),

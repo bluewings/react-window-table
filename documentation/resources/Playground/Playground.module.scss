@@ -1,0 +1,15 @@
+.root {
+  font-size: 12px;
+
+  :global(.cell) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+  }
+
+  :global(.row-odd):global(.col-even),
+  :global(.row-even):global(.col-odd) {
+    background-color: #eee;
+  }
+}

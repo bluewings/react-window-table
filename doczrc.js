@@ -1,4 +1,5 @@
 const { colors } = require('tailwindcss/defaultConfig.stub');
+const { css } = require('styled-components');
 const rules = require('./config/webpack.rules');
 
 const modifyBundlerConfig = (config) => {

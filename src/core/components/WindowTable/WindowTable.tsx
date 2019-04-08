@@ -142,7 +142,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       className={containerInfo.className + ' ' + scrollClassName}
       style={{ width: containerInfo.offsetWidth }}
     >
-      <pre>{JSON.stringify({ scrollTop, scrollLeft, clientHeight, scrollHeight })}</pre>
+      {/* <pre>{JSON.stringify({ scrollTop, scrollLeft, clientHeight, scrollHeight })}</pre> */}
       <div style={{ width: innerWidth, height: innerHeight }} className={styles.root} onScroll={handleScroll}>
         <div style={{ width: scrollWidth, height: scrollHeight }}>
           {sections.map((section) => (

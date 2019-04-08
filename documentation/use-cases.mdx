@@ -4,7 +4,8 @@ name: use cases
 
 import { useState } from 'react';
 import { Playground, Props } from 'docz';
-import { WindowTableCore } from '../src/core';
+import { WindowTable } from '../src/core';
+import { columns } from './resources/data/fake-users.js'
 
 # Use Cases
 
@@ -12,8 +13,9 @@ import { WindowTableCore } from '../src/core';
 
 ### shrink
 
-<WindowTableCore
+<WindowTable
   height={300}
+  columns={columns}
   rowCount={100}
   rowHeight={30}
   columnCount={10}
@@ -30,4 +32,4 @@ import { WindowTableCore } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTableCore>
+</WindowTable>

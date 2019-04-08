@@ -53,7 +53,13 @@ type WindowTableProps = {
 };
 
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
-  return <WindowTableCore {...props} />;
+  const { columns: _columns } = props;
+  const columns = (_columns || [])
+    .filter((column) => column && (typeof column === 'string' || typeof column === 'object'))
+    .map((column) => (typeof column === 'string' ? { name: column } : { ...column }))
+    .filter((column) => column.name);
+  return <pre>{JSON.stringify(columns, null, 2)}</pre>;
+  // return <WindowTableCore {...props} />;
 };
 
 export default WindowTable;

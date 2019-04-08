@@ -2,7 +2,7 @@
 import React from 'react';
 import faker from 'faker';
 
-const generate = index => ({
+const generate = (index) => ({
   // id: index,
   avatar: faker.image.avatar(),
   firstName: faker.name.firstName(),
@@ -25,7 +25,7 @@ const columnDef = {
   },
   avatar: {
     width: 50,
-    render: src => <img src={src} height={50} alt="avatar" />,
+    render: (src) => <img src={src} height={50} alt="avatar" />,
   },
 };
 

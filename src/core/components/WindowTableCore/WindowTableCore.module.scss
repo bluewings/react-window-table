@@ -1,0 +1,184 @@
+.container {
+  position: relative;
+  box-sizing: border-box;
+  // box-shadow: black;pa
+  // padding: 50px;
+  // border-color:blue !important;
+}
+
+.root {
+  position: absolute;
+
+  top: 0;
+  // top: 50px;
+  left: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  will-change: transform;
+}
+
+// .odd {
+//   background: #eee;
+// }
+
+// .even {
+//   background: #fff;
+// }
+
+// .center {
+//   >div {
+//     background-color: rgba(255, 0, 0, 0.1);
+//     background: #fff;
+//   }
+// }
+
+.center,
+.sticky {
+  float: left;
+
+  > div {
+    // background-color: rgba(255, 0, 0, 0.1);
+    // border: 1px solid black;
+    box-sizing: border-box;
+    // border-left: 1px solid black;
+    // border-bottom: 1px solid #e8e8e8;
+    // 1px solid #e8e8e8
+    // background: #fff;
+  }
+}
+
+.sticky {
+  position: sticky;
+  width: 0;
+  z-index: 1;
+
+  // pointer-events: none;
+  &:global(.top-left),
+  &:global(.top-right),
+  &:global(.bottom-left),
+  &:global(.bottom-right) {
+    > div {
+      // background-color: skyblue;
+      // background-color: rgba(0, 0, 0, 0.1);
+      // background: #fff;
+    }
+  }
+
+  &:global(.top) {
+    > div {
+      // background-color: lightyellow;
+      // background-color: rgba(0, 0, 0, 0.1);
+      // background: #fff;
+    }
+  }
+
+  &:global(.left) {
+    > div {
+      // background-color: lightgreen;
+      // background-color: rgba(0, 0, 0, 0.1);
+      // background: #fff;
+    }
+  }
+
+  &:global(.right) {
+    > div {
+      // background-color: lightblue;
+      // background-color: rgba(0, 0, 0, 0.1);
+      // background: #fff;
+    }
+  }
+
+  &:global(.bottom) {
+    > div {
+      // background-color: silver;
+      // background-color: rgba(0, 0, 0, 0.1);
+      // background: #fff;
+    }
+  }
+}
+
+.guidelines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+
+  > div {
+    position: absolute;
+    // border: 5px solid blue;
+    box-sizing: border-box;
+    opacity: 1;
+    transition: opacity 0.2s linear;
+
+    &:global(.guideline-top) {
+      height: 5px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    &:global(.guideline-bottom) {
+      height: 5px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    &:global(.guideline-left) {
+      width: 5px;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+
+    &:global(.guideline-right) {
+      width: 5px;
+      background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    }
+  }
+}
+
+:global(.scroll-top) {
+  .guidelines {
+    > div {
+      &:global(.guideline-top) {
+        // height: 0;
+        opacity: 0;
+      }
+    }
+  }
+}
+
+:global(.scroll-bottom) {
+  .guidelines {
+    > div {
+      &:global(.guideline-bottom) {
+        // height: 0;
+        opacity: 0;
+      }
+    }
+  }
+}
+
+:global(.scroll-left) {
+  .guidelines {
+    > div {
+      &:global(.guideline-left) {
+        // height: 0;
+        // background: none;
+        opacity: 0;
+      }
+    }
+  }
+}
+
+:global(.scroll-right) {
+  .guidelines {
+    > div {
+      &:global(.guideline-right) {
+        // height: 0;
+        opacity: 0;
+      }
+    }
+  }
+}
+
+// .guideline {
+//   position: sticky;
+//   float: left;
+//   border: 5px solid blue;
+// }

@@ -4,7 +4,7 @@ name: vertical scroll
 
 import { useState } from 'react';
 import { Playground, Props } from 'docz';
-import { WindowTable } from '../src/core';
+import { WindowTableCore } from '../src/core';
 
 # Use Cases
 
@@ -12,7 +12,7 @@ import { WindowTable } from '../src/core';
 
 ### shrink
 
-<WindowTable
+<WindowTableCore
   height={300}
   rowCount={5}
   rowHeight={30}
@@ -31,11 +31,11 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTableCore>
 
 <br/>
 
-<!--WindowTable
+<!--WindowTableCore
   height={300}
   rowCount={5}
   rowHeight={30}
@@ -54,11 +54,11 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTableCore>
 
 ### dummy 열 추가
 
-<!--WindowTable
+<!--WindowTableCore
   height={300}
   rowCount={100}
   rowHeight={30}
@@ -76,11 +76,11 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTableCore>
 
 ### 마지막 열의 너비를 늘임
 
-<WindowTable
+<WindowTableCore
   height={300}
   rowCount={5}
   rowHeight={30}
@@ -98,11 +98,11 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTableCore>
 
 ### 비워둠 none
 
-<WindowTable
+<WindowTableCore
   height={300}
   rowCount={100}
   rowHeight={30}
@@ -121,11 +121,11 @@ import { WindowTable } from '../src/core';
     {(rowIndex === -1 || columnIndex === -1) ? null : rowIndex + ' , ' + columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTableCore>
 
 ## scrollHeight < clientHeight
 
-<!--WindowTable
+<!--WindowTableCore
   height={200}
   rowCount={5}
   rowHeight={30}
@@ -142,11 +142,11 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable-->
+</WindowTableCore-->
 
 ## Basic usage
 
-<!--WindowTable
+<!--WindowTableCore
   height={300}
   rowCount={5}
   rowHeight={30}
@@ -163,5 +163,5 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable-->
+</WindowTableCore-->
 

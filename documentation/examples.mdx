@@ -5,7 +5,7 @@ name: Examples
 import { useState } from 'react';
 import { Props } from 'docz';
 import { Styled } from './resources';
-import { WindowTable } from '../src/core';
+import { WindowTableCore } from '../src/core';
 
 # Use Cases
 
@@ -14,7 +14,7 @@ import { WindowTable } from '../src/core';
 ### shrink
 
 <Styled>
-<WindowTable
+<WindowTableCore
   height={300}
   rowCount={100}
   rowHeight={30}
@@ -32,13 +32,13 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTableCore>
 </Styled>
 
 ### dummy 열 추가
 
 <Styled>
-<WindowTable
+<WindowTableCore
   height={300}
   rowCount={100}
   rowHeight={30}
@@ -56,14 +56,14 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTableCore>
 </Styled>
 
 ### 마지막 열의 너비를 늘임
 
 <!-- ### 마지막 열의 너비를 늘임 -->
 <Styled>
-<WindowTable
+<WindowTableCore
   height={300}
   rowCount={100}
   rowHeight={30}
@@ -81,14 +81,14 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTableCore>
 </Styled>
 
 ### 비워둠 none
 
 <!-- ### 마지막 열의 너비를 늘임 -->
 <Styled>
-<WindowTable
+<WindowTableCore
   height={300}
   rowCount={100}
   rowHeight={30}
@@ -106,12 +106,12 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTableCore>
 </Styled>
 
 ## scrollHeight < clientHeight
 
-<!--WindowTable
+<!--WindowTableCore
   height={200}
   rowCount={5}
   rowHeight={30}
@@ -128,11 +128,11 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable-->
+</WindowTableCore-->
 
 ## Basic usage
 
-<!--WindowTable
+<!--WindowTableCore
   height={300}
   rowCount={5}
   rowHeight={30}
@@ -149,5 +149,5 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable-->
+</WindowTableCore-->
 

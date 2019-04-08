@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { css } from 'emotion';
 import useComputedStyle from './useComputedStyle';
-import styles from '../components/WindowTable/WindowTable.module.scss';
+import styles from '../components/WindowTableCore/WindowTableCore.module.scss';
 
 type StyleProps = {
   width?: number;

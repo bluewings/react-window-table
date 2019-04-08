@@ -1,3 +1,6 @@
 import WindowTable from './components/WindowTable';
+import WindowTableCore from './components/WindowTableCore';
 
-export { WindowTable };
+WindowTable.Core = WindowTableCore;
+
+export { WindowTable, WindowTableCore };

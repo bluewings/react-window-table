@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Metadata, ItemPosition } from './useMetadata';
-import styles from '../components/WindowTable/WindowTable.module.scss';
+import styles from '../components/WindowTableCore/WindowTableCore.module.scss';
 
 function useItems(rowRange: number[], colRange: number[], getCachedStyle: Function) {
   const [rowStartIndex, rowStopIndex] = rowRange;

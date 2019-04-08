@@ -10,7 +10,7 @@ import { WindowTable } from '../src/core';
 
 # Introduction
 
-<Props of={WindowTable} />
+<Props of={WindowTable.Core} />
 
 [Currently, the Props component is not working.](https://github.com/pedronauck/docz/issues/717)
 
@@ -24,15 +24,15 @@ import { WindowTable } from '../src/core';
       </div>
     );
   return (
-    <WindowTable
-      height={295}ƒ
+    <WindowTable.Core
+      height={295}
       rowCount={100}
       rowHeight={40}
       columnCount={100}
       columnWidth={100}
     >
     {Cell}
-    </WindowTable>
+    </WindowTable.Core>
   );
 }}
 </Playground>
@@ -40,7 +40,7 @@ import { WindowTable } from '../src/core';
 ## Fixed rows / columns
 
 <Playground>
-<WindowTable
+<WindowTable.Core
   height={295}
   rowCount={100}
   rowHeight={40}
@@ -54,14 +54,14 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTable.Core>
 </Playground>
 
 
 ## Guidelines
 
 <Playground>
-<WindowTable
+<WindowTable.Core
   height={295}
   rowCount={100}
   rowHeight={40}
@@ -76,7 +76,7 @@ import { WindowTable } from '../src/core';
     {rowIndex} , {columnIndex}
   </div>
 )}
-</WindowTable>
+</WindowTable.Core>
 </Playground>
 
 ## Variable width / height
@@ -91,7 +91,7 @@ import { WindowTable } from '../src/core';
     .map(() => 25 + Math.round(Math.random() * 50));
 
   return (
-    <WindowTable
+    <WindowTable.Core
       height={295}
       rowCount={rowHeights.length}
       rowHeight={index => rowHeights[index]}
@@ -106,7 +106,7 @@ import { WindowTable } from '../src/core';
         {rowIndex} , {columnIndex}
       </div>
     )}
-    </WindowTable>
+    </WindowTable.Core>
   )
 }}
 </Playground>
@@ -127,7 +127,7 @@ setColWidth(100);
     }, 1000); */}
 
 return (
-  <WindowTable
+  <WindowTable.Core
     height={37 * 6}
     rowCount={100}
     rowHeight={40}
@@ -159,7 +159,7 @@ return (
       {rowIndex} , {columnIndex}
     </div>
   )}
-  </WindowTable>
+  </WindowTable.Core>
 )
   }}
 

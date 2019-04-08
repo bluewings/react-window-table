@@ -28,6 +28,15 @@ const rollupConfig = {
       clean: true,
       objectHashIgnoreUnknownHack: true,
       useTsconfigDeclarationDir: true,
+      tsconfigOverride: {
+        compilerOptions: {
+          declaration: true,
+          declarationDir: 'dist',
+          allowJs: false,
+          isolatedModules: false,
+        },
+        include: [entry],
+      },
     }),
     babel({
       runtimeHelpers: true,

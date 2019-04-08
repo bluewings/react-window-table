@@ -5,17 +5,19 @@ name: use cases
 import { useState } from 'react';
 import { Playground, Props } from 'docz';
 import { WindowTable } from '../src/core';
-import { columns } from './resources/data/fake-users.js'
+import { columns, rows } from './resources/data/fake-users.js'
+import { Styled } from './resources';
 
 # Use Cases
 
 ## contentWidth < sum(fixedWidth)
 
 ### shrink
-
+<Styled>
 <WindowTable
   height={300}
   columns={columns}
+  rows={rows}
   rowCount={100}
   rowHeight={30}
   columnCount={10}
@@ -33,3 +35,4 @@ import { columns } from './resources/data/fake-users.js'
   </div>
 )}
 </WindowTable>
+</Styled>

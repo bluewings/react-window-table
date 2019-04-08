@@ -70,14 +70,53 @@ function useColumns(props: any) {
   return [columns, columnWidth];
 }
 
-function useRows(props: any) {
-  return [];
+function useRows(props: any, columns) {
+  const rows = props.rows.map((row) => {
+    let _row;
+    if (Array.isArray(row)) {
+      _row = columns.reduce(
+        (prev, e, i) => ({
+          ...prev,
+          [e.name]: row[i],
+        }),
+        {},
+      );
+    } else {
+      _row = { ...row };
+    }
+
+    const data = {
+      org: { ..._row },
+      arr: columns.map((e) => {
+        let value = _row[e.name];
+        if (typeof e.getValue === 'function') {
+          value = e.getValue(value);
+        }
+        if (typeof value === 'string' || typeof value === 'number') {
+          return value;
+        }
+        return '-';
+      }),
+    };
+
+    return data;
+  });
+  return rows;
 }
 
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   const [columns, columnWidth] = useColumns(props);
-  // return <pre>{JSON.stringify(columns, null, 2)}</pre>;
-  return <WindowTableCore {...props} columnCount={columns.length} columnWidth={columnWidth} />;
+  const rows = useRows(props, columns);
+  // return <pre>{JSON.stringify(rows, null, 2)}</pre>;
+  return (
+    <WindowTableCore {...props} columnCount={columns.length} columnWidth={columnWidth}>
+      {({ rowIndex, columnIndex, className, style }) => (
+        <div className={className} style={style}>
+          {rows[rowIndex].arr[columnIndex]}
+        </div>
+      )}
+    </WindowTableCore>
+  );
 };
 
 export default WindowTable;

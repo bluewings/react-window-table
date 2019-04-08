@@ -1,6 +1,6 @@
 {
   "name": "react-window-table",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "dist/react-window-table.cjs.js",
   "module": "dist/react-window-table.es.js",
   "browser": "dist/react-window-table.amd.js",
@@ -8,7 +8,7 @@
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bluewings/boilerplate-cra-ts"
+    "url": "https://github.com/bluewings/react-window-table"
   },
   "dependencies": {
     "@types/jest": "^24.0.11",

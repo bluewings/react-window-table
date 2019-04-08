@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
+import { Metadata } from './useMetadata';
 
-function useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight) {
+function useGuidelines(rowMetadata: any, columnMetadata: any, clientWidth: any, clientHeight: any) {
   return useMemo(() => {
     const top = rowMetadata.pre.count && rowMetadata.pre.size;
     const left = columnMetadata.pre.count && columnMetadata.pre.size;

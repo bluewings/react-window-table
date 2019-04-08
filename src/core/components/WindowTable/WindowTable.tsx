@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { Fragment, FunctionComponent, useEffect, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import { css } from 'emotion';
 import { useCachedItem, useGuidelines, useHelpers, useContainerInfo, useScrollbarSize, useSections } from '../../hooks';
@@ -135,6 +136,8 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   // console.log(guidelines);
 
   // console.log(columnMetadata);
+
+  // return null;
 
   return (
     <div

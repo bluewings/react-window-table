@@ -48,6 +48,16 @@ function useRangeHelper({
   getItemMetadata,
 
   getSize,
+}: {
+  fixedTopCount: number;
+  fixedBottomCount: number;
+  fixedLeftCount: number;
+  fixedRightCount: number;
+  contentWidth: number;
+  contentHeight: number;
+  getItemCount: Function;
+  getItemMetadata: Function;
+  getSize: Function;
 }) {
   const helper2 = useMemo(() => {
     // console.log({
@@ -298,11 +308,17 @@ function useHelpers(props: HelpersProps) {
   }, [columnMetadata, rowMetadata]);
 
   const { getStartIndex, getStopIndex } = useRangeHelper({
+    // @ts-ignore
     fixedTopCount: rowMetadata.pre.count,
+    // @ts-ignore
     fixedBottomCount: rowMetadata.post.count,
+    // @ts-ignore
     fixedLeftCount: columnMetadata.pre.count,
+    // @ts-ignore
     fixedRightCount: columnMetadata.post.count,
+    // @ts-ignore
     contentWidth: columnMetadata.contentSize || clientWidth,
+    // @ts-ignore
     contentHeight: rowMetadata.contentSize || clientHeight,
     getItemCount,
     getItemMetadata,

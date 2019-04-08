@@ -31,6 +31,7 @@ const rollupConfig = {
     }),
     babel({
       runtimeHelpers: true,
+      presets: [ '@babel/preset-react'],
       // plugins: ['@babel/transform-runtime'],
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
     }),
@@ -72,42 +73,7 @@ const esConfig = {
   },
 };
 
-const amdPlugins = rollupConfig.plugins.map((plugin) =>
-  plugin.name !== 'babel'
-    ? plugin
-    : babel({
-        presets: ['@babel/preset-env'],
-        extensions: ['.js', '.jsx', '.ts', '.tsx', '.pug'],
-      }),
-);
-
-const amdConfig = {
-  ...rollupConfig,
-  output: {
-    file: pkg.browser,
-    format: 'amd',
-    sourcemap: true,
-    strict: false,
-  },
-  plugins: amdPlugins,
-  external: false,
-};
-
-const amdMinConfig = {
-  ...rollupConfig,
-  output: {
-    file: pkg.browser.replace(/\.js$/, '.min.js'),
-    format: 'amd',
-    sourcemap: true,
-    strict: false,
-  },
-  plugins: [...amdPlugins, uglify()],
-  external: false,
-};
-
 export default [
   cjsConfig,
   esConfig,
-  amdConfig,
-  amdMinConfig,
 ];

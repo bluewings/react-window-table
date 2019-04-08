@@ -1,4 +1,4 @@
 import WindowTable from './components/WindowTable';
-import Greeting from './Greeting';
+// import Greeting from './Greeting';
 
-export { Greeting, WindowTable };
+export { WindowTable };

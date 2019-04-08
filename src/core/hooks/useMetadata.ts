@@ -76,7 +76,7 @@ function useMetadata(count: number, size: number | Function, preCount: number, p
   }, [count, size]);
 }
 
-function useMetadataFixed(metadata, clientSize, fillerType, minVisibleScrollViewWidth) {
+function useMetadataFixed(metadata: Metadata, clientSize: number, fillerType: any, minVisibleScrollViewWidth: number) {
   const totalSize = metadata.total.size;
   const preSize = metadata.pre.size;
   const postSize = metadata.post.size;
@@ -100,11 +100,13 @@ function useMetadataFixed(metadata, clientSize, fillerType, minVisibleScrollView
   return useMemo(() => {
     if (mass >= 0) {
       metadata = {
-        meta: Object.keys(metadata.meta).reduce((accum, key) => {
+        meta: Object.keys(metadata.meta).reduce((accum, key: any) => {
           let value = metadata.meta[key];
           let _value = {
             ...value,
+            // @ts-ignore
             offset: value.offset_,
+            // @ts-ignore
             localOffset: value.offset_,
           };
           return {
@@ -112,12 +114,15 @@ function useMetadataFixed(metadata, clientSize, fillerType, minVisibleScrollView
             [key]: _value,
           };
         }, {}),
+        // @ts-ignore
         pre: { count: 0, size: 0, range: [0, 0] },
+        // @ts-ignore
         mid: {
           ...metadata.total,
 
           // range: [0, metadata.total.count],
         },
+        // @ts-ignore
         post: { count: 0, size: 0, range: [metadata.total.count, 0] },
         total: metadata.total,
       };
@@ -136,6 +141,7 @@ function useMetadataFixed(metadata, clientSize, fillerType, minVisibleScrollView
                 size: mass,
                 localOffset: metadata.total.size,
                 offset: metadata.total.size,
+                // @ts-ignore
                 filler: true,
               },
             },
@@ -146,6 +152,7 @@ function useMetadataFixed(metadata, clientSize, fillerType, minVisibleScrollView
             },
             mid: {
               ...metadata.total,
+              // @ts-ignore
               count: metadata.total.count + 1,
               range: [0, metadata.total.count + 1],
               size: contentSize,
@@ -171,6 +178,7 @@ function useMetadataFixed(metadata, clientSize, fillerType, minVisibleScrollView
               ...metadata.total,
               size: contentSize,
             },
+            // @ts-ignore
             mid: {
               ...metadata.total,
               size: contentSize,

@@ -2,7 +2,7 @@
 import { createElement, useMemo, useRef } from 'react';
 import { ItemType } from './useHelpers';
 
-function useCachedItem(props) {
+function useCachedItem(props: any) {
   const getItemMetadata = props.getItemMetadata;
   const { columnCount, columnWidth, rowCount, rowHeight } = props;
   const getItemStyle = (rowIndex: number, columnIndex: number) => {
@@ -12,6 +12,7 @@ function useCachedItem(props) {
     const style = { position: 'absolute', top: row.offset, height: row.size, left: column.offset, width: column.size };
 
     if (row.filler || column.filler) {
+      // @ts-ignore
       style.overflow = 'hidden';
     }
 
@@ -55,15 +56,15 @@ function useCachedItem(props) {
   // const getClassName = (rowIndex, colIndex)
 
   const getCachedStyle = useMemo(() => {
-    return (rowIndex: number, colIndex: number, rowTypes, colTypes) => {
+    return (rowIndex: number, colIndex: number, rowTypes: any, colTypes: any) => {
       const key = rowIndex + '_' + colIndex;
       if (!cached.current[key]) {
         const { style, isFiller, rowIndex: _rowIndex, columnIndex: _colIndex } = getItemStyle(rowIndex, colIndex);
         const key = rowIndex + '_' + colIndex;
         const className = [
           'cell',
-          ...rowTypes.map((e) => 'row-' + e),
-          ...colTypes.map((e) => 'col-' + e),
+          ...rowTypes.map((e: string) => 'row-' + e),
+          ...colTypes.map((e: string) => 'col-' + e),
           rowIndex % 2 == 0 ? 'row-even' : 'row-odd',
           colIndex % 2 == 0 ? 'col-even' : 'col-odd',
         ].join(' ');

@@ -38,5 +38,6 @@ export default {
   htmlContext,
   typescript: true,
   dest: 'docs',
+  base: '/react-window-table/',
   hashRouter: true,
 };

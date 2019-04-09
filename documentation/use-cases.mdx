@@ -27,6 +27,10 @@ import { Styled } from './resources';
   fixedRightCount={0}
   fixedBottomCount={0}
   overscanCount={2}
+  guideline={true}
+  renderHeader={(column) => {
+    return '* ' + column
+  }}
   
 >
 {({ columnIndex, rowIndex, style }) => (

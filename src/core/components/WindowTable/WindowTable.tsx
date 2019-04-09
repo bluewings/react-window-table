@@ -127,13 +127,34 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   //   // columns[columnIndex].render
   // }
 
+  const renderHeader =
+    props.renderHeader ||
+    ((data) => {
+      return data;
+    });
+
+  const renderCell = (rowIndex, columnIndex) => {
+    const row = rows[rowIndex];
+    const column = columns[columnIndex];
+    const data = row.arr[columnIndex];
+
+    if (row._isHeader) {
+      // return data;
+      return renderHeader(data);
+    }
+    return column.render(data, { rowIndex, columnIndex });
+    // if (rowIndex)
+  };
+
+  const Cell = ({ rowIndex, columnIndex, className, style }) => (
+    <div className={className} style={style}>
+      {renderCell(rowIndex, columnIndex)}
+    </div>
+  );
+
   return (
     <WindowTableCore {...props} columnCount={columns.length} columnWidth={columnWidth}>
-      {({ rowIndex, columnIndex, className, style }) => (
-        <div className={className} style={style}>
-          {columns[columnIndex].render(rows[rowIndex].arr[columnIndex])}
-        </div>
-      )}
+      {Cell}
     </WindowTableCore>
   );
 };

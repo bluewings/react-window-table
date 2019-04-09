@@ -4,12 +4,17 @@
   :global(.cell) {
     display: flex;
     align-items: center;
+    // justify-content: center;
     justify-content: center;
     background-color: #fff;
   }
 
-  :global(.row-odd):global(.col-even),
-  :global(.row-even):global(.col-odd) {
+  // :global(.row-odd):global(.col-even),
+  // :global(.row-even):global(.col-odd) {
+  //   background-color: #eee;
+  // }
+
+  :global(.row-odd) {
     background-color: #eee;
   }
 }

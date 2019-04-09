@@ -263,9 +263,17 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     </div>
   );
 
+  const fixedTopCount = (props.fixedTopCount || 0) + 1;
+
   return (
     <div {...eventHandlers}>
-      <WindowTableCore {...props} columnCount={columns.length} columnWidth={columnWidth}>
+      <WindowTableCore
+        {...props}
+        rowCount={rows.length}
+        fixedTopCount={fixedTopCount}
+        columnCount={columns.length}
+        columnWidth={columnWidth}
+      >
         {Cell}
       </WindowTableCore>
     </div>

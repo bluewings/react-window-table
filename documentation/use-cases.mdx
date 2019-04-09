@@ -18,29 +18,45 @@ import { Styled } from './resources';
         height={300}
         columns={columns}
         rows={rows}
-        rowCount={1000}
-        rowHeight={50}
+        rowCount={10}
+        rowHeight={46}
         columnCount={10}
         columnWidth={150}
         fixedTopCount={1}
-        fixedLeftCount={3}
-        fixedRightCount={0}
+        fixedLeftCount={2}
+        fixedRightCount={1}
         fixedBottomCount={0}
         overscanCount={2}
         guideline={true}
         renderHeader={(column) => {
-          return '* ' + column
+          return  column
         }}
         theme={(classNames) => {
           return {
-            [classNames.ROW_ODD]: {
-              background: 'yellow'
+            [classNames.CELL]: {
+              display: 'flex',
+              fontSize: 12.5,
+              padding: 8,
+              borderRight: '1px solid #dadcde',
+              alignItems: 'center'
+            },
+            [classNames.ROW_EVEN]: {
+              background: '#f5f6f7'
             },
             [classNames.IS_SCROLLING]: {
-              [classNames.CELL]: {
+              [classNames.CELL1]: {
                 background: 'lightyellow'
               },
-            }
+            },
+            [classNames.SECTION_TOP]: {
+              [classNames.CELL]: {
+                background: '#f5f6f7',
+                borderBottom: '1px solid #d3d3d3',
+                fontWeight: 700
+                
+              },
+            },
+            
           }
         }}
         events={{

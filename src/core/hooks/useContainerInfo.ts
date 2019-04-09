@@ -36,7 +36,7 @@ function useContainerStyle(objectStyles?: StringAnyMap): [string, number, number
   return [className, borderTopWidth, borderLeftWidth, borderRightWidth, borderBottomWidth];
 }
 
-function useContainerInfo({ width, height, containerStyle }: StyleProps): ContainerInfo {
+function useContainerInfo({ width, height, containerStyle, theme }: StyleProps): ContainerInfo {
   const ref = useRef<HTMLElement>(null);
 
   const [containerClassName, borderTop, borderLeft, borderRight, borderBottom] = useContainerStyle(containerStyle);
@@ -54,7 +54,7 @@ function useContainerInfo({ width, height, containerStyle }: StyleProps): Contai
   }, [height, borderTop, borderBottom]);
 
   const className = useMemo(() => {
-    return [styles.container, containerClassName, css({ height: offsetHeight })].filter((e: any) => e).join(' ');
+    return [theme, containerClassName, css({ height: offsetHeight })].filter((e: any) => e).join(' ');
   }, [containerClassName, offsetHeight]);
 
   return { ref, className, offsetWidth, offsetHeight, innerWidth, innerHeight };

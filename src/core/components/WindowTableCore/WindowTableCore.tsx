@@ -3,7 +3,15 @@ import * as React from 'react';
 import { Fragment, FunctionComponent, useEffect, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import { css } from 'emotion';
 import cx from 'classnames';
-import { useCachedItem, useGuidelines, useHelpers, useContainerInfo, useScrollbarSize, useSections } from '../../hooks';
+import {
+  useCachedItem,
+  useGuidelines,
+  useHelpers,
+  useContainerInfo,
+  useScrollbarSize,
+  useSections,
+  useTheme,
+} from '../../hooks';
 import { ItemType, ScrollDirection } from '../../hooks/useHelpers';
 
 import styles from './WindowTableCore.module.scss';
@@ -161,9 +169,12 @@ const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
 
   useEffect(() => () => timeoutID.current && clearTimeout(timeoutID.current), []);
 
-  const containerInfo = useContainerInfo(props);
-
   const classNames = useClassNames(props.classNames);
+
+  const theme = useTheme(props.theme, classNames);
+
+  // console.log('T H E M E : ', theme);
+  const containerInfo = useContainerInfo({ ...props, theme });
 
   // console.log(classNames);
 

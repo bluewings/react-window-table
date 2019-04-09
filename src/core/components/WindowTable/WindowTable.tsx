@@ -139,10 +139,10 @@ function useEventHandlers(events, rows) {
     };
 
     // props.events
-    console.log('%c-=-=-=-=-=-=-=-=-', 'background:orange');
-    console.log();
+    // console.log('%c-=-=-=-=-=-=-=-=-', 'background:orange');
+    // console.log();
 
-    console.log();
+    // console.log();
 
     const getAttrFromClosest = (source, attrName) => {
       const target = source.getAttribute(attrName) ? source : source.closest(`[${attrName}]`);
@@ -188,8 +188,8 @@ function useEventHandlers(events, rows) {
       });
 
       return (event) => {
-        console.log(event.target);
-        console.log(handles);
+        // console.log(event.target);
+        // console.log(handles);
         handles.forEach((e) => {
           const target = getEventTarget(event.target, e.selector);
           if (target) {

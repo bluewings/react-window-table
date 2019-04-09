@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { Fragment, FunctionComponent, useEffect, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import { css } from 'emotion';
 import { useCachedItem, useGuidelines, useHelpers, useContainerInfo, useScrollbarSize, useSections } from '../../hooks';
@@ -45,22 +45,38 @@ type WindowTableCoreProps = {
   // guidelineStyle?: Function;
 };
 
+// const IS_SCROLLING_DEBOUNCE_INTERVAL = 150;
+const IS_SCROLLING_DEBOUNCE_INTERVAL = 150;
+
 const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
-  const [{ scrollTop, scrollLeft, verticalScrollDirection, horizontalScrollDirection }, setScroll] = useState({
+  const [
+    { isScrolling, scrollTop, scrollLeft, verticalScrollDirection, horizontalScrollDirection },
+    setScroll,
+  ] = useState({
+    isScrolling: false,
     scrollTop: 0,
     scrollLeft: 0,
     verticalScrollDirection: ScrollDirection.FORWARD,
     horizontalScrollDirection: ScrollDirection.FORWARD,
   });
+
+  const timeoutID = useRef<NodeJS.Timeout>();
   const handleScroll = (event: ScrollEvent) => {
+    timeoutID.current && clearTimeout(timeoutID.current);
     const { scrollTop: nextScrollTop, scrollLeft: nextScrollLeft } = event.currentTarget;
-    setScroll({
+    const scroll = {
+      isScrolling: true,
       scrollTop: nextScrollTop,
       scrollLeft: nextScrollLeft,
       verticalScrollDirection: scrollTop > nextScrollTop ? ScrollDirection.BACKWARD : ScrollDirection.FORWARD,
       horizontalScrollDirection: scrollLeft > nextScrollLeft ? ScrollDirection.BACKWARD : ScrollDirection.FORWARD,
-    });
+    };
+    setScroll(scroll);
+    timeoutID.current = setTimeout(() => setScroll({ ...scroll, isScrolling: false }), IS_SCROLLING_DEBOUNCE_INTERVAL);
   };
+
+  useEffect(() => () => timeoutID.current && clearTimeout(timeoutID.current), []);
+
   const containerInfo = useContainerInfo(props);
 
   // console.log(containerInfo);
@@ -142,7 +158,7 @@ const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
   return (
     <div
       ref={containerInfo.ref}
-      className={containerInfo.className + ' ' + scrollClassName}
+      className={containerInfo.className + ' ' + scrollClassName + (isScrolling ? ' is-scrolling' : '')}
       style={{ width: containerInfo.offsetWidth }}
     >
       {/* <pre>{JSON.stringify({ scrollTop, scrollLeft, clientHeight, scrollHeight })}</pre> */}
@@ -159,8 +175,8 @@ const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
       </div>
       {props.guideline && (
         <div className={styles.guidelines} style={{ width: clientWidth, height: clientHeight }}>
-          {guidelines.map((guideline) => {
-            return <div className={guideline.className} style={guideline.style} />;
+          {guidelines.map((guideline, i) => {
+            return <div key={i} className={guideline.className} style={guideline.style} />;
           })}
         </div>
       )}

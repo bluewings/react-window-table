@@ -25,7 +25,14 @@ const columnDef = {
   },
   avatar: {
     width: 50,
-    render: (src) => <img src={src} height={50} alt="avatar" />,
+    header: (data) => {
+      return <strong>{data}</strong>;
+    },
+    render: (src) => (
+      <span>
+        <img src={src} height={50} alt="avatar" />
+      </span>
+    ),
   },
 };
 

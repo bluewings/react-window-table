@@ -17,6 +17,10 @@
   will-change: transform;
 }
 
+:global(.is-scrolling) {
+  // border: 5px solid blue;
+}
+
 // .odd {
 //   background: #eee;
 // }

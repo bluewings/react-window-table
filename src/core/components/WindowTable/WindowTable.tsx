@@ -201,7 +201,7 @@ function useEventHandlers(events, rows) {
       };
     };
 
-    const allEvts = entries(events).reduce((accum, [eventName, details]) => {
+    let allEvts = entries(events).reduce((accum, [eventName, details]) => {
       const handlerName = dict[eventName.toLowerCase()];
       if (handlerName) {
         return {
@@ -212,6 +212,21 @@ function useEventHandlers(events, rows) {
       return accum;
     }, {});
 
+    // allEvts = entries(events).reduce((accum, [eventName, details]) => {
+    //   const handlerName = dict[eventName.toLowerCase()];
+    //   if (handlerName) {
+    //     return {
+    //       ...accum,
+    //       [handlerName]: handlerFactory(details),
+    //       // [handlerName]: [
+    //       //   ...(accum[handlerName] || []),
+    //       //   ...handlerFactory(details),
+    //       // ],
+    //     };
+    //   }
+    //   return accum;
+    // }, allEvts);
+
     console.log(allEvts);
     console.log('%c-=-=-=-=-=-=-=-=-', 'background:blue');
     return allEvts;
@@ -219,6 +234,16 @@ function useEventHandlers(events, rows) {
 
   return eventHandlers;
 }
+
+// function useHandle(callback) {
+//   const handle = useRef();
+//   handle.current = callback;
+//   return (...args) => {
+//     if (typeof handle.current === 'function') {
+//       handle.current(...args);
+//     }
+//   };
+// }
 
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   const [columns, columnWidth] = useColumns(props);
@@ -228,8 +253,89 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   // const render = (data, columnIndex) => {
   //   // columns[columnIndex].render
   // }
+  const [hover, setHover] = useState({ rowIndex: null, columnIndex: null });
+  const currHover = useRef(hover);
+  currHover.current = hover;
+  const handleRef = useRef(setHover);
+  handleRef.current = setHover;
 
-  const eventHandlers = useEventHandlers(props.events, rows);
+  const timer = useRef();
+
+  const styleRef = useRef();
+
+  const ownEvents = useMemo(() => {
+    return {
+      mouseover: {
+        '.cell[data-row-index][data-column-index]': (event, ui) => {
+          timer.current && clearTimeout(timer.current);
+          console.log('%cmouseover', 'background:orange');
+          styleRef.current.innerHTML = '';
+
+          var styleNode = document.createElement('style');
+          styleNode.type = 'text/css';
+          var styleText = document.createTextNode(
+            `[data-row-index="${ui.rowIndex}"] { background:yellow !important } [data-column-index="${
+              ui.columnIndex
+            }"] { background:yellow !important }`,
+          );
+          styleNode.appendChild(styleText);
+          styleRef.current.appendChild(styleNode);
+          // // browser detection (based on prototype.js)
+          // if(!!(window.attachEvent && !window.opera)) {
+          //      styleNode.styleSheet.cssText = 'span { color: rgb(255, 0, 0); }';
+          // } else {
+          //      var styleText = document.createTextNode('span { color: rgb(255, 0, 0); } ');
+          //      styleNode.appendChild(styleText);
+          // }
+          //     var css = 'h1 { background: red; }',
+          //     head = document.head || document.getElementsByTagName('head')[0],
+          //     style = document.createElement('style');
+
+          // head.appendChild(style);
+
+          // style.type = 'text/css';
+          // if (style.styleSheet){
+          //   // This is required for IE8 and below.
+          //   style.styleSheet.cssText = css;
+          // } else {
+          //   style.appendChild(document.createTextNode(css));
+          // }
+
+          // style.appendChild(document.createTextNode(css));
+          // window._cnt1 = (window._cnt1 || 0);
+          // console.log('hover', window._cnt1++)
+          // if (currHover.current.ho)
+          // if (currHover.curren)
+          // styleRef.current.inner
+          // const _ = currHover.current
+          // const { rowIndex, columnIndex } = ui;
+          // if (_.rowIndex !== rowIndex || _.columnIndex !== columnIndex) {
+          //   handleRef.current({ rowIndex, columnIndex });
+          // }
+          console.log(ui);
+        },
+      },
+      mouseout: {
+        '.cell[data-row-index]': (event, ui) => {
+          // timer.current && clearTimeout(timer.current);
+          console.log('%cmouseout', 'background:blue');
+          styleRef.current.innerHTML = '';
+
+          // timer.current = setTimeout(() => {
+          //   // const _ = currHover.current
+          //   // if (_.rowIndex !== null || _.columnIndex !== null ) {
+          //     handleRef.current({ rowIndex: null, columnIndex: null });
+          //   // }
+          // }, 100);
+
+          // window._cnt2 = (window._cnt2 || 0);
+          // console.log('out', window._cnt2++)
+        },
+      },
+    };
+  }, []);
+
+  const eventHandlers = useEventHandlers({ ...props.events, ...ownEvents }, rows);
 
   console.log('>>>>>>');
   // console.log(eventsHash);
@@ -266,16 +372,20 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   const fixedTopCount = (props.fixedTopCount || 0) + 1;
 
   return (
-    <div {...eventHandlers}>
-      <WindowTableCore
-        {...props}
-        rowCount={rows.length}
-        fixedTopCount={fixedTopCount}
-        columnCount={columns.length}
-        columnWidth={columnWidth}
-      >
-        {Cell}
-      </WindowTableCore>
+    <div>
+      <div ref={styleRef} />
+      <pre>{JSON.stringify(hover)}</pre>
+      <div {...eventHandlers}>
+        <WindowTableCore
+          {...props}
+          rowCount={rows.length}
+          fixedTopCount={fixedTopCount}
+          columnCount={columns.length}
+          columnWidth={columnWidth}
+        >
+          {Cell}
+        </WindowTableCore>
+      </div>
     </div>
   );
 };

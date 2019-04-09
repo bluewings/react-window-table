@@ -53,11 +53,18 @@ type WindowTableProps = {
 };
 
 function useColumns(props: any) {
+  console.log(props.columns);
   const columns = useMemo(() => {
     return (props.columns || [])
       .filter((column: any) => column && (typeof column === 'string' || typeof column === 'object'))
       .map((column: any) => (typeof column === 'string' ? { name: column } : { ...column }))
-      .filter((column: any) => column.name);
+      .filter((column: any) => column.name)
+      .map((column) => {
+        return {
+          ...column,
+          render: typeof column.render === 'function' ? column.render : (data) => data,
+        };
+      });
   }, [props.columns]);
 
   const columnWidth = useMemo(
@@ -101,18 +108,30 @@ function useRows(props: any, columns) {
 
     return data;
   });
-  return rows;
+  return [
+    {
+      org: {},
+      _isHeader: true,
+      arr: columns.map((e) => e.name),
+    },
+    ...rows,
+  ];
 }
 
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   const [columns, columnWidth] = useColumns(props);
   const rows = useRows(props, columns);
   // return <pre>{JSON.stringify(rows, null, 2)}</pre>;
+  // const render
+  // const render = (data, columnIndex) => {
+  //   // columns[columnIndex].render
+  // }
+
   return (
     <WindowTableCore {...props} columnCount={columns.length} columnWidth={columnWidth}>
       {({ rowIndex, columnIndex, className, style }) => (
         <div className={className} style={style}>
-          {rows[rowIndex].arr[columnIndex]}
+          {columns[columnIndex].render(rows[rowIndex].arr[columnIndex])}
         </div>
       )}
     </WindowTableCore>

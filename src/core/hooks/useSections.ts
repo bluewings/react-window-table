@@ -52,6 +52,7 @@ function useSections(
   contentWidth: number,
   contentHeight: number,
   getCachedStyle: Function,
+  classNames: any,
 ) {
   const range = {
     top: rowMetadata.pre.range,
@@ -74,38 +75,38 @@ function useSections(
   const sections = [
     {
       key: 'top',
-      className: styles.sticky,
+      className: `${classNames.SECTION} ${classNames.SECTION_TOP} ${styles.sticky}`,
       style: { top: 0 },
       items: useItems(range.top, range.middle_h, getCachedStyle),
     },
 
     {
       key: 'left',
-      className: styles.sticky,
+      className: `${classNames.SECTION} ${classNames.SECTION_LEFT} ${styles.sticky}`,
       style: { left: 0 },
       items: useItems(range.middle_v, range.left, getCachedStyle),
     },
     {
       key: 'right',
-      className: styles.sticky,
+      className: `${classNames.SECTION} ${classNames.SECTION_RIGHT} ${styles.sticky}`,
       style: { left: contentWidth - columnMetadata.post.size, width: columnMetadata.post.size },
       items: useItems(range.middle_v, range.right, getCachedStyle),
     },
     {
       key: 'top-left',
-      className: styles.sticky,
+      className: `${classNames.SECTION} ${classNames.SECTION_TOP} ${classNames.SECTION_LEFT} ${styles.sticky}`,
       style: { top: 0, left: 0 },
       items: useItems(range.top, range.left, getCachedStyle),
     },
     {
       key: 'top-right',
-      className: styles.sticky,
+      className: `${classNames.SECTION} ${classNames.SECTION_TOP} ${classNames.SECTION_RIGHT} ${styles.sticky}`,
       style: { top: 0, left: contentWidth - columnMetadata.post.size, width: columnMetadata.post.size },
       items: useItems(range.top, range.right, getCachedStyle),
     },
     {
       key: 'bottom',
-      className: styles.sticky,
+      className: `${classNames.SECTION} ${classNames.SECTION_BOTTOM} ${styles.sticky}`,
       style: { top: contentHeight - rowMetadata.post.size, height: rowMetadata.post.size },
       items: useItems(range.bottom, range.middle_h, getCachedStyle),
       // subs: [
@@ -115,13 +116,13 @@ function useSections(
 
     {
       key: 'bottom-left',
-      className: styles.sticky,
+      className: `${classNames.SECTION} ${classNames.SECTION_BOTTOM} ${classNames.SECTION_LEFT} ${styles.sticky}`,
       style: { top: contentHeight - rowMetadata.post.size, left: 0, height: rowMetadata.post.size },
       items: useItems(range.bottom, range.left, getCachedStyle),
     },
     {
       key: 'bottom-right',
-      className: styles.sticky,
+      className: `${classNames.SECTION} ${classNames.SECTION_BOTTOM} ${classNames.SECTION_RIGHT} ${styles.sticky}`,
       style: {
         top: contentHeight - rowMetadata.post.size,
         left: contentWidth - columnMetadata.post.size,
@@ -135,7 +136,7 @@ function useSections(
     .map((e) => {
       return {
         ...e,
-        className: e.className + ' ' + e.key,
+        // className: e.className + ' ' + e.key,
       };
     });
   return {

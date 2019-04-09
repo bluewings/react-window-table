@@ -4,7 +4,7 @@ import { ItemType } from './useHelpers';
 
 function useCachedItem(props: any) {
   const getItemMetadata = props.getItemMetadata;
-  const { columnCount, columnWidth, rowCount, rowHeight } = props;
+  const { columnCount, columnWidth, rowCount, rowHeight, classNames } = props;
   const getItemStyle = (rowIndex: number, columnIndex: number) => {
     const row = getItemMetadata(ItemType.ROW, rowIndex);
     const column = getItemMetadata(ItemType.COLUMN, columnIndex);
@@ -62,11 +62,13 @@ function useCachedItem(props: any) {
         const { style, isFiller, rowIndex: _rowIndex, columnIndex: _colIndex } = getItemStyle(rowIndex, colIndex);
         const key = rowIndex + '_' + colIndex;
         const className = [
-          'cell',
+          classNames.CELL,
+          // 'cell',
           ...rowTypes.map((e: string) => 'row-' + e),
           ...colTypes.map((e: string) => 'col-' + e),
-          rowIndex % 2 == 0 ? 'row-even' : 'row-odd',
-          colIndex % 2 == 0 ? 'col-even' : 'col-odd',
+          rowIndex % 2 == 0 ? classNames.ROW_EVEN : classNames.ROW_ODD,
+          colIndex % 2 == 0 ? classNames.COL_EVEN : classNames.COL_ODD,
+          // colIndex % 2 == 0 ? 'col-even' : 'col-odd',
         ].join(' ');
         cached.current[key] = {
           className,
@@ -76,7 +78,7 @@ function useCachedItem(props: any) {
       }
       return cached.current[key];
     };
-  }, [cached.current, getItemContent, getItemMetadata]);
+  }, [cached.current, getItemContent, getItemMetadata, classNames]);
 
   return getCachedStyle;
 }

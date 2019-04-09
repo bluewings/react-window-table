@@ -2,6 +2,7 @@ import * as React from 'react';
 // import PropTypes from 'prop-types';
 import { Fragment, FunctionComponent, useEffect, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import { css } from 'emotion';
+import cx from 'classnames';
 import { useCachedItem, useGuidelines, useHelpers, useContainerInfo, useScrollbarSize, useSections } from '../../hooks';
 import { ItemType, ScrollDirection } from '../../hooks/useHelpers';
 
@@ -34,6 +35,8 @@ type WindowTableCoreProps = {
   containerStyle?: any;
   guideline?: boolean;
 
+  classNames?: ClassNames;
+
   // maxScrollY?: number
   // maxScrollX?: number
 
@@ -45,8 +48,89 @@ type WindowTableCoreProps = {
   // guidelineStyle?: Function;
 };
 
+type ClassNames = {
+  CELL?: string;
+
+  COL_ODD?: string;
+  COL_EVEN?: string;
+  COL_FIRST?: string;
+  COL_LAST?: string;
+
+  ROW_ODD?: string;
+  ROW_EVEN?: string;
+  ROW_FIRST?: string;
+  ROW_LAST?: string;
+
+  SECTION?: string;
+  SECTION_TOP?: string;
+  SECTION_LEFT?: string;
+  SECTION_RIGHT?: string;
+  SECTION_BOTTOM?: string;
+  SECTION_CENTER?: string;
+
+  GUIDELINE?: string;
+  GUIDELINE_TOP?: string;
+  GUIDELINE_LEFT?: string;
+  GUIDELINE_RIGHT?: string;
+  GUIDELINE_BOTTOM?: string;
+};
+
 // const IS_SCROLLING_DEBOUNCE_INTERVAL = 150;
 const IS_SCROLLING_DEBOUNCE_INTERVAL = 150;
+
+const CLASSNAMES = {
+  CELL: 'cell',
+
+  COL_ODD: 'col-odd',
+  COL_EVEN: 'col-even',
+  COL_FIRST: 'col-first',
+  COL_LAST: 'col-last',
+
+  // ROW_ODD: 'row-odd',
+  ROW_ODD: 'row-odd',
+  ROW_EVEN: 'row-even',
+  ROW_FIRST: 'row-first',
+  ROW_LAST: 'row-last',
+
+  SECTION: 'section',
+  SECTION_TOP: 'section-top',
+  SECTION_LEFT: 'section-left',
+  SECTION_RIGHT: 'section-right',
+  SECTION_BOTTOM: 'section-bottom',
+  SECTION_CENTER: 'section-center',
+
+  GUIDELINE: 'guideline',
+  GUIDELINE_TOP: 'guideline-top',
+  GUIDELINE_LEFT: 'guideline-left',
+  GUIDELINE_RIGHT: 'guideline-right',
+  GUIDELINE_BOTTOM: 'guideline-bottom',
+
+  SCROLL_TOP: 'scroll-top',
+  SCROLL_LEFT: 'scroll-left',
+  SCROLL_RIGHT: 'scroll-right',
+  SCROLL_BOTTOM: 'scroll-bottom',
+  // SECTION_TOP: 'section-top',
+  // ROW_EVEN: '',
+};
+
+function useClassNames(classNames) {
+  const hash = useMemo(() => {
+    return JSON.stringify(classNames);
+  }, [classNames]);
+
+  return useMemo(() => {
+    return Object.keys(classNames || {}).reduce(
+      (accum, key) => {
+        return {
+          ...accum,
+          [key]: classNames[key],
+        };
+      },
+      { ...CLASSNAMES },
+    );
+    // return JSON.stringify(classNames);
+  }, [hash]);
+}
 
 const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
   const [
@@ -78,6 +162,10 @@ const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
   useEffect(() => () => timeoutID.current && clearTimeout(timeoutID.current), []);
 
   const containerInfo = useContainerInfo(props);
+
+  const classNames = useClassNames(props.classNames);
+
+  // console.log(classNames);
 
   // console.log(containerInfo);
 
@@ -119,6 +207,7 @@ const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
     rowCount,
     rowHeight,
     children: props.children,
+    classNames,
   });
 
   const { center, sections } = useSections(
@@ -131,21 +220,22 @@ const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
     clientWidth,
     clientHeight,
     getCachedStyle,
+    classNames,
   );
 
-  const guidelines = useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight);
+  const guidelines = useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight, classNames);
 
   const scrollClassName = useMemo(() => {
-    const classNames = [
-      scrollTop === 0 && 'scroll-top',
-      scrollLeft === 0 && 'scroll-left',
-      scrollTop >= scrollHeight - clientHeight && 'scroll-bottom',
-      scrollLeft >= scrollWidth - clientWidth && 'scroll-right',
+    return [
+      scrollTop === 0 && classNames.SCROLL_TOP,
+      scrollLeft === 0 && classNames.SCROLL_LEFT,
+      scrollTop >= scrollHeight - clientHeight && classNames.SCROLL_BOTTOM,
+      scrollLeft >= scrollWidth - clientWidth && classNames.SCROLL_RIGHT,
     ]
       .filter((e) => e)
       .join(' ');
-    return classNames;
-  }, [scrollTop, scrollLeft, clientHeight, scrollHeight, clientWidth, scrollWidth]);
+    // return classNames;
+  }, [scrollTop, scrollLeft, clientHeight, scrollHeight, clientWidth, scrollWidth, classNames]);
 
   // {"scrollTop":3417,"scrollLeft":0,"clientHeight":283,"scrollHeight":3700}
 
@@ -169,8 +259,7 @@ const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
               {section.items}
             </div>
           ))}
-
-          <div className={styles.center}>{center.items}</div>
+          <div className={`${classNames.SECTION} ${classNames.SECTION_CENTER} ${styles.center}`}>{center.items}</div>
         </div>
       </div>
       {props.guideline && (

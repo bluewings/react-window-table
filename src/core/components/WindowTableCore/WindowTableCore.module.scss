@@ -17,6 +17,11 @@
   will-change: transform;
 }
 
+:global(.section-top) {
+  // border: o
+  // border: 5px solid red;
+}
+
 :global(.is-scrolling) {
   // border: 5px solid blue;
 }
@@ -39,6 +44,7 @@
 .center,
 .sticky {
   float: left;
+  // box-sizing: border-box;
 
   > div {
     // background-color: rgba(255, 0, 0, 0.1);

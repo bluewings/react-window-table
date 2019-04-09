@@ -13,8 +13,8 @@ import { Styled } from './resources';
 ## contentWidth < sum(fixedWidth)
 
 ### shrink
-<Styled>
-      <WindowTable
+
+<WindowTable
         height={300}
         columns={columns}
         rows={rows}
@@ -30,6 +30,18 @@ import { Styled } from './resources';
         guideline={true}
         renderHeader={(column) => {
           return '* ' + column
+        }}
+        theme={(classNames) => {
+          return {
+            [classNames.ROW_ODD]: {
+              background: 'yellow'
+            },
+            [classNames.IS_SCROLLING]: {
+              [classNames.CELL]: {
+                background: 'lightyellow'
+              },
+            }
+          }
         }}
         events={{
           click: {
@@ -54,7 +66,7 @@ import { Styled } from './resources';
           },
         }}
       />
-</Styled>
+
 
 ## theme
 

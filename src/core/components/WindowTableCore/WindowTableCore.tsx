@@ -5,6 +5,7 @@ import { css } from 'emotion';
 import cx from 'classnames';
 import {
   useCachedItem,
+  useClassNames,
   useGuidelines,
   useHelpers,
   useContainerInfo,
@@ -13,6 +14,8 @@ import {
   useTheme,
 } from '../../hooks';
 import { ItemType, ScrollDirection } from '../../hooks/useHelpers';
+import { ClassNames } from '../../hooks/useClassNames';
+import { ThemeFunction } from '../../hooks/useTheme';
 
 import styles from './WindowTableCore.module.scss';
 
@@ -44,6 +47,7 @@ type WindowTableCoreProps = {
   guideline?: boolean;
 
   classNames?: ClassNames;
+  theme?: ThemeFunction;
 
   // maxScrollY?: number
   // maxScrollX?: number
@@ -56,89 +60,8 @@ type WindowTableCoreProps = {
   // guidelineStyle?: Function;
 };
 
-type ClassNames = {
-  CELL?: string;
-
-  COL_ODD?: string;
-  COL_EVEN?: string;
-  COL_FIRST?: string;
-  COL_LAST?: string;
-
-  ROW_ODD?: string;
-  ROW_EVEN?: string;
-  ROW_FIRST?: string;
-  ROW_LAST?: string;
-
-  SECTION?: string;
-  SECTION_TOP?: string;
-  SECTION_LEFT?: string;
-  SECTION_RIGHT?: string;
-  SECTION_BOTTOM?: string;
-  SECTION_CENTER?: string;
-
-  GUIDELINE?: string;
-  GUIDELINE_TOP?: string;
-  GUIDELINE_LEFT?: string;
-  GUIDELINE_RIGHT?: string;
-  GUIDELINE_BOTTOM?: string;
-};
-
 // const IS_SCROLLING_DEBOUNCE_INTERVAL = 150;
 const IS_SCROLLING_DEBOUNCE_INTERVAL = 150;
-
-const CLASSNAMES = {
-  CELL: 'cell',
-
-  COL_ODD: 'col-odd',
-  COL_EVEN: 'col-even',
-  COL_FIRST: 'col-first',
-  COL_LAST: 'col-last',
-
-  // ROW_ODD: 'row-odd',
-  ROW_ODD: 'row-odd',
-  ROW_EVEN: 'row-even',
-  ROW_FIRST: 'row-first',
-  ROW_LAST: 'row-last',
-
-  SECTION: 'section',
-  SECTION_TOP: 'section-top',
-  SECTION_LEFT: 'section-left',
-  SECTION_RIGHT: 'section-right',
-  SECTION_BOTTOM: 'section-bottom',
-  SECTION_CENTER: 'section-center',
-
-  GUIDELINE: 'guideline',
-  GUIDELINE_TOP: 'guideline-top',
-  GUIDELINE_LEFT: 'guideline-left',
-  GUIDELINE_RIGHT: 'guideline-right',
-  GUIDELINE_BOTTOM: 'guideline-bottom',
-
-  SCROLL_TOP: 'scroll-top',
-  SCROLL_LEFT: 'scroll-left',
-  SCROLL_RIGHT: 'scroll-right',
-  SCROLL_BOTTOM: 'scroll-bottom',
-  // SECTION_TOP: 'section-top',
-  // ROW_EVEN: '',
-};
-
-function useClassNames(classNames) {
-  const hash = useMemo(() => {
-    return JSON.stringify(classNames);
-  }, [classNames]);
-
-  return useMemo(() => {
-    return Object.keys(classNames || {}).reduce(
-      (accum, key) => {
-        return {
-          ...accum,
-          [key]: classNames[key],
-        };
-      },
-      { ...CLASSNAMES },
-    );
-    // return JSON.stringify(classNames);
-  }, [hash]);
-}
 
 const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
   const [
@@ -236,50 +159,56 @@ const WindowTableCore: FunctionComponent<WindowTableCoreProps> = (props) => {
 
   const guidelines = useGuidelines(rowMetadata, columnMetadata, clientWidth, clientHeight, classNames);
 
-  const scrollClassName = useMemo(() => {
-    return [
-      scrollTop === 0 && classNames.SCROLL_TOP,
-      scrollLeft === 0 && classNames.SCROLL_LEFT,
-      scrollTop >= scrollHeight - clientHeight && classNames.SCROLL_BOTTOM,
-      scrollLeft >= scrollWidth - clientWidth && classNames.SCROLL_RIGHT,
-    ]
-      .filter((e) => e)
-      .join(' ');
-    // return classNames;
-  }, [scrollTop, scrollLeft, clientHeight, scrollHeight, clientWidth, scrollWidth, classNames]);
-
   // {"scrollTop":3417,"scrollLeft":0,"clientHeight":283,"scrollHeight":3700}
 
   // console.log(guidelines);
 
   // console.log(columnMetadata);
 
-  // return null;
+  //eturn null;
+
+  const statusClassName = useMemo(() => {
+    return [
+      scrollTop === 0 && classNames.SCROLL_TOP,
+      scrollLeft === 0 && classNames.SCROLL_LEFT,
+      scrollTop >= scrollHeight - clientHeight && classNames.SCROLL_BOTTOM,
+      scrollLeft >= scrollWidth - clientWidth && classNames.SCROLL_RIGHT,
+      isScrolling ? classNames.IS_SCROLLING : classNames.IS_NOT_SCROLLING,
+    ]
+      .filter((e) => e)
+      .join(' ');
+    // return classNames;
+  }, [scrollTop, scrollLeft, clientHeight, scrollHeight, clientWidth, scrollWidth, isScrolling, classNames]);
+
+  // const statusClassName = useMemo(() => {
+  //   const classNames_ = [
+  //     isScrolling ? classNames.IS_SCROLLING : classNames.IS_NOT_SCROLLING,
+
+  //   ]
+  // }, [classNames, isScrolling, scrollClassName])
 
   return (
-    <div
-      ref={containerInfo.ref}
-      className={containerInfo.className + ' ' + scrollClassName + (isScrolling ? ' is-scrolling' : '')}
-      style={{ width: containerInfo.offsetWidth }}
-    >
+    <div ref={containerInfo.ref} className={containerInfo.className} style={{ width: containerInfo.offsetWidth }}>
       {/* <pre>{JSON.stringify({ scrollTop, scrollLeft, clientHeight, scrollHeight })}</pre> */}
-      <div style={{ width: innerWidth, height: innerHeight }} className={styles.root} onScroll={handleScroll}>
-        <div style={{ width: scrollWidth, height: scrollHeight }}>
-          {sections.map((section) => (
-            <div key={section.key} className={section.className} style={section.style}>
-              {section.items}
-            </div>
-          ))}
-          <div className={`${classNames.SECTION} ${classNames.SECTION_CENTER} ${styles.center}`}>{center.items}</div>
+      <div className={statusClassName}>
+        <div style={{ width: innerWidth, height: innerHeight }} className={styles.root} onScroll={handleScroll}>
+          <div style={{ width: scrollWidth, height: scrollHeight }}>
+            {sections.map((section) => (
+              <div key={section.key} className={section.className} style={section.style}>
+                {section.items}
+              </div>
+            ))}
+            <div className={`${classNames.SECTION} ${classNames.SECTION_CENTER} ${styles.center}`}>{center.items}</div>
+          </div>
         </div>
+        {props.guideline && (
+          <div className={styles.guidelines} style={{ width: clientWidth, height: clientHeight }}>
+            {guidelines.map((guideline, i) => {
+              return <div key={i} className={guideline.className} style={guideline.style} />;
+            })}
+          </div>
+        )}
       </div>
-      {props.guideline && (
-        <div className={styles.guidelines} style={{ width: clientWidth, height: clientHeight }}>
-          {guidelines.map((guideline, i) => {
-            return <div key={i} className={guideline.className} style={guideline.style} />;
-          })}
-        </div>
-      )}
     </div>
   );
 };

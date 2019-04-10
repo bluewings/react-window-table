@@ -268,15 +268,13 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       mouseover: {
         '.cell[data-row-index][data-column-index]': (event, ui) => {
           timer.current && clearTimeout(timer.current);
-          console.log('%cmouseover', 'background:orange');
+          // console.log('%cmouseover', 'background:orange');
           styleRef.current.innerHTML = '';
 
           var styleNode = document.createElement('style');
           styleNode.type = 'text/css';
           var styleText = document.createTextNode(
-            `[data-row-index="${ui.rowIndex}"] { background:yellow !important } [data-column-index="${
-              ui.columnIndex
-            }"] { background:yellow !important }`,
+            `[data-row-index="${ui.rowIndex}"] { background:#e9eaeb !important } `,
           );
           styleNode.appendChild(styleText);
           styleRef.current.appendChild(styleNode);
@@ -312,13 +310,13 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           // if (_.rowIndex !== rowIndex || _.columnIndex !== columnIndex) {
           //   handleRef.current({ rowIndex, columnIndex });
           // }
-          console.log(ui);
+          // console.log(ui);
         },
       },
       mouseout: {
         '.cell[data-row-index]': (event, ui) => {
           // timer.current && clearTimeout(timer.current);
-          console.log('%cmouseout', 'background:blue');
+          // console.log('%cmouseout', 'background:blue');
           styleRef.current.innerHTML = '';
 
           // timer.current = setTimeout(() => {

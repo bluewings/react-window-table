@@ -7,12 +7,53 @@ import { useState } from 'react';
 import { Props } from 'docz';
 import { Playground } from './resources';
 import { WindowTable } from '../src/core';
+import mona from './resources/assets/mona.jpg';
+import useImage from './resources/hooks/useImage';
 
 # Introduction
 
 <Props of={WindowTable.Core} />
 
 [Currently, the Props component is not working.](https://github.com/pedronauck/docz/issues/717)
+
+## image to WindowTable
+
+<Playground>
+{() => {
+
+  
+  const { w, h, data } = useImage(mona, 50);
+
+  const Cell = ({ rowIndex, columnIndex, className, style }) => (
+      <div className={className} style={{ ...style,  }}>
+        <div style={{ width: '80%', height: '80%', borderRadius: '50%', background: data[rowIndex][columnIndex].rgb }} />
+        
+      </div>
+    );
+
+    
+  
+
+  return w && h && (
+    <div>
+      <img src={mona} width='200' />
+    <WindowTable.Core
+      height={400}
+      columnCount={w}
+      columnWidth={20}
+      rowCount={h}
+      rowHeight={20}
+      overscanCount={3}
+      >
+      {Cell}
+    </WindowTable.Core>
+    </div>
+  );
+
+}}
+</Playground>
+
+
 
 ## Basic usage
 

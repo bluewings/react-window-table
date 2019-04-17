@@ -1,9 +1,10 @@
 import * as React from 'react';
-
+import { WindowGrid } from 'react-window-grid';
 // import PropTypes from 'prop-types';
 
 import { Fragment, FunctionComponent, useEffect, useMemo, SyntheticEvent, useState, useRef } from 'react';
-import WindowTableCore from '../WindowTableCore';
+// import WindowGrid from '../WindowTableCore';
+
 // import { css } from 'emotion';
 // import { useCachedItem, useGuidelines, useHelpers, useContainerInfo, useScrollbarSize, useSections } from '../../hooks';
 // import { ItemType, ScrollDirection } from '../../hooks/useHelpers';
@@ -374,7 +375,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       <div ref={styleRef} />
       <pre>{JSON.stringify(hover)}</pre>
       <div {...eventHandlers}>
-        <WindowTableCore
+        <WindowGrid
           {...props}
           rowCount={rows.length}
           fixedTopCount={fixedTopCount}
@@ -382,7 +383,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           columnWidth={columnWidth}
         >
           {Cell}
-        </WindowTableCore>
+        </WindowGrid>
       </div>
     </div>
   );

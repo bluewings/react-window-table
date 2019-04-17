@@ -21,10 +21,11 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx-source": "^7.2.0",
     "babel-plugin-transform-commonjs-es2015-modules": "^4.0.1",
     "cra-rewired": "^1.0.22",
-    "docz": "1.0.0-rc.7",
-    "docz-theme-default": "1.0.0-rc.7",
+    "docz": "^1.0.3",
+    "docz-theme-default": "^1.0.3",
     "faker": "^4.1.0",
     "json-loader": "^0.5.7",
     "node-sass": "^4.11.0",

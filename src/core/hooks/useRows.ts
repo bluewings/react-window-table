@@ -1,6 +1,6 @@
-function useRows(props: any, columns) {
-  const rows = props.rows.map((row) => {
-    let _row;
+function useRows(p_rows: any[], columns: Column[]) {
+  const rows = p_rows.map((row) => {
+    let _row: any;
     if (Array.isArray(row)) {
       _row = columns.reduce(
         (prev, e, i) => ({
@@ -33,7 +33,7 @@ function useRows(props: any, columns) {
     {
       org: {},
       _isHeader: true,
-      arr: columns.map((e) => e.name),
+      arr: columns.map((e: any) => e.name),
     },
     ...rows,
   ];

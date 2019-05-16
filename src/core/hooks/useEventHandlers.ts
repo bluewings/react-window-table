@@ -1,12 +1,19 @@
-import { useMemo } from 'react';
+import { useMemo, SyntheticEvent } from 'react';
+
+type EventTarget = {
+  target: Element;
+  rowIndex: number;
+  columnIndex: number;
+  data: any;
+} | null;
 
 const serialize = (() => {
   const replacer = (key: string, value: any) => (typeof value === 'function' ? value.toString() : value);
   return (value: any) => JSON.stringify(value, replacer);
 })();
 
-function useEventHandlers(events, rows) {
-  const dict = {
+function useEventHandlers(events: StringFunctionMap, rows: StringAnyMap[]) {
+  const dict: StringAnyMap = {
     click: 'onClick',
     mouseover: 'onMouseOver',
     mouseout: 'onMouseOut',
@@ -14,7 +21,7 @@ function useEventHandlers(events, rows) {
   const eventsHash = serialize(events);
 
   const eventHandlers = useMemo(() => {
-    const entries = (target) => {
+    const entries = (target: any) => {
       return Object.keys(target).map((k) => {
         return [k, target[k]];
       });
@@ -26,7 +33,7 @@ function useEventHandlers(events, rows) {
 
     // console.log();
 
-    const getAttrFromClosest = (source, attrName) => {
+    const getAttrFromClosest = (source: any, attrName: string) => {
       const target = source.getAttribute(attrName) ? source : source.closest(`[${attrName}]`);
       if (target) {
         return target.getAttribute(attrName);
@@ -34,34 +41,29 @@ function useEventHandlers(events, rows) {
       return null;
     };
 
-    const getEventTarget = (source, selector) => {
+    const getEventTarget = (source: any, selector: string): EventTarget => {
       const target = source.matches(selector) ? source : source.closest(selector);
 
       if (target) {
-        let rowIndex = getAttrFromClosest(target, 'data-row-index');
-        let columnIndex = getAttrFromClosest(target, 'data-column-index');
+        let rowIndex_ = getAttrFromClosest(target, 'data-row-index');
+        let columnIndex_ = getAttrFromClosest(target, 'data-column-index');
 
-        if (rowIndex && columnIndex) {
-          rowIndex = ~~rowIndex;
-          columnIndex = ~~columnIndex;
-          const row = rows[rowIndex].org;
+        if (rowIndex_ && columnIndex_) {
+          let rowIndex = ~~rowIndex_;
+          let columnIndex = ~~columnIndex_;
+          const row = rows[rowIndex_].org;
           return {
             target,
             rowIndex,
             columnIndex,
             data: row,
-            // data: rows[row]
           };
         }
       }
-      // if (target) {
-      //   return target;
-      //   // return target.matches(selector);
-      // }
       return null;
     };
 
-    const handlerFactory = (details) => {
+    const handlerFactory = (details: StringFunctionMap) => {
       const handles = entries(details).map(([selector, handler]) => {
         return {
           selector,
@@ -69,7 +71,7 @@ function useEventHandlers(events, rows) {
         };
       });
 
-      return (event) => {
+      return (event: SyntheticEvent) => {
         // console.log(event.target);
         // console.log(handles);
         handles.forEach((e) => {

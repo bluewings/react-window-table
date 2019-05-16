@@ -34,6 +34,10 @@ type WindowTableProps = {
   containerStyle?: any;
   guideline?: boolean;
 
+  events: StringFunctionMap;
+
+  renderHeader?: Function;
+
   // maxScrollY?: number
   // maxScrollX?: number
 
@@ -56,8 +60,9 @@ type WindowTableProps = {
 // }
 
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
-  const [columns, columnWidth] = useColumns(props);
-  const rows = useRows(props, columns);
+  // const [columns, columnWidth] = useColumns(props);
+  const [columns, columnWidth] = useColumns(props.columns, props.columnWidth);
+  const rows = useRows(props.rows, columns);
   // return <pre>{JSON.stringify(rows, null, 2)}</pre>;
   // const render
   // const render = (data, columnIndex) => {
@@ -71,12 +76,12 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
   const timer = useRef();
 
-  const styleRef = useRef();
+  const styleRef = useRef<HTMLElementRef>();
 
   const ownEvents = useMemo(() => {
     return {
       mouseover: {
-        '.cell[data-row-index][data-column-index]': (event, ui) => {
+        '.cell[data-row-index][data-column-index]': (event: SyntheticEvent, ui: any) => {
           timer.current && clearTimeout(timer.current);
           // console.log('%cmouseover', 'background:orange');
           styleRef.current.innerHTML = '';
@@ -124,7 +129,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         },
       },
       mouseout: {
-        '.cell[data-row-index]': (event, ui) => {
+        '.cell[data-row-index]': (event: SyntheticEvent, ui: any) => {
           // timer.current && clearTimeout(timer.current);
           // console.log('%cmouseout', 'background:blue');
           styleRef.current.innerHTML = '';
@@ -143,6 +148,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     };
   }, []);
 
+  // @ts-ignore
   const eventHandlers = useEventHandlers({ ...props.events, ...ownEvents }, rows);
 
   console.log('>>>>>>');
@@ -151,7 +157,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
   const renderHeader =
     props.renderHeader ||
-    ((data) => {
+    ((data: any) => {
       return data;
     });
 
@@ -160,6 +166,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     const column = columns[columnIndex];
     const data = row.arr[columnIndex];
 
+    // @ts-ignore
     if (row._isHeader) {
       if (column.header) {
         return column.header(data);
@@ -167,10 +174,12 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       // return data;
       return renderHeader(data);
     }
+    // @ts-ignore
     return column.render(data, { rowIndex, columnIndex });
     // if (rowIndex)
   };
 
+  // @ts-ignore
   const Cell = ({ rowIndex, columnIndex, className, style }) => (
     <div className={className} style={style} data-row-index={rowIndex} data-column-index={columnIndex}>
       {renderCell(rowIndex, columnIndex)}

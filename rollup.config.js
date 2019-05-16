@@ -13,7 +13,8 @@ const pkg = require('./package.json');
 
 const entry = 'src/core';
 
-const external = Object.keys(pkg.dependencies);
+// const external = Object.keys(pkg.dependencies);
+const external = id => !id.startsWith('.') && !id.startsWith('/');
 
 const rollupConfig = {
   input: `${entry}/index.ts`,

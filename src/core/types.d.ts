@@ -23,3 +23,11 @@ declare interface StringFunctionMap extends StringTMap<Function> {}
 declare interface NumberFunctionMap extends NumberTMap<Function> {}
 
 declare type HTMLElementRef = MutableRefObject<HTMLElement | null>;
+
+declare type Column = {
+  name: string;
+  width?: number;
+  header?: Function;
+  render?: Function;
+  getValue?: Function;
+};

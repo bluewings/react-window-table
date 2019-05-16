@@ -11,22 +11,24 @@
     "url": "https://github.com/bluewings/react-window-table"
   },
   "dependencies": {
+    "emotion": "^10.0.9",
+    "react-window-grid": "^1.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-react-jsx-source": "^7.2.0",
     "@types/jest": "^24.0.11",
     "@types/node": "^11.12.0",
     "@types/react": "^16.8.10",
     "@types/react-dom": "^16.8.3",
     "babel-loader": "^8.0.5",
-    "emotion": "^10.0.9",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-window-grid": "^1.0.0"
-  },
-  "devDependencies": {
-    "@babel/plugin-transform-react-jsx-source": "^7.2.0",
     "babel-plugin-transform-commonjs-es2015-modules": "^4.0.1",
     "cra-rewired": "^1.0.22",
-    "docz": "^1.0.3",
-    "docz-theme-default": "^1.0.3",
+    "docz": "^1.2.0",
+    "docz-theme-default": "^1.2.0",
     "faker": "^4.1.0",
     "json-loader": "^0.5.7",
     "node-sass": "^4.11.0",
@@ -34,6 +36,8 @@
     "postcss-preset-env": "^6.5.0",
     "prettier": "^1.16.4",
     "pug-as-jsx-loader": "^1.0.66",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "react-scripts": "^2.1.8",
     "rollup": "^1.2.3",
     "rollup-plugin-babel": "^4.3.2",

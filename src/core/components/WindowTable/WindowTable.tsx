@@ -155,7 +155,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       return data;
     });
 
-  const renderCell = (rowIndex, columnIndex) => {
+  const renderCell = (rowIndex: number, columnIndex: number) => {
     const row = rows[rowIndex];
     const column = columns[columnIndex];
     const data = row.arr[columnIndex];
@@ -182,7 +182,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   return (
     <div>
       <div ref={styleRef} />
-      <pre>{JSON.stringify(hover)}</pre>
+      {/* <pre>{JSON.stringify(hover)}</pre> */}
       <div {...eventHandlers}>
         <WindowGrid
           {...props}

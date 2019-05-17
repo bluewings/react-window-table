@@ -6,16 +6,13 @@ route: /
 import { useState } from 'react';
 import { Props } from 'docz';
 import { Playground } from './resources';
-import { WindowTable } from '../src/core';
+import WindowTable from '../src/core/components/WindowTable/WindowTable';
 import { columns, rows } from './resources/data/fake-users.js'
 import mona from './resources/assets/mona.jpg';
 import useImage from './resources/hooks/useImage';
 
 # Introduction
 
-<Props of={WindowTable} />
-
-[Currently, the Props component is not working.](https://github.com/pedronauck/docz/issues/717)
 
 ## Basic usage
 
@@ -93,3 +90,8 @@ import useImage from './resources/hooks/useImage';
 </Playground>
 
 
+## Properties
+
+<Props of={WindowTable} />
+
+<!-- [Currently, the Props component is not working.](https://github.com/pedronauck/docz/issues/717) -->

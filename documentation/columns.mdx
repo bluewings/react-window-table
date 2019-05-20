@@ -7,9 +7,11 @@ import { useState } from 'react';
 import { Props } from 'docz';
 import { Playground } from './resources';
 import WindowTable from '../src/core/components/WindowTable/WindowTable';
-import { columns, rows } from './resources/data/fake-users.js'
+// import { columns, rows } from './resources/data/fake-users.js'
 import mona from './resources/assets/mona.jpg';
 import useImage from './resources/hooks/useImage';
+
+import { columns, rows } from './resources/data/pokedex.js';
 
 # Introduction
 
@@ -18,19 +20,37 @@ import useImage from './resources/hooks/useImage';
 
 <Playground>
 {() => {
-  const columns = ['Year', 'Sales', 'Expenses'];
+  console.log(columns, rows);
+  return null;
+}}
+</Playground>
+
+<Playground>
+{() => {
+  const columns_ = ['Year', 'Sales', 'Expenses'];
+  const columns = {
+    Year: {},
+    Sales: {},
+    Expenses: {}
+  };
   const rows = [
    ['2014', 1000, 400],
   ['2015', 1170, 460],
   ['2016', 660, 1120],
-  ['2017', 1030, 540]
+  ['2017', 1030, 540],
+  { Year: '2018', Sales: 940, Expenses: 620 }
   ]
 
 
   return (
     <div>
       <pre>
-      {JSON.stringify({ columns, rows}, null, 2)}
+      <WindowTable
+        
+        
+        columns={columns}
+        rows={rows}
+      />
       </pre>
     </div>
   )

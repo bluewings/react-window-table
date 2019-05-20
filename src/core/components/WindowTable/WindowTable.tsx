@@ -59,10 +59,17 @@ type WindowTableProps = {
 //   };
 // }
 
+// console.log(columnWidth)
+const DEFAULT_COLUMN_WIDTH = 150;
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   // const [columns, columnWidth] = useColumns(props);
-  const [columns, columnWidth] = useColumns(props.columns, props.columnWidth);
+
+  const [columns, columnWidth] = useColumns(props.columns, props.columnWidth || DEFAULT_COLUMN_WIDTH);
+  
+  // console.log(columns);
   const rows = useRows(props.rows, columns);
+  // console.log(rows);
+  // return null;
   // return <pre>{JSON.stringify(rows, null, 2)}</pre>;
   // const render
   // const render = (data, columnIndex) => {
@@ -151,9 +158,9 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   // @ts-ignore
   const eventHandlers = useEventHandlers({ ...props.events, ...ownEvents }, rows);
 
-  console.log('>>>>>>');
-  // console.log(eventsHash);
-  console.log('<<<<<<');
+  // console.log('>>>>>>');
+  // // console.log(eventsHash);
+  // console.log('<<<<<<');
 
   const renderHeader =
     props.renderHeader ||
@@ -188,6 +195,8 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
   const fixedTopCount = (props.fixedTopCount || 0) + 1;
 
+  // return 'hello world';
+
   return (
     <div>
       <div ref={styleRef} />
@@ -195,10 +204,13 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       <div {...eventHandlers}>
         <WindowGrid
           {...props}
+          rowHeight={40}
           rowCount={rows.length}
           fixedTopCount={fixedTopCount}
           columnCount={columns.length}
           columnWidth={columnWidth}
+          // columnWidth={100}
+          overscanCount={2}
         >
           {Cell}
         </WindowGrid>

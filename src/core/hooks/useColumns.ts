@@ -6,7 +6,23 @@ function useColumns(p_columns: (Column | string)[], p_columnWidth?: Function | n
   // const { p_columns, p_columnWidth } = props;
 
   const columns = useMemo(() => {
-    return (p_columns || [])
+
+    let _tmp: any = p_columns;
+
+    if (typeof _tmp === 'object' && !Array.isArray(_tmp)) {
+      _tmp = Object.keys(_tmp).map((e: string) => {
+        return {
+          ..._tmp[e],
+          name: e,
+
+        }
+      });
+    };
+
+
+
+
+    return (_tmp || [])
       .filter((column: any) => column && (typeof column === 'string' || typeof column === 'object'))
       .map((column: any) => (typeof column === 'string' ? { name: column } : { ...column }))
       .filter((column: any) => column.name)

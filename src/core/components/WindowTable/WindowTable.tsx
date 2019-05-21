@@ -181,8 +181,9 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       // return data;
       return renderHeader(data);
     }
+    // console.log(row);
     // @ts-ignore
-    return column.render(data, { rowIndex, columnIndex });
+    return column.render(data, row.org, { rowIndex, columnIndex });
     // if (rowIndex)
   };
 

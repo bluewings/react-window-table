@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useState, useRef } from 'react';
 
-function useImage(imgSrc, width = 100) {
+function useImage(imgSrc: any, width = 100) {
   const [info, setInfo] = useState({
     w: 0,
     h: 0,
@@ -21,6 +21,7 @@ function useImage(imgSrc, width = 100) {
 
       console.log(canvas.width, canvas.height);
       // document.body.appendChild(canvas);
+      // @ts-ignore
       ctx.drawImage(imgEl, 0, 0, imgEl.width, imgEl.height, 0, 0, canvas.width, canvas.height);
       const h = canvas.height;
       const w = canvas.width;
@@ -34,6 +35,7 @@ function useImage(imgSrc, width = 100) {
         const row = [];
         for (let x = 0; x < w; ++x) {
           // console.log(x,y);
+          // @ts-ignore
           const [r, g, b, a] = ctx.getImageData(x, y, 1, 1).data;
           row.push({ r, g, b, a, rgb: `rgb(${r},${g},${b})` });
         }
@@ -46,7 +48,7 @@ function useImage(imgSrc, width = 100) {
         //   }
       }
       // console.log(data);
-
+      // @ts-ignore
       setInfo({
         w,
         h,

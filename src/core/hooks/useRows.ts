@@ -13,12 +13,16 @@ function useRows(p_rows: any[], columns: Column[]) {
       _row = { ...row };
     }
 
+    const intl = (e: any) => {
+      return e;
+    }
+
     const data = {
       org: { ..._row },
       arr: columns.map((e) => {
         let value = _row[e.name];
         if (typeof e.getValue === 'function') {
-          value = e.getValue(value);
+          value = e.getValue(value, _row, { intl });
         }
         if (typeof value === 'string' || typeof value === 'number') {
           return value;

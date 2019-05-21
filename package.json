@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "emotion": "^10.0.9",
-    "react-window-grid": "^1.0.0"
+    "react-window-grid": "^1.0.12"
   },
   "peerDependencies": {
     "react": "^16.8.0",

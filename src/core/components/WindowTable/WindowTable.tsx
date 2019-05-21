@@ -37,6 +37,9 @@ type WindowTableProps = {
   events: StringFunctionMap;
 
   renderHeader?: Function;
+  maxHeight?: number;
+
+  context?: any;
 
   // maxScrollY?: number
   // maxScrollX?: number
@@ -64,10 +67,15 @@ const DEFAULT_COLUMN_WIDTH = 150;
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   // const [columns, columnWidth] = useColumns(props);
 
+  const context = useMemo(() => {
+    return props.context || {};
+  }, [props.context || null])
   const [columns, columnWidth] = useColumns(props.columns, props.columnWidth || DEFAULT_COLUMN_WIDTH);
+
+
   
   // console.log(columns);
-  const rows = useRows(props.rows, columns);
+  const rows = useRows(props.rows, columns, context);
   // console.log(rows);
   // return null;
   // return <pre>{JSON.stringify(rows, null, 2)}</pre>;

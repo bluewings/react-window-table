@@ -30,4 +30,6 @@ declare type Column = {
   header?: Function;
   render?: Function;
   getValue?: Function;
+  ellipsis?: boolean;
+  textAlign?: 'left' | 'center' | 'right';
 };

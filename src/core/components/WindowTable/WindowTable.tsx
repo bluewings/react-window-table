@@ -2,6 +2,7 @@ import * as React from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import { useColumns, useEventHandlers, useRows } from '../../hooks';
+import styles from './WindowTable.module.scss';
 
 type ScrollEvent = SyntheticEvent<HTMLDivElement>;
 
@@ -189,18 +190,52 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       // return data;
       return renderHeader(data);
     }
+
+    // if (columns[columnIndex] && columns[columnIndex].textAlign) {
+    //   _style = { ..._style, textAlign}
+    // }
+
+    // let style = {};
+
+    let className = styles.cell;
+    if (column.ellipsis !== false) {
+      className += ' ' + styles.ellipsis
+    }
+    if (column.textAlign && styles['text-' + column.textAlign]) {
+      className += ' ' + styles['text-' + column.textAlign]
+    }
+
     // console.log(row);
     // @ts-ignore
-    return column.render(data, row.org, { rowIndex, columnIndex });
+    const rendered = column.render(data, row.org, { rowIndex, columnIndex });
+    // return 
+    // return column.render(data, row.org, { rowIndex, columnIndex });
+  
+    return (
+      <div className={className}>
+        {rendered}
+      </div>
+    )
+    // }
+    // return rendered;
     // if (rowIndex)
   };
 
+  
+
   // @ts-ignore
-  const Cell = ({ rowIndex, columnIndex, className, style }) => (
-    <div className={className} style={style} data-row-index={rowIndex} data-column-index={columnIndex}>
-      {renderCell(rowIndex, columnIndex)}
-    </div>
-  );
+  const Cell = ({ rowIndex, columnIndex, className, style }) => {
+    let _style = style;
+    // console.log(columns[columnIndex]);
+    // let _className = className;
+    // @ts-ignore
+
+    return (
+      <div className={className} style={_style} data-row-index={rowIndex} data-column-index={columnIndex}>
+        {renderCell(rowIndex, columnIndex)}
+      </div>
+    );
+  }
 
   const fixedTopCount = (props.fixedTopCount || 0) + 1;
 

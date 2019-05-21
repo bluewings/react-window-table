@@ -1,3 +1,26 @@
 .root {
   display: block;
 }
+
+.cell {
+  // display: block;
+  width: 100%;
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}

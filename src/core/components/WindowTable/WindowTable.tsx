@@ -210,6 +210,10 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     }
 
     // console.log(row);
+    if (column.name === 'contractAgencies') {
+      console.log(columnIndex, row.arr, data, row.org)
+    }
+    
     // @ts-ignore
     const rendered = column.render(data, row.org, { ...context, rowIndex, columnIndex });
     // return 

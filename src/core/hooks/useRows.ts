@@ -27,7 +27,8 @@ function useRows(p_rows: any[], columns: Column[], context: any) {
           if (typeof value === 'string' || typeof value === 'number') {
             return value;
           }
-          return '-';
+          return value;
+          // return '-';
         }),
       };
   

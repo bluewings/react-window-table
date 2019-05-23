@@ -211,12 +211,12 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
     // console.log(row);
     // @ts-ignore
-    const rendered = column.render(data, row.org, { rowIndex, columnIndex });
+    const rendered = column.render(data, row.org, { ...context, rowIndex, columnIndex });
     // return 
     // return column.render(data, row.org, { rowIndex, columnIndex });
   
     return (
-      <div className={className}>
+      <div className={className} data-column={column.name}>
         {rendered}
       </div>
     )

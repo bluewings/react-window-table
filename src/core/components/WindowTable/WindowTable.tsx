@@ -182,13 +182,17 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     const column = columns[columnIndex];
     const data = row.arr[columnIndex];
 
+    if (!column) {
+      return null;
+    }
+
     // @ts-ignore
     if (row._isHeader) {
       if (column.header) {
-        return column.header(data);
+        return column.header(data, column);
       }
       // return data;
-      return renderHeader(data);
+      return renderHeader(data, column);
     }
 
     // if (columns[columnIndex] && columns[columnIndex].textAlign) {
@@ -255,6 +259,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           columnWidth={columnWidth}
           // columnWidth={100}
           overscanCount={2}
+          fillerColumn="append"
         >
           {Cell}
         </WindowGrid>

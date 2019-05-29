@@ -24,3 +24,20 @@
 .text-center {
   text-align: center;
 }
+
+.resizeHelper {
+  >div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    // height: 100px;
+    // background: orange;
+    // border: 1px dotted red;
+    border-right: 1px solid #d3d3d3;
+    // border-right: 1px solid #aaa;
+    ;
+    background: rgba(0, 0, 0, .1);
+  }
+
+}

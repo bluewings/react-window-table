@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 // function useColumns(props: any) {
 // console.log(p_columns);
-function useColumns(p_columns: (Column | string)[], p_columnWidth?: Function | number): [Column[], Function] {
+function useColumns(p_columns: (Column | string)[], p_columnWidth?: Function | number): [Column[], Function, number] {
   // const { p_columns, p_columnWidth } = props;
 
   const columns = useMemo(() => {
@@ -41,7 +41,12 @@ function useColumns(p_columns: (Column | string)[], p_columnWidth?: Function | n
     [columns, p_columnWidth],
   );
 
-  return [columns, columnWidth];
+  // console.log(columns.)
+  const fixedLeftCount = useMemo(() => {
+    return columns.filter((e: any) => e.fixed).length
+  }, [columns]);
+
+  return [columns, columnWidth, fixedLeftCount];
 }
 
 export default useColumns;

@@ -44,30 +44,45 @@ type WindowTableProps = {
 
   context?: any;
 
+  onColumnResizeEnd?: Function;
+
 };
 
 const DEFAULT_COLUMN_WIDTH = 150;
 
-function useDragHandle(columns: Column[], columnWidth: Function, fixedLeftCount: number, container: any, resizeHp: any) {
+function useDragHandle(columns: Column[], columnWidth: Function, fixedLeftCount: number, container: any, resizeHp: any, handleResizeEnd?: Function, sizeInfo?: any) {
 
   const [resizableKey, setResizableKey] = useState('tmp');
+
+
+
+  const handleResize = useRef<Function>();
+  handleResize.current = handleResizeEnd;
 
   const aaa = useRef<any>({ baseWidth: 0, divEl: null });
 
   const [onStart, onDrag, onStop] = useMemo(() => {
     const handleDragStart = (event: any, data: any) => {
-      console.log(data);
+
       const { node } = data;
       const columnKey = node.getAttribute('data-column-key');
-      console.log(columnKey);
+
   
       const index = columns.findIndex(e => e.name === columnKey);
+
+
+
   
-      console.log(index);
+
+
+      node.style.visibility = 'hidden';
   
       // const left = columns.slice(0, index).reduce((prev, curr, index) => prev + columnWidth(index), 0);
-      // console.log(node.getBoundingClientRect());
+      //
       let width = columnWidth(index);
+
+      const _width = width;
+      
       let left = node.getBoundingClientRect().right - width - container.current.getBoundingClientRect().left;
 
       const fixedLeftWidth = columns.slice(0, fixedLeftCount).reduce((prev, curr, index) => prev + columnWidth(index), 0);
@@ -78,11 +93,21 @@ function useDragHandle(columns: Column[], columnWidth: Function, fixedLeftCount:
 
       }
 
-      
-      console.log({ left });
+      const column = columns[index];
+
       aaa.current.baseWidth = width;
+      aaa.current._baseWidth = _width;
+
+      
       aaa.current.baseLeft = left;
       aaa.current.fixedLeftWidth = fixedLeftWidth;
+      // @ts-ignore
+      aaa.current.minWidth = (column && column.minWidth) || 80;
+      aaa.current._minWidth = Math.max(0, aaa.current.minWidth - (
+       _width - aaa.current.baseWidth));
+
+      // aaa.current._baseWidth = width;
+      aaa.current.columnKey = columnKey;
 
   
       if (resizeHp.current) {
@@ -91,50 +116,56 @@ function useDragHandle(columns: Column[], columnWidth: Function, fixedLeftCount:
         resizeHp.current.appendChild(divEl);
         divEl.style.left = `${left}px`
         divEl.style.width = `${width}px`
-        // divEl.innerHTML =     JSON.stringify({
-        //   left,
-        //   _width: columnWidth(index),
-        //   width: columnWidth(index),
-        // });
+        if (sizeInfo.current ) {
+          divEl.style.height = `${sizeInfo.current.clientHeight}px`
+        }
 
         aaa.current.divEl = divEl;
+
+        document.body.classList.add(styles.cursorResize);
   
       }
   
     }
 
     const handleDrag = (event: any, data: any) => {
-
-     
-
-    let width = Math.max(80,  aaa.current.baseWidth + data.x);
-
-    const clintWidth = container.current.getBoundingClientRect().width;
-
-    if (aaa.current.baseLeft + width > clintWidth) {
-      width = clintWidth - aaa.current.baseLeft;
-    }
-
-    // if (left + width <)
-
-
-
-
-
-
-
-    aaa.current.divEl.style.width = `${width}px`
+      let width = Math.max(aaa.current._minWidth,  aaa.current.baseWidth + data.x);
+      if (sizeInfo.current ) {
+        const clintWidth = sizeInfo.current.clientWidth;
+        if (width > clintWidth - aaa.current.baseLeft) {
+          width = clintWidth - aaa.current.baseLeft;
+        }
+        aaa.current.divEl.style.width = `${width}px`
+      }
     }
   
-    const resetResizable= () => {
-      console.log('>>> reset');
+    const resetResizable= (event: any, data: any) => {
+
       
-      setResizableKey(Math.random() + '_');
-      console.log('>>> reset done');
+      
+
+      document.body.classList.remove(styles.cursorResize);
+
+      let width = Math.max(aaa.current.minWidth,  aaa.current._baseWidth + data.x);
+
+      // data.node.style.visibility = 'visible';
+
+      // data.node.style.transform = '';      // handleResize.current
+
+
+
+
+      if (aaa.current && typeof handleResize.current === 'function') {
+        const { columnKey } = aaa.current;
+        handleResize.current({ name: columnKey, width })
+
+      }
       if (resizeHp.current) {
         
         resizeHp.current.innerHTML = '';
       }
+      setResizableKey(Math.random() + '_');
+      // return false;
     }
     return [handleDragStart, handleDrag, resetResizable];
   }, [columns, columnWidth])
@@ -209,11 +240,24 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
   const container = useRef<HTMLElementRef>();
 
+  // const [sizeInfo, setSizeInfo] = useState({});
+  const sizeInfoRef = useRef<any>({});
+
+
+  const handleResize = (info: any) => {
+    sizeInfoRef.current = info;
+    // setSizeInfo(info);
+  }
+
   const { key: resizableKey, onStart: handleDragStart,
     onDrag: handleDrag,
-    onStop: handleDragStop } = useDragHandle(columns, columnWidth, fixedLeftCount, container, resizeHp);
+    onStop: handleDragStop } = useDragHandle(columns, columnWidth, fixedLeftCount, container, resizeHp,
+      
+      props.onColumnResizeEnd, sizeInfoRef);
 
-  console.log('%c-=-=-=-=-=-=-', 'background:yellow');
+
+
+
 
 
 
@@ -226,9 +270,9 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   
       return (
         <div>
-        <div style={{ border: '2px solid red' }}>
+        {/* <div style={{ border: '2px solid red' }}> */}
           {txt}
-        </div>
+        {/* </div> */}
         <div
   
         >
@@ -239,7 +283,8 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         onDrag={handleDrag}
         onStop={handleDragStop}
         axis="x">
-          <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 10, background: 'yellow'}}
+          <div className={styles.resizeHandle} 
+          
           data-column-key={column.name}
           >
           </div>
@@ -319,6 +364,9 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     e.preventDefault();
   }
 
+  // const [sizeInfo, setSizeInfo] = useState({});
+
+
   return (
     <div ref={container}>
       <div ref={styleRef} />
@@ -336,6 +384,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           
           overscanCount={2}
           fillerColumn="append"
+          onResize={handleResize}
         >
           {Cell}
         </WindowGrid>

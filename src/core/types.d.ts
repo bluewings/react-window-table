@@ -32,4 +32,5 @@ declare type Column = {
   getValue?: Function;
   ellipsis?: boolean;
   textAlign?: 'left' | 'center' | 'right';
+  minWidth?: number;
 };

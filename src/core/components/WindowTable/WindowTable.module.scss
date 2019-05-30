@@ -25,19 +25,60 @@
   text-align: center;
 }
 
+$color: rgb(30, 136, 229);
+$color_alpha: rgba(30, 136, 229, .1);
+
 .resizeHelper {
   >div {
     position: absolute;
     top: 0;
-    bottom: 0;
-    width: 100px;
+    // bottom: 0;
+    // width: 100px;
     // height: 100px;
     // background: orange;
     // border: 1px dotted red;
-    border-right: 1px solid #d3d3d3;
+    border-left: 1px solid rgba(0, 0, 0, .15);
+    border-right: 1px solid rgba(0, 0, 0, .15);
+
+    border-left: 1px solid #1e88e5;
+    border-right: 1px solid #1e88e5;
+
+
+    ;
     // border-right: 1px solid #aaa;
     ;
+    border-left: 1px solid $color;
+    border-right: 1px solid $color;
     background: rgba(0, 0, 0, .1);
+    background: $color_alpha;
+
+    // border-right:
   }
 
+}
+
+.resizeHandle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 6px;
+  // background: yellow;
+
+  background: rgba(0, 0, 0, 0);
+  cursor: ew-resize;
+
+  &:hover {
+    // border-left: 1px solid rgba(0, 0, 0, .15);
+    // border-right: 1px solid rgba(0, 0, 0, .15);
+    // background: rgba(0, 0, 0, .1);
+    background: #1e88e5;
+    background: $color;
+    // background: rgba(0, 0, 0, 0);
+  }
+
+}
+
+.cursorResize {
+  cursor: ew-resize;
 }

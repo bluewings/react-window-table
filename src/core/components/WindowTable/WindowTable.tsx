@@ -297,7 +297,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   }, [resizableKey, handleDragStart, handleDragStop]);
 
   const renderCell = useMemo(() => {
-    return (rowIndex: number, columnIndex: number) => {
+    return (rowIndex: number, columnIndex: number, style: any) => {
       const row = rows[rowIndex];
       const column = columns[columnIndex];
       const data = row.arr[columnIndex];
@@ -322,9 +322,30 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       if (column.textAlign && styles['text-' + column.textAlign]) {
         className += ' ' + styles['text-' + column.textAlign]
       }
-  
+
+      let rendered = null;
       // @ts-ignore
-      const rendered = column.render(data, row.org, { ...context, rowIndex, columnIndex });
+      if (typeof props.renderCell === 'function') {
+        // @ts-ignore
+        rendered = props.renderCell(data, row.org,  { ...context, rowIndex, columnIndex, style });
+      }
+
+
+      if (rendered === null) {
+      // @ts-ignore
+      rendered = column.render(data, row.org, { ...context, rowIndex, columnIndex, style });
+      }
+
+
+      // console.log(data, row);
+
+      // if (row && row.org && row.org._isLoading) {
+      //   return (
+      //     <div className={className} data-column={column.name}>
+      //       ...
+      //     </div>
+      //   )  
+      // }
   
       return (
         <div className={className} data-column={column.name}>
@@ -352,7 +373,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   
       return (
         <div className={className} style={_style} data-row-index={rowIndex} data-column-index={columnIndex}>
-          {renderCell(rowIndex, columnIndex)}
+          {renderCell(rowIndex, columnIndex, _style)}
         </div>
       );
     }
@@ -373,6 +394,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       {/* <pre>{JSON.stringify(hover)}</pre> */}
       <div onMouseMove={cancelMouseDown}>
       <div {...eventHandlers}>
+        { /* @ts-ignore */ }
         <WindowGrid
           {...props}
           rowHeight={40}
@@ -383,6 +405,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           columnWidth={columnWidth}
           
           overscanCount={2}
+          overflow={rows.length > 1}
           fillerColumn="append"
           onResize={handleResize}
         >

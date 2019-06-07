@@ -295,7 +295,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       // @ts-ignore
       if (typeof props.renderCell === 'function') {
         // @ts-ignore
-        rendered = props.renderCell(data, row.org, { ...context, rowIndex, columnIndex, 
+        rendered = props.renderCell(data, row.org, column, { ...context, rowIndex, columnIndex, 
   
           _childRow: !!row._childRow,
           style });

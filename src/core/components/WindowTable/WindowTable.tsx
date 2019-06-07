@@ -45,7 +45,7 @@ type WindowTableProps = {
   context?: any;
 
   getChildRows?: Function;
-  classNames?: Function;
+  getClassNames?: Function;
 
   onColumnResizeEnd?: Function;
 };
@@ -324,10 +324,10 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     };
   }, [rows, columns, renderHeader]);
 
-  const classNames = useMemo(() => {
+  const getClassNames = useMemo(() => {
 
     // return ()
-    if (typeof props.classNames === 'function') {
+    if (typeof props.getClassNames === 'function') {
       return (rowIndex: number, columnIndex: number) => {
 
 // console.log(rows[rowIndex])
@@ -340,7 +340,7 @@ const tmp = {
 
 
           // @ts-ignore
-        return props.classNames({ rowIndex, columnIndex,
+        return props.getClassNames({ rowIndex, columnIndex,
           ...tmp
         });
       }
@@ -364,7 +364,7 @@ const tmp = {
         };
       }
 // console.log()
-      const className = className_ + ` ${classNames(rowIndex, columnIndex)}`;
+      const className = className_ + ` ${getClassNames(rowIndex, columnIndex)}`;
 
 
       return (
@@ -373,7 +373,7 @@ const tmp = {
         </div>
       );
     };
-  }, [renderCell, classNames]);
+  }, [renderCell, getClassNames]);
 
   const fixedTopCount = (props.fixedTopCount || 0) + 1;
 

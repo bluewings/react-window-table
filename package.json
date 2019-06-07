@@ -13,7 +13,7 @@
   "dependencies": {
     "emotion": "^10.0.9",
     "react-draggable": "^3.3.0",
-    "react-window-grid": "^1.0.18"
+    "react-window-grid": "^1.0.20"
   },
   "peerDependencies": {
     "react": "^16.8.0",

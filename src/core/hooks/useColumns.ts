@@ -6,7 +6,6 @@ function useColumns(p_columns: (Column | string)[], p_columnWidth?: Function | n
   // const { p_columns, p_columnWidth } = props;
 
   const columns = useMemo(() => {
-
     let _tmp: any = p_columns;
 
     if (typeof _tmp === 'object' && !Array.isArray(_tmp)) {
@@ -14,13 +13,9 @@ function useColumns(p_columns: (Column | string)[], p_columnWidth?: Function | n
         return {
           ..._tmp[e],
           name: e,
-
-        }
+        };
       });
-    };
-
-
-
+    }
 
     return (_tmp || [])
       .filter((column: any) => column && (typeof column === 'string' || typeof column === 'object'))
@@ -43,7 +38,7 @@ function useColumns(p_columns: (Column | string)[], p_columnWidth?: Function | n
 
   // console.log(columns.)
   const fixedLeftCount = useMemo(() => {
-    return columns.filter((e: any) => e.fixed).length
+    return columns.filter((e: any) => e.fixed).length;
   }, [columns]);
 
   return [columns, columnWidth, fixedLeftCount];

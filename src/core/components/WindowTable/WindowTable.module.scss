@@ -1,5 +1,6 @@
 .root {
   display: block;
+  position: relative;
 }
 
 .cell {
@@ -26,10 +27,10 @@
 }
 
 $color: rgb(30, 136, 229);
-$color_alpha: rgba(30, 136, 229, .1);
+$color_alpha: rgba(30, 136, 229, 0.1);
 
 .resizeHelper {
-  >div {
+  > div {
     position: absolute;
     top: 0;
     // bottom: 0;
@@ -37,24 +38,20 @@ $color_alpha: rgba(30, 136, 229, .1);
     // height: 100px;
     // background: orange;
     // border: 1px dotted red;
-    border-left: 1px solid rgba(0, 0, 0, .15);
-    border-right: 1px solid rgba(0, 0, 0, .15);
+    border-left: 1px solid rgba(0, 0, 0, 0.15);
+    border-right: 1px solid rgba(0, 0, 0, 0.15);
 
     border-left: 1px solid #1e88e5;
     border-right: 1px solid #1e88e5;
 
-
-    ;
     // border-right: 1px solid #aaa;
-    ;
     border-left: 1px solid $color;
     border-right: 1px solid $color;
-    background: rgba(0, 0, 0, .1);
+    background: rgba(0, 0, 0, 0.1);
     background: $color_alpha;
 
     // border-right:
   }
-
 }
 
 .resizeHandle {
@@ -76,9 +73,12 @@ $color_alpha: rgba(30, 136, 229, .1);
     background: $color;
     // background: rgba(0, 0, 0, 0);
   }
-
 }
 
 .cursorResize {
   cursor: ew-resize;
+}
+
+:global(.wow) {
+  border: 2px solid blue;
 }

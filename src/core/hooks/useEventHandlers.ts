@@ -52,11 +52,16 @@ function useEventHandlers(events: StringFunctionMap, rows: StringAnyMap[]) {
           let rowIndex = ~~rowIndex_;
           let columnIndex = ~~columnIndex_;
           const row = rows[rowIndex_].org;
+          const { _key, _index } = rows[rowIndex_];
+
           return {
             target,
             rowIndex,
             columnIndex,
             data: row,
+            // @ts-ignore
+            _key,
+            _index,
           };
         }
       }

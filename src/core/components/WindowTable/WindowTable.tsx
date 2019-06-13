@@ -3,11 +3,9 @@ import { useEffect, isValidElement } from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
-import { useColumns, useEventHandlers, useRows } from '../../hooks';
+import { useColumns, useEventHandlers, useRows, useTheme } from '../../hooks';
 import { GetChildRowsFunc } from '../../hooks/useRows';
 import styles from './WindowTable.module.scss';
-
-type ScrollEvent = SyntheticEvent<HTMLDivElement>;
 
 type WindowTableProps = {
   scrollTop?: number;
@@ -61,8 +59,6 @@ type WindowTableProps = {
 
 const DEFAULT_COLUMN_WIDTH = 150;
 
-const DEFAULT_ROW_HEIGHT = 40;
-
 const cancelMouseDown = (e: any) => {
   e.preventDefault();
 };
@@ -77,7 +73,7 @@ const toValidContent = (e: any) => {
   }
   return null;
   // return type === 'string' || type === 'number' || isValidElement(e);
-}
+};
 
 function useDragHandle(
   columns: Column[],
@@ -193,14 +189,13 @@ function useDragHandle(
 }
 
 const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
-  const context = useMemo(() => {
-    return props.context || {};
-  }, [props.context || null]);
-  const [columns, columnWidth, fixedLeftCount] = useColumns(
-    props.columns,
-    props.checkbox,
-    props.columnWidth || DEFAULT_COLUMN_WIDTH,
-  );
+  const context = useMemo(() => props.context || {}, [props.context || null]);
+
+  const [columns, columnWidth, fixedLeftCount] = useColumns({
+    columns: props.columns,
+    checkbox: props.checkbox,
+    columnWidth: props.columnWidth,
+  });
 
   const [rows, dataRows, rowHeight] = useRows({
     rows: props.rows,
@@ -233,8 +228,10 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   selectedRef.current = selected;
 
   // @ts-ignore
-    // @ts-ignore
-    const classNames = useMemo(() => ({ CELL: 'cell', ...(props.classNames || {})}), [props.classNames || null])
+  // @ts-ignore
+  const classNames = useMemo(() => ({ HEADER: 'header', CELL: 'cell', ...(props.classNames || {}) }), [
+    props.classNames || null,
+  ]);
 
   const ownEvents = useMemo(() => {
     return {
@@ -259,7 +256,10 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         },
       },
       click: {
-        [`.${classNames.CELL}[data-row-index] input[type=checkbox][data-rwt-checkbox-control]`]: (event: SyntheticEvent, ui: any) => {
+        [`.${classNames.CELL}[data-row-index] input[type=checkbox][data-rwt-checkbox-control]`]: (
+          event: SyntheticEvent,
+          ui: any,
+        ) => {
           const parentRows = dataRows.filter((e: any) => !e._isChildRow);
           // console.log('>%-=-=-=-=-=-=-', 'background:yellow')
           if (selectedRef.current.length < parentRows.length) {
@@ -268,7 +268,10 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
             setSelected([]);
           }
         },
-        [`.${classNames.CELL}[data-row-index] input[type=checkbox][data-rwt-checkbox]`]: (event: SyntheticEvent, ui: any) => {
+        [`.${classNames.CELL}[data-row-index] input[type=checkbox][data-rwt-checkbox]`]: (
+          event: SyntheticEvent,
+          ui: any,
+        ) => {
           let _selected: StringAnyMap = selectedRef.current.reduce((accum, curr) => {
             return { ...accum, [curr]: true };
           }, {});
@@ -326,16 +329,18 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
   const renderHeader = useMemo(() => {
     return (data: any, column: any) => {
-      let txt = column.name;
+      let txt = column.label;
       if (typeof props.renderHeader === 'function') {
         txt = props.renderHeader(data, column);
       }
 
+      if (typeof props.onColumnResizeEnd !== 'function') {
+        return txt;
+      }
+
       return (
-        <div>
-          {/* <div style={{ border: '2px solid red' }}> */}
+        <>
           {txt}
-          {/* </div> */}
           <div>
             <Draggable
               key={resizableKey}
@@ -347,12 +352,12 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
               <div className={styles.resizeHandle} data-column-key={column.name} />
             </Draggable>
           </div>
-        </div>
+        </>
       );
     };
-  }, [resizableKey, handleDragStart, handleDragStop]);
+  }, [resizableKey, handleDragStart, handleDragStop, props.onColumnResizeEnd || null]);
 
-  const renderCell = useMemo(() => {
+  const renderCore = useMemo(() => {
     const seletedMap = selected.reduce((accum, curr) => {
       return { ...accum, [curr]: true };
     }, {});
@@ -373,80 +378,71 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         return null;
       }
 
-
       let className = styles.cell;
-      if (column.ellipsis !== false) {
-        className += ' ' + styles.ellipsis;
-      }
-      if (column.textAlign && styles['text-' + column.textAlign]) {
-        className += ' ' + styles['text-' + column.textAlign];
-      }
+      // if (column.ellipsis !== false) {
+      //   className += ' ' + styles.ellipsis;
+      // }
+      // if (column.textAlign && styles['text-' + column.textAlign]) {
+      //   className += ' ' + styles['text-' + column.textAlign];
+      // }
+
+      let rendered = null;
 
       // @ts-ignore
       if (row._isHeader) {
         if (column.header) {
-          return column.header(data, column, {
+          rendered = column.header(data, column, {
             selectedStatus,
           });
+        } else {
+          // @ts-ignore
+          rendered = renderHeader(data, column, { selectedStatus });
         }
+      } else {
+        const { _key, _index } = row;
+
         // @ts-ignore
-        return renderHeader(data, column, { selectedStatus });
-      }
+        if (typeof props.renderCell === 'function') {
+          // @ts-ignore
+          rendered = props.renderCell(data, row.obj, column, {
+            ...context,
+            rowIndex,
+            columnIndex,
+            _key,
+            _index,
+            isSelected,
+            selectedStatus,
 
-      // if (column.align && styles['text-' + column.align]) {
-      //   className += ' ' + styles['text-' + column.align];
-      // }
+            _isChildRow: !!row._isChildRow,
+            style,
+          });
+        }
 
-      const { _key, _index } = row;
-      let rendered = null;
-      // @ts-ignore
-      if (typeof props.renderCell === 'function') {
-        // @ts-ignore
-        rendered = props.renderCell(data, row.obj, column, {
-          ...context,
-          rowIndex,
-          columnIndex,
-          _key,
-          _index,
-          isSelected,
-          selectedStatus,
-
-          _isChildRow: !!row._isChildRow,
-          style,
-        });
-      }
-
-      if (rendered === null) {
-        // @ts-ignore
-        rendered = column.render(data, row.obj, {
-          ...context,
-          rowIndex,
-          columnIndex,
-          _key,
-          _index,
-          isSelected,
-          selectedStatus,
-          _isChildRow: !!row._isChildRow,
-          style,
-        });
+        if (rendered === null) {
+          // @ts-ignore
+          rendered = column.render(data, row.obj, {
+            ...context,
+            rowIndex,
+            columnIndex,
+            _key,
+            _index,
+            isSelected,
+            selectedStatus,
+            _isChildRow: !!row._isChildRow,
+            style,
+          });
+        }
       }
 
       rendered = toValidContent(rendered);
-      // console.log(data, row);
 
-      // if (row && row.obj && row.obj._isLoading) {
-      //   return (
-      //     <div className={className} data-column={column.name}>
-      //       ...
-      //     </div>
-      //   )
-      // }
+      return rendered;
 
-      return (
-        <div className={className} data-column={column.name}>
-          {rendered}
-        </div>
-      );
+      // return (
+      //   <div className={className} data-column={column.name}>
+      //     {rendered}
+      //   </div>
+      // );
     };
   }, [rows, columns, renderHeader, selected, selectedStatus]);
 
@@ -461,6 +457,8 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           _rowIndex: row._index,
           _isChildRow: row._isChildRow,
         };
+
+        const column = columns[columnIndex];
 
         // @ts-ignore
         return props.getClassNames({ rowIndex, columnIndex, ...tmp });
@@ -484,16 +482,30 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           padding: 0,
         };
       }
+
+      let row = rows[rowIndex];
+
+      let className__ = ' ' + styles.cell;
+      const column = columns[columnIndex] || {};
+      if (column.ellipsis !== false) {
+        className__ += ' ' + styles.ellipsis;
+      }
+      if (column.textAlign && styles['text-' + column.textAlign]) {
+        className__ += ' ' + styles['text-' + column.textAlign];
+      }
+      if (row._isHeader) {
+        className__ += ' ' + classNames.HEADER;
+      }
       // console.log()
-      const className = className_ + ` ${getClassNames(rowIndex, columnIndex)}`;
+      const className = className_ + className__ + ` ${getClassNames(rowIndex, columnIndex)}`;
 
       return (
         <div className={className} style={_style} data-row-index={rowIndex} data-column-index={columnIndex}>
-          {renderCell(rowIndex, columnIndex, _style)}
+          {renderCore(rowIndex, columnIndex, _style)}
         </div>
       );
     };
-  }, [renderCell, getClassNames]);
+  }, [rows, columns, renderCore, getClassNames, classNames]);
 
   useEffect(() => {
     const keys = dataRows
@@ -511,11 +523,11 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     if (Array.isArray(props.selected)) {
       const hash = props.selected.sort().join(',');
       if (Array.isArray(props.selected) && selectedProps.current !== hash && hash !== selected.sort().join(',')) {
-        setSelected( props.selected);  
+        setSelected(props.selected);
       }
       selectedProps.current = hash;
     }
-  }, [props.selected || null])
+  }, [props.selected || null]);
 
   useEffect(() => {
     if (props.status !== 'PENDING' && typeof props.onSelect === 'function') {
@@ -523,11 +535,17 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     }
   }, [props.status || null, selected]);
 
-
   // console.log(selected);
 
+  const theme = useTheme(props.theme);
+
   // @ts-ignore
-  return (    <div ref={container} className={styles.root}>      <div ref={styleRef} />      <div onMouseMove={cancelMouseDown}>        <div {...eventHandlers}>          <WindowGrid
+  return (
+    <div ref={container} className={styles.root}>
+      <div ref={styleRef} />
+      <div onMouseMove={cancelMouseDown}>
+        <div {...eventHandlers}>
+          <WindowGrid
             {...props}
             classNames={classNames}
             rowHeight={rowHeight}
@@ -540,6 +558,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
             overflow={rows.length > 1}
             fillerColumn="append"
             onResize={handleResize}
+            theme={theme}
           >
             {Cell}
           </WindowGrid>

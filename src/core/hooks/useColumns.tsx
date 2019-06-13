@@ -3,30 +3,41 @@ import { useMemo } from 'react';
 import InputCheckbox from '../components/InputCheckbox';
 import styles from './useColumns.module.scss';
 
-// function useColumns(props: any) {
-// console.log(p_columns);
+type UseColumnsParams = {
+  columns: (Column | string)[];
+  checkbox?: boolean;
+  columnWidth?: Function | number;
+};
+
+const DEFAULT_COLUMN_WIDTH = 150;
+
 const noop = () => {};
 
-function useColumns(
-  p_columns: (Column | string)[],
-  checkbox?: boolean,
-  p_columnWidth?: Function | number,
-): [Column[], Function, number] {
-  // const { p_columns, p_columnWidth } = props;
-  const _checkbox = !!checkbox;
+function getLabel(column = {}) {
+  let label = '';
+  if (column.label) {
+    label = column.label;
+  } else {
+    label = column.name
+      .replace(/([a-z])([A-Z])/g, (all, p1, p2) => {
+        return p1 + ' ' + p2.toLowerCase();
+      })
+      .replace(/\s+/g, ' ');
+  }
+  return label.trim();
+  // if (column.name) {
 
-  const columns = useMemo(() => {
-    let _tmp: any = p_columns;
+  // }
+}
+
+function useColumns({ columns, columnWidth, checkbox }: UseColumnsParams): [Column[], Function, number] {
+  const normalize = useMemo(() => {
+    let _tmp: any = columns;
 
     if (typeof _tmp === 'object' && !Array.isArray(_tmp)) {
-      _tmp = Object.keys(_tmp).map((e: string) => {
-        return {
-          ..._tmp[e],
-          name: e,
-        };
-      });
+      _tmp = Object.keys(_tmp).map((e: string) => ({ ..._tmp[e], name: e }));
     }
-    if (_checkbox) {
+    if (!!checkbox) {
       _tmp = [
         {
           _system: true,
@@ -35,28 +46,17 @@ function useColumns(
           width: 60,
           // @ts-ignore
           header: (arg1, arg2, { selectedStatus }) => {
-            // console.log(arg1, arg2, arg3);
-            // const { selectedStatus } = arg3;
-            // const selectedStatus = 'aaa';
             let checked = selectedStatus === 'all';
             let indeterminate = selectedStatus === 'some' ? 'true' : 'false';
-
             return (
-              <div className={styles.outerCheckbox}>
               <InputCheckbox
-              type="checkbox"
-              data-rwt-checkbox-control
-              checked={checked}
-              indeterminate={indeterminate}
-              onChange={noop}
-            />
-            </div>
-    // <div>
-    //             {/* [{selectedStatus}] */}
-    
-    //           </div>
+                type="checkbox"
+                data-rwt-checkbox-control
+                checked={checked}
+                indeterminate={indeterminate}
+                onChange={noop}
+              />
             );
-            // return <input type="checkbox" data-rwt-checkbox-control />;
           },
           render: (arg1: any, arg2: any, arg3: any) => {
             const { rowIndex, columnIndex, _key, isSelected, _isChildRow } = arg3;
@@ -66,11 +66,7 @@ function useColumns(
               return null;
             }
 
-            return (
-              <div>
-                <input type="checkbox" data-rwt-checkbox data-row-key={_key} checked={checked} onChange={noop} />
-              </div>
-            );
+            return <input type="checkbox" data-rwt-checkbox data-row-key={_key} checked={checked} onChange={noop} />;
           },
         },
         ..._tmp,
@@ -82,31 +78,34 @@ function useColumns(
       .map((column: any) => (typeof column === 'string' ? { name: column } : { ...column }))
       .filter((column: any) => column.name)
       .map((column: Column) => {
+        // const label = getLabel(column);
+        // console.log(label);
         return {
           ...column,
+          label: getLabel(column),
           // render: () => '---',
           render: typeof column.render === 'function' ? column.render : (data: any) => data,
         };
       });
-  }, [p_columns, _checkbox]);
+  }, [columns, !!checkbox]);
 
-  const columnWidth = useMemo(
-    () => (index: number) =>
-      (columns[index] && columns[index].width) ||
-      (typeof p_columnWidth === 'function' ? p_columnWidth(index) : p_columnWidth),
-    [columns, p_columnWidth],
-  );
+  const getColumnWidth = useMemo(() => {
+    const _columnWidth = typeof columnWidth === 'function' ? columnWidth : () => columnWidth || DEFAULT_COLUMN_WIDTH;
+    return (columnIndex: number) => {
+      const column = normalize[columnIndex] || {};
+      return column.width || _columnWidth(columnIndex, column);
+    };
+  }, [normalize, columnWidth || null]);
 
-  // console.log(columns.)
   const fixedLeftCount = useMemo(() => {
-    let count = columns.filter((e: any) => e.fixed).length;
-    if (count > 0 && _checkbox) {
+    let count = normalize.filter((e: any) => e.fixed).length;
+    if (count > 0 && !!checkbox) {
       count += 1;
     }
     return count;
-  }, [columns, _checkbox]);
+  }, [normalize, !!checkbox]);
 
-  return [columns, columnWidth, fixedLeftCount];
+  return [normalize, getColumnWidth, fixedLeftCount];
 }
 
 export default useColumns;

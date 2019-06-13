@@ -26,12 +26,12 @@ function useContext(context?: StringAnyMap): StringAnyMap {
 
 function useRows({
   rows,
+  rowHeight,
   columns,
-  context,
   checkbox,
   getChildRows,
   trackBy,
-  rowHeight,
+  context,
 }: UseRowsParams): [any[], any[], Function] {
   const _getChildRows = useGetChildRows(getChildRows);
   const _context = useContext(context);

@@ -1,29 +1,36 @@
 .root {
   display: block;
   position: relative;
-}
+  // font-family: 'Courier New', Courier, monospace;
+  // font-weight: bold;
+  .cell {
+    // display: block;
+    // width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 0 0.5rem;
+    &.text-right {
+      text-align: right;
+      justify-content: flex-end;
+    }
 
-.cell {
-  // display: block;
-  width: 100%;
+    &.text-left {
+      text-align: left;
+      justify-content: flex-start;
+    }
+
+    &.text-center {
+      text-align: center;
+      justify-content: center;
+    }
+  }
 }
 
 .ellipsis {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-center {
-  text-align: center;
 }
 
 $color: rgb(30, 136, 229);

@@ -20,7 +20,7 @@ import { columns, rows } from './resources/data/pokedex.js';
 
 <Playground>
 {() => {
-  const columns = ['name', 'height', 'weight', 'type'];
+  const columns = ['name', { name: 'height', textAlign: 'right' }, 'weight', 'type'];
   const rows = [
     ['Bulbasaur', 0.71, 6.9, 'Grass, Poison'], 
     ['Ivysaur', 0.99, 13, 'Grass, Poison'], 
@@ -31,15 +31,18 @@ import { columns, rows } from './resources/data/pokedex.js';
     ['Squirtle', 0.51, 9, 'Water'], 
     ['Wartortle', 0.99, 22.5, 'Water'], 
     ['Blastoise', 1.6, 85.5, 'Water'], 
-    ['Caterpie', 0.3, 2.9, 'Bug'],
+    ['Caterpie', 0.3, 2.9, 'Bug'], 
+    ['Metapod', 0.71, 9.9, 'Bug'], 
+    ['Butterfree', 1.09, 32, 'Bug, Flying'], 
+    ['Weedle', 0.3, 3.2, 'Bug, Poison'], 
+    ['Kakuna', 0.61, 10, 'Bug, Poison'], 
+    ['Beedrill', 0.99, 29.5, 'Bug, Poison'], 
+    ['Pidgey', 0.3, 1.8, 'Normal, Flying'], 
+    ['Pidgeotto', 1.09, 30, 'Normal, Flying'], 
+    ['Pidgeot', 1.5, 39.5, 'Normal, Flying'], 
+    ['Rattata', 0.3, 3.5, 'Normal'], 
+    ['Raticate', 0.71, 18.5, 'Normal'],
   ];
-  return <WindowTable columns={columns} rows={rows} />;
+  return <WindowTable columns={columns} rows={rows} checkbox onColumnResizeEnd={() => null}/>;
 }}
 </Playground>
-
-
-## Properties
-
-<Props of={WindowTable} />
-
-<!-- [Currently, the Props component is not working.](https://github.com/pedronauck/docz/issues/717) -->

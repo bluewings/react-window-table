@@ -31,9 +31,7 @@ import useImage from './resources/hooks/useImage';
         fixedBottomCount={0}
         overscanCount={2}
         guideline={true}
-        renderHeader={(column) => {
-          return  column
-        }}
+        
         theme={(classNames) => {
           return {
             [classNames.CELL]: {
@@ -43,12 +41,16 @@ import useImage from './resources/hooks/useImage';
               borderRight: '1px solid #dadcde',
               alignItems: 'center'
             },
+            [classNames.HEADER]: {
+              background: 'yellow !important',
+            },
             [classNames.ROW_EVEN]: {
               background: '#f5f6f7'
             },
             [classNames.IS_SCROLLING]: {
-              [classNames.CELL1]: {
-                background: 'lightyellow'
+              [classNames.CELL]: {
+                background: 'lightyellow',
+                pointerEvents: 'none'
               },
             },
             [classNames.SECTION_TOP]: {

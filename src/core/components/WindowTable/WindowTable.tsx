@@ -4,8 +4,8 @@ import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
 import { useColumns, useEventHandlers, useRows } from '../../hooks';
+import { GetChildRowsFunc } from '../../hooks/useRows';
 import styles from './WindowTable.module.scss';
-import { AnyARecord } from 'dns';
 
 type ScrollEvent = SyntheticEvent<HTMLDivElement>;
 
@@ -45,7 +45,7 @@ type WindowTableProps = {
 
   context?: any;
 
-  getChildRows?: Function;
+  getChildRows?: GetChildRowsFunc;
   getClassNames?: Function;
   checkbox?: boolean;
 
@@ -57,6 +57,12 @@ type WindowTableProps = {
 };
 
 const DEFAULT_COLUMN_WIDTH = 150;
+
+const DEFAULT_ROW_HEIGHT = 40;
+
+const cancelMouseDown = (e: any) => {
+  e.preventDefault();
+};
 
 function useDragHandle(
   columns: Column[],
@@ -181,14 +187,16 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     props.columnWidth || DEFAULT_COLUMN_WIDTH,
   );
 
-  const [rows, getRowIndex, getRow_, getAllRows] = useRows(
-    props.rows,
+  const [rows, dataRows, rowHeight] = useRows({
+    rows: props.rows,
     columns,
     context,
-    props.checkbox,
-    props.getChildRows,
-    props.trackBy,
-  );
+    checkbox: props.checkbox,
+    getChildRows: props.getChildRows,
+    trackBy: props.trackBy,
+    rowHeight: props.rowHeight,
+  });
+  const fixedTopCount = (props.fixedTopCount || 0) + 1;
 
   const [hover, setHover] = useState({ rowIndex: null, columnIndex: null });
   const currHover = useRef(hover);
@@ -232,45 +240,17 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       },
       click: {
         '.cell[data-row-index] input[type=checkbox][data-rwt-checkbox-control]': (event: SyntheticEvent, ui: any) => {
-          // styleRef.current.innerHTML = '';
-          // console.log(ui.target.checked, ui);
-          // console.log('>>> check all');
-          // let _selected: any[] = selectedRef.current.slice();
-          // if (ui.target.checked) {
-          //   _selected = [..._selected, ui.rowIndex];
-          // } else {
-          //   _selected = _selected.filter((e: any) => e !== ui.rowIndex);
-          // }
-
-          // setSelected(_selected);
-          if (typeof getAllRows === 'function') {
-            const allRows = getAllRows().filter((e: any) => !e._childRow);
-
-            // let selected: StringAnyMap = {};
-
-            if (selectedRef.current.length < allRows.length) {
-              setSelected(allRows.map((e: any) => e._key).sort());
-            } else {
-              setSelected([]);
-            }
+          const parentRows = dataRows.filter((e: any) => !e._isChildRow);
+          if (selectedRef.current.length < parentRows.length) {
+            setSelected(parentRows.map((e: any) => e._key).sort());
+          } else {
+            setSelected([]);
           }
         },
         '.cell[data-row-index] input[type=checkbox][data-rwt-checkbox]': (event: SyntheticEvent, ui: any) => {
-          // // styleRef.current.innerHTML = '';
-          // console.log(ui.target.checked, ui);
           let _selected: StringAnyMap = selectedRef.current.reduce((accum, curr) => {
             return { ...accum, [curr]: true };
           }, {});
-          // let key: any;
-          // if (typeof props.trackBy === 'function') {
-          //   key = props.trackBy(ui.data);
-          // } else if (typeof getRowIndex === 'function') {
-          //   key = getRowIndex(ui.rowIndex);
-
-          //   // const rowIndex = getRowIndex(ui.rowIndex);
-          // }
-
-          // if (typeof ui._key !== 'undefined') {
           if (_selected[ui._key]) {
             delete _selected[ui._key];
           } else {
@@ -280,14 +260,14 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         },
       },
     };
-  }, [props.trackBy, getAllRows]);
+  }, [dataRows]);
 
   // @ts-ignore
   const eventHandlers = useEventHandlers({ ...props.events, ...ownEvents }, rows);
 
-  const [resizeHelper, setResizeHelper] = useState();
+  // const [resizeHelper, setResizeHelper] = useState();
 
-  const resizeHp = useRef<HTMLElementRef>();
+  const resizeHelper = useRef<HTMLElementRef>();
 
   const container = useRef<HTMLElementRef>();
 
@@ -304,7 +284,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     columnWidth,
     fixedLeftCount,
     container,
-    resizeHp,
+    resizeHelper,
 
     props.onColumnResizeEnd,
     sizeInfoRef,
@@ -314,26 +294,14 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     if (selected.length === 0) {
       return 'none';
     }
-    if (
-      rows &&
-      rows
-        // @ts-ignore
-        .filter((e: any) => !e._childRow)
-        .map((e: any) => e._key)
-        // .map((e) => e._key)
-        .filter((e: any) => e)
-
-        .sort()
-        .join(',') === selected.join(',')
-    ) {
-      return 'all';
-    }
-    return 'some';
-
-    // console.
-
-    // retur
-  }, [rows, selected]);
+    return dataRows
+      .filter(({ _key, _isChildRow }) => !_isChildRow && _key)
+      .map(({ _key }) => _key)
+      .sort()
+      .join(',') === selected.sort().join(',')
+      ? 'all'
+      : 'some';
+  }, [dataRows, selected]);
 
   const renderHeader = useMemo(() => {
     return (data: any, column: any) => {
@@ -411,7 +379,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       // @ts-ignore
       if (typeof props.renderCell === 'function') {
         // @ts-ignore
-        rendered = props.renderCell(data, row.org, column, {
+        rendered = props.renderCell(data, row.obj, column, {
           ...context,
           rowIndex,
           columnIndex,
@@ -420,14 +388,14 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           isSelected,
           selectedStatus,
 
-          _childRow: !!row._childRow,
+          _isChildRow: !!row._isChildRow,
           style,
         });
       }
 
       if (rendered === null) {
         // @ts-ignore
-        rendered = column.render(data, row.org, {
+        rendered = column.render(data, row.obj, {
           ...context,
           rowIndex,
           columnIndex,
@@ -435,14 +403,14 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           _index,
           isSelected,
           selectedStatus,
-          _childRow: !!row._childRow,
+          _isChildRow: !!row._isChildRow,
           style,
         });
       }
 
       // console.log(data, row);
 
-      // if (row && row.org && row.org._isLoading) {
+      // if (row && row.obj && row.obj._isLoading) {
       //   return (
       //     <div className={className} data-column={column.name}>
       //       ...
@@ -467,7 +435,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         const row = rows[rowIndex];
         const tmp = {
           _rowIndex: row._index,
-          _childRow: row._childRow,
+          _isChildRow: row._isChildRow,
         };
 
         // @ts-ignore
@@ -503,46 +471,15 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     };
   }, [renderCell, getClassNames]);
 
-  const fixedTopCount = (props.fixedTopCount || 0) + 1;
-
-  const cancelMouseDown = (e: any) => {
-    e.preventDefault();
-  };
-
-  // const [sizeInfo, setSizeInfo] = useState({});
-
-  const rowHeight = useMemo(() => {
-    // if () {
-
-    // }
-    if (typeof props.rowHeight === 'function') {
-      return (rowIndex: number) => {
-        // @ts-ignore
-        return props.rowHeight(rowIndex, rows[rowIndex]);
-      };
+  useEffect(() => {
+    const keys = dataRows
+      .filter((e: any) => !e._isChildRow)
+      .reduce((accum: any, { _key }) => ({ ...accum, [_key]: true }), {});
+    const availKeys = selected.filter((e) => keys[e]);
+    if (selected.join(',') !== availKeys.join(',')) {
+      setSelected(availKeys);
     }
-    return props.rowHeight || 40;
-  }, [props.rowHeight]);
-
-  // useEffect(() => {
-  //   // console.log(selected);
-
-  //   // <input type="checkbox" data-rwt-checkbox data-row-key={_key} />
-  //   if (container.current) {
-  //     // const all
-  //     const all = selected.reduce((accum, curr) => {
-  //       return { ...accum, [curr]: true }
-  //     }, {});
-  //     Array.from(container.current.querySelectorAll('[data-rwt-checkbox][data-row-key]')).forEach((e: any) => {
-  //       const rowKey = e.getAttribute('data-row-key');
-  //       e.checked = !!all[rowKey]
-  //       // if (all[rowKey]) {
-  //       //   ;
-  //       // }
-  //     })
-  //   }
-
-  // }, [selected]);
+  }, [dataRows]);
 
   useEffect(() => {
     if (typeof props.onSelect === 'function') {
@@ -552,13 +489,9 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
   return (
     <div ref={container} className={styles.root}>
-      {/* <h1>{selectedStatus}</h1> */}
-      {/* <pre>{JSON.stringify(selected)}</pre> */}
       <div ref={styleRef} />
-      {/* <pre>{JSON.stringify(hover)}</pre> */}
       <div onMouseMove={cancelMouseDown}>
         <div {...eventHandlers}>
-          {/* @ts-ignore */}
           <WindowGrid
             {...props}
             rowHeight={rowHeight}
@@ -574,8 +507,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
           >
             {Cell}
           </WindowGrid>
-
-          <div className={styles.resizeHelper} ref={resizeHp} />
+          <div className={styles.resizeHelper} ref={resizeHelper} />
         </div>
       </div>
     </div>

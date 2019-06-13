@@ -1,138 +1,102 @@
 import { useMemo } from 'react';
 
-function useRows(
-  p_rows: any[],
-  columns: Column[],
-  context: any,
-  checkbox?: boolean,
-  getChildRows?: Function,
-  trackBy?: Function,
-) {
-  const _checkbox = !!checkbox;
+export type GetChildRowsFunc = (row?: any) => any[];
 
-  // const getChildRows
-  const _getChildRows = useMemo(() => {
-    if (typeof getChildRows === 'function') {
-      return getChildRows;
-    }
-    return () => [];
-  }, [getChildRows]);
+type UseRowsParams = {
+  rows: any[];
+  columns: Column[];
+  context: any;
+  checkbox?: boolean;
+  getChildRows?: GetChildRowsFunc;
+  trackBy?: Function;
+  rowHeight?: number | Function;
+};
 
-  const columns2 = useMemo(() => {
-    if (_checkbox) {
-      return columns.slice(1);
-    }
-    return columns;
-  }, [columns, _checkbox]);
+const DEFAULT_ROW_HEIGHT = 40;
 
-  // const
+const isDefined = (e: any) => typeof e !== 'undefined';
 
-  const getRow = useMemo(() => {
-    return (row: any) => {
-      let _row: any;
-      if (Array.isArray(row)) {
-        _row = columns2.reduce(
-          (prev, e, i) => ({
-            ...prev,
-            [e.name]: row[i],
-          }),
-          {},
-        );
-      } else {
-        _row = { ...row };
-      }
-      return _row;
-    };
-  }, [_checkbox, columns]);
-
-  const getValues = useMemo(() => {
-    return (_row: any) => {
-      return columns.map((e) => {
-        let value = _row[e.name];
-        if (typeof e.getValue === 'function') {
-          value = e.getValue(value, _row, context);
-        }
-        if (typeof value === 'string' || typeof value === 'number') {
-          return value;
-        }
-        return value;
-        // return '-';
-      });
-    };
-  }, [columns]);
-
-  const rows = useMemo(() => {
-    const rows = p_rows.reduce((accum, row, i) => {
-      let _row: any = getRow(row);
-
-      // trackBy
-      let _key = i;
-
-      if (typeof trackBy === 'function') {
-        _key = trackBy(_row);
-      }
-
-      const childRows = _getChildRows(_row);
-      const data = [
-        {
-          org: { ..._row },
-          arr: getValues(_row),
-          _key,
-          _index: i,
-        },
-        ...childRows.map((e: any) => {
-          const _chidR = getRow(e);
-          return {
-            org: { ..._chidR },
-            arr: getValues(_chidR),
-            _index: i,
-            _childRow: true,
-          };
-        }),
-      ];
-
-      // console.log(childRows)
-
-      return [...accum, ...data];
-    }, []);
-    return [
-      {
-        org: {},
-        _isHeader: true,
-        arr: columns.map((e: any) => e.name),
-      },
-      ...rows,
-    ];
-  }, [p_rows, getRow, getValues, columns, context || null, _getChildRows]);
-
-  // const row
-
-  // console.log
-  // const rowIdx = rows.findIndex(e => {
-
-  // });
-  const [rowIdx, getRow_, getAllRows]: Function[] = useMemo(() => {
-    const __idx = rows.findIndex((e) => {
-      return e._isHeader !== true;
-    });
-
-    // console.log(__idx);
-
-    return [
-      (index: number) => {
-        return index - __idx;
-      },
-      (index: number) => {
-        // return ;
-        return rows[index - __idx];
-      },
-      () => {
-        // return ;
-        return rows.slice(__idx);
-      },
-    ];
-  }, [rows]);
-  return [rows, rowIdx, getRow_, getAllRows];
+function useGetChildRows(childRows?: GetChildRowsFunc): GetChildRowsFunc {
+  return useMemo(() => (typeof childRows === 'function' ? childRows : () => []), [childRows]);
 }
 
+function useContext(context?: StringAnyMap): StringAnyMap {
+  return useMemo(() => context || {}, [context || null]);
+}
+
+function useRows({
+  rows,
+  columns,
+  context,
+  checkbox,
+  getChildRows,
+  trackBy,
+  rowHeight,
+}: UseRowsParams): [any[], any[], Function] {
+  const _getChildRows = useGetChildRows(getChildRows);
+  const _context = useContext(context);
+
+  const toRowObj: (row: any) => any = useMemo(() => {
+    const availColumns = !!checkbox ? columns.slice(1) : columns;
+    return (row: any) =>
+      Array.isArray(row) ? availColumns.reduce((accum, { name }, i) => ({ ...accum, [name]: row[i] }), {}) : row;
+  }, [columns, !!checkbox]);
+
+  const toRowValues: (rowObj: any) => any[] = useMemo(
+    () => (rowObj: any) =>
+      columns.map(({ name, getValue }) => {
+        const value = rowObj[name];
+        return typeof getValue === 'function' ? getValue(value, rowObj, _context) : value;
+      }),
+    [columns, _context],
+  );
+
+  const normalize = useMemo(() => {
+    return (row: any, _index: number, _childIndex?: number) => {
+      let obj = toRowObj(row);
+      let _key = (typeof trackBy === 'function'
+        ? trackBy(obj)
+        : [_index, _childIndex].filter(isDefined).join('_')
+      ).toString();
+      return {
+        obj,
+        arr: toRowValues(obj),
+        _key,
+        _index,
+        _childIndex,
+        _isChildRow: typeof _childIndex !== 'undefined',
+      };
+    };
+  }, [trackBy || null]);
+
+  const normalized = useMemo(() => {
+    return [
+      // header
+      { obj: {}, arr: columns.map(({ name }) => name), _isHeader: true },
+      // rows
+      ...rows.reduce((accum, row, i) => {
+        let rowObj = toRowObj(row);
+        const data = [
+          // parent row
+          normalize(rowObj, i),
+          // child rows
+          ..._getChildRows(rowObj).map((childRow, j) => normalize(childRow, i, j)),
+        ];
+        return [...accum, ...data];
+      }, []),
+    ];
+  }, [rows, columns, toRowObj, toRowValues, normalize, _getChildRows]);
+
+  const dataRows = useMemo(() => {
+    const baseIndex = normalized.findIndex((e) => e._isHeader !== true);
+    return normalized.slice(baseIndex);
+  }, [normalized]);
+
+  const getRowHeight = useMemo(() => {
+    const _rowHeight = typeof rowHeight === 'function' ? rowHeight : () => rowHeight || DEFAULT_ROW_HEIGHT;
+    return (rowIndex: number) => _rowHeight(rowIndex, normalized[rowIndex]);
+  }, [normalized, rowHeight || null]);
+
+  return [normalized, dataRows, getRowHeight];
+}
 export default useRows;

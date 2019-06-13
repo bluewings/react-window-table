@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, isValidElement } from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
@@ -66,6 +66,18 @@ const DEFAULT_ROW_HEIGHT = 40;
 const cancelMouseDown = (e: any) => {
   e.preventDefault();
 };
+
+const toValidContent = (e: any) => {
+  const type = typeof e;
+  if (type === 'string' || type === 'number' || isValidElement(e)) {
+    return e;
+  }
+  if (e && typeof e.toString === 'function') {
+    return e.toString();
+  }
+  return null;
+  // return type === 'string' || type === 'number' || isValidElement(e);
+}
 
 function useDragHandle(
   columns: Column[],
@@ -419,6 +431,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         });
       }
 
+      rendered = toValidContent(rendered);
       // console.log(data, row);
 
       // if (row && row.obj && row.obj._isLoading) {

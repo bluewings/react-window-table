@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import InputCheckbox from '../components/InputCheckbox';
+import styles from './useColumns.module.scss';
 
 // function useColumns(props: any) {
 // console.log(p_columns);
@@ -28,8 +29,10 @@ function useColumns(
     if (_checkbox) {
       _tmp = [
         {
-          name: 'v',
+          _system: true,
+          name: '_checkbox',
           textAlign: 'center',
+          width: 60,
           // @ts-ignore
           header: (arg1, arg2, { selectedStatus }) => {
             // console.log(arg1, arg2, arg3);
@@ -39,16 +42,19 @@ function useColumns(
             let indeterminate = selectedStatus === 'some' ? 'true' : 'false';
 
             return (
-              <div>
-                {/* [{selectedStatus}] */}
-                <InputCheckbox
-                  type="checkbox"
-                  data-rwt-checkbox-control
-                  checked={checked}
-                  indeterminate={indeterminate}
-                  onChange={noop}
-                />
-              </div>
+              <div className={styles.outerCheckbox}>
+              <InputCheckbox
+              type="checkbox"
+              data-rwt-checkbox-control
+              checked={checked}
+              indeterminate={indeterminate}
+              onChange={noop}
+            />
+            </div>
+    // <div>
+    //             {/* [{selectedStatus}] */}
+    
+    //           </div>
             );
             // return <input type="checkbox" data-rwt-checkbox-control />;
           },
@@ -93,8 +99,12 @@ function useColumns(
 
   // console.log(columns.)
   const fixedLeftCount = useMemo(() => {
-    return columns.filter((e: any) => e.fixed).length;
-  }, [columns]);
+    let count = columns.filter((e: any) => e.fixed).length;
+    if (count > 0 && _checkbox) {
+      count += 1;
+    }
+    return count;
+  }, [columns, _checkbox]);
 
   return [columns, columnWidth, fixedLeftCount];
 }

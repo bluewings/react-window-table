@@ -53,6 +53,8 @@ type WindowTableProps = {
 
   onSelect?: Function;
 
+  status?: string;
+
   onColumnResizeEnd?: Function;
 };
 
@@ -210,11 +212,16 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
   // const
   // const
-  const [selected, setSelected] = useState<any[]>([]);
+  // @ts-ignore
+  const [selected, setSelected] = useState<any[]>(props.selected || []);
 
   // cibst
   const selectedRef = useRef<any[]>([]);
   selectedRef.current = selected;
+
+  // @ts-ignore
+    // @ts-ignore
+    const classNames = useMemo(() => ({ CELL: 'cell', ...(props.classNames || {})}), [props.classNames || null])
 
   const ownEvents = useMemo(() => {
     return {
@@ -239,15 +246,16 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         },
       },
       click: {
-        '.cell[data-row-index] input[type=checkbox][data-rwt-checkbox-control]': (event: SyntheticEvent, ui: any) => {
+        [`.${classNames.CELL}[data-row-index] input[type=checkbox][data-rwt-checkbox-control]`]: (event: SyntheticEvent, ui: any) => {
           const parentRows = dataRows.filter((e: any) => !e._isChildRow);
+          console.log('>%-=-=-=-=-=-=-', 'background:yellow')
           if (selectedRef.current.length < parentRows.length) {
             setSelected(parentRows.map((e: any) => e._key).sort());
           } else {
             setSelected([]);
           }
         },
-        '.cell[data-row-index] input[type=checkbox][data-rwt-checkbox]': (event: SyntheticEvent, ui: any) => {
+        [`.${classNames.CELL}[data-row-index] input[type=checkbox][data-rwt-checkbox]`]: (event: SyntheticEvent, ui: any) => {
           let _selected: StringAnyMap = selectedRef.current.reduce((accum, curr) => {
             return { ...accum, [curr]: true };
           }, {});
@@ -260,7 +268,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         },
       },
     };
-  }, [dataRows]);
+  }, [classNames, dataRows]);
 
   // @ts-ignore
   const eventHandlers = useEventHandlers({ ...props.events, ...ownEvents }, rows);
@@ -352,6 +360,15 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         return null;
       }
 
+
+      let className = styles.cell;
+      if (column.ellipsis !== false) {
+        className += ' ' + styles.ellipsis;
+      }
+      if (column.textAlign && styles['text-' + column.textAlign]) {
+        className += ' ' + styles['text-' + column.textAlign];
+      }
+
       // @ts-ignore
       if (row._isHeader) {
         if (column.header) {
@@ -363,13 +380,6 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         return renderHeader(data, column, { selectedStatus });
       }
 
-      let className = styles.cell;
-      if (column.ellipsis !== false) {
-        className += ' ' + styles.ellipsis;
-      }
-      if (column.textAlign && styles['text-' + column.textAlign]) {
-        className += ' ' + styles['text-' + column.textAlign];
-      }
       // if (column.align && styles['text-' + column.align]) {
       //   className += ' ' + styles['text-' + column.align];
       // }
@@ -476,24 +486,24 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       .filter((e: any) => !e._isChildRow)
       .reduce((accum: any, { _key }) => ({ ...accum, [_key]: true }), {});
     const availKeys = selected.filter((e) => keys[e]);
-    if (selected.join(',') !== availKeys.join(',')) {
+    if (props.status !== 'PENDING' && selected.join(',') !== availKeys.join(',')) {
       setSelected(availKeys);
     }
-  }, [dataRows]);
+  }, [props.status || null, dataRows]);
 
   useEffect(() => {
-    if (typeof props.onSelect === 'function') {
+    if (props.status !== 'PENDING' && typeof props.onSelect === 'function') {
       props.onSelect(selected);
     }
-  }, [selected]);
+  }, [props.status || null, selected]);
 
-  return (
-    <div ref={container} className={styles.root}>
-      <div ref={styleRef} />
-      <div onMouseMove={cancelMouseDown}>
-        <div {...eventHandlers}>
-          <WindowGrid
+
+  // console.log(selected);
+
+  // @ts-ignore
+  return (    <div ref={container} className={styles.root}>      <div ref={styleRef} />      <div onMouseMove={cancelMouseDown}>        <div {...eventHandlers}>          <WindowGrid
             {...props}
+            classNames={classNames}
             rowHeight={rowHeight}
             rowCount={rows.length}
             fixedLeftCount={fixedLeftCount}

@@ -1,0 +1,82 @@
+---
+name: Child Rows
+route: /child-rows
+---
+
+import { useMemo, useState } from 'react';
+import { Props } from 'docz';
+import { Playground } from './resources';
+import WindowTable from '../src/core/components/WindowTable/WindowTable';
+// import { columns, rows } from './resources/data/fake-users.js'
+import mona from './resources/assets/mona.jpg';
+import useImage from './resources/hooks/useImage';
+
+import { columns, rows } from './resources/data/pokedex.js';
+
+<Playground>
+{() => {
+  const columns_ = ['Year', 'Sales', 'Expenses'];
+  const columns = {
+    Year: {},
+    Sales: {},
+    Expenses: {}
+  };
+  const rows = [
+   ['2014', 1000, 400],
+  ['2015', 1170, 460],
+  ['2016', 660, 1120],
+  ['2017', 1030, 540],
+  { Year: '2018', Sales: 940, Expenses: 620 }
+  ]
+const getChildRows = useMemo(() => {
+  return (row) => {
+  return [[1, 100, 200], [2, 200, 400]];
+}
+
+
+}, []);
+
+const rowHeight = useMemo(() => {
+  return (rowIndex, row) => {
+    if (row._isChildRow) {
+      return 30;
+    }
+  return 40;
+}
+}, []);
+
+const className = useMemo(() => {
+  return ({ _isChildRow }) => {
+    return _isChildRow ? 'wow' : '';
+
+}
+}, []);
+
+
+const renderCell = useMemo(() => {
+  return (val1, val2, vale) => {
+    if (vale._isChildRow) {
+      return '-'
+    }
+    return val1;
+  }
+}, []);
+
+
+  return (
+    <div>
+      <pre>
+      <WindowTable        
+        columns={columns}
+        rows={rows}
+        rowHeight={rowHeight}
+        getChildRows={getChildRows}
+        getClassNames={className}
+        renderCell={renderCell}
+      />
+      </pre>
+    </div>
+  )
+}}
+</Playground>
+

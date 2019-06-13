@@ -20,29 +20,20 @@ import { columns, rows } from './resources/data/pokedex.js';
 
 <Playground>
 {() => {
-  const columns_ = ['Year', 'Sales', 'Expenses'];
-  const columns = {
-    Year: {},
-    Sales: {},
-    Expenses: {}
-  };
+  const columns = ['name', 'height', 'weight', 'type'];
   const rows = [
-   ['2014', 1000, 400],
-  ['2015', 1170, 460],
-  ['2016', 660, 1120],
-  ['2017', 1030, 540],
-  { Year: '2018', Sales: 940, Expenses: 620 }
-  ]
-
-
-  return (
-    <div>
-      <WindowTable
-        columns={columns}
-        rows={rows}
-      />
-    </div>
-  )
+    ['Bulbasaur', 0.71, 6.9, 'Grass, Poison'], 
+    ['Ivysaur', 0.99, 13, 'Grass, Poison'], 
+    ['Venusaur', 2.01, 100, 'Grass, Poison'], 
+    ['Charmander', 0.61, 8.5, 'Fire'], 
+    ['Charmeleon', 1.09, 19, 'Fire'], 
+    ['Charizard', 1.7, 90.5, 'Fire, Flying'], 
+    ['Squirtle', 0.51, 9, 'Water'], 
+    ['Wartortle', 0.99, 22.5, 'Water'], 
+    ['Blastoise', 1.6, 85.5, 'Water'], 
+    ['Caterpie', 0.3, 2.9, 'Bug'],
+  ];
+  return <WindowTable columns={columns} rows={rows} />;
 }}
 </Playground>
 

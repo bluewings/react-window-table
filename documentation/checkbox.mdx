@@ -1,0 +1,112 @@
+---
+name: Checkbox
+route: /checkbox
+---
+
+import { useMemo, useState } from 'react';
+import { Props } from 'docz';
+import { Playground } from './resources';
+import WindowTable from '../src/core/components/WindowTable/WindowTable';
+// import { columns, rows } from './resources/data/fake-users.js'
+import mona from './resources/assets/mona.jpg';
+import useImage from './resources/hooks/useImage';
+
+import { columns, rows } from './resources/data/pokedex.js';
+
+<Playground>
+{() => {
+  const columns_ = ['Year', 'Sales', 'Expenses'];
+  const columns = {
+    Year: {},
+    Sales: {},
+    Expenses: {}
+  };
+  const defaultRows = [
+   ['2014', 1000, 400],
+  ['2015', 1170, 460],
+  ]
+const getChildRows = useMemo(() => {
+  return (row) => {
+  return [[1, 100, 200], [2, 200, 400]];
+}
+
+
+}, []);
+
+const _rows = useState(defaultRows);
+const setRows = _rows.pop();
+const rows = _rows.pop();
+
+const rowHeight = useMemo(() => {
+  return (rowIndex, row) => {
+    if (row._isChildRow) {
+      return 30;
+    }
+  return 40;
+}
+}, []);
+
+const className = useMemo(() => {
+  return ({ _isChildRow }) => {
+    return _isChildRow ? 'wow' : '';
+
+}
+}, []);
+
+
+const renderCell = useMemo(() => {
+  return (val1, val2, vale) => {
+    if (vale._isChildRow) {
+      return '-'
+    }
+    return null;
+  }
+}, []);
+
+const trackBy = useMemo(() => {
+
+  return (row) => {
+    return row.Year
+  }
+
+}, []);
+
+const handleAddClick = () => {
+  const newRows = rows.slice();
+  newRows.push({
+    Year: parseInt((Math.random()) * 1000 + 1000, 10), 
+  });
+  setRows(newRows);
+};
+
+const handleRemoveClick = () => {
+  const newRows = rows.slice();
+  newRows.pop();
+  setRows(newRows);
+};
+
+const aaa = useState();
+const setSelected = aaa.pop();
+const selected = aaa.pop();
+
+  return (
+    <div>
+      <button onClick={handleAddClick}>ADD</button>
+      <button onClick={handleRemoveClick}>REMOVE</button>
+      <pre>{JSON.stringify(selected)}</pre>
+      <WindowTable
+        checkbox={true}
+        columns={columns}
+        rows={rows}
+        rowHeight={rowHeight}
+        renderCell={renderCell}
+        trackBy={trackBy}
+        onSelect={setSelected}
+        getChildRows={getChildRows}
+      />
+      
+    </div>
+  )
+}}
+</Playground>
+

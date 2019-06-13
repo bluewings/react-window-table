@@ -52,6 +52,7 @@ type WindowTableProps = {
   trackBy?: Function;
 
   onSelect?: Function;
+  selected?: string[];
 
   status?: string;
 
@@ -248,7 +249,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       click: {
         [`.${classNames.CELL}[data-row-index] input[type=checkbox][data-rwt-checkbox-control]`]: (event: SyntheticEvent, ui: any) => {
           const parentRows = dataRows.filter((e: any) => !e._isChildRow);
-          console.log('>%-=-=-=-=-=-=-', 'background:yellow')
+          // console.log('>%-=-=-=-=-=-=-', 'background:yellow')
           if (selectedRef.current.length < parentRows.length) {
             setSelected(parentRows.map((e: any) => e._key).sort());
           } else {
@@ -490,6 +491,18 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       setSelected(availKeys);
     }
   }, [props.status || null, dataRows]);
+
+  const selectedProps = useRef('');
+
+  useEffect(() => {
+    if (Array.isArray(props.selected)) {
+      const hash = props.selected.sort().join(',');
+      if (Array.isArray(props.selected) && selectedProps.current !== hash && hash !== selected.sort().join(',')) {
+        setSelected( props.selected);  
+      }
+      selectedProps.current = hash;
+    }
+  }, [props.selected || null])
 
   useEffect(() => {
     if (props.status !== 'PENDING' && typeof props.onSelect === 'function') {

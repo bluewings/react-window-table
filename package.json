@@ -1,6 +1,6 @@
 {
   "name": "react-window-table",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/react-window-table.cjs.js",
   "module": "dist/react-window-table.es.js",
   "browser": "dist/react-window-table.amd.js",
@@ -17,7 +17,8 @@
   },
   "peerDependencies": {
     "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react-dom": "^16.8.0",
+    "react-window-grid": "^1.0.20"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx-source": "^7.2.0",

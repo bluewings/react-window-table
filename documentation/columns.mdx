@@ -20,7 +20,7 @@ import { columns, rows } from './resources/data/pokedex.js';
 
 <Playground>
 {() => {
-  const columns = ['name', { name: 'height', textAlign: 'right' }, 'weight', 'type'];
+  const columns = ['name', { name: 'height', textAlign: 'right' }, { name: 'weight', textAlign: 'right' }, 'type'];
   const rows = [
     ['Bulbasaur', 0.71, 6.9, 'Grass, Poison'], 
     ['Ivysaur', 0.99, 13, 'Grass, Poison'], 
@@ -43,6 +43,6 @@ import { columns, rows } from './resources/data/pokedex.js';
     ['Rattata', 0.3, 3.5, 'Normal'], 
     ['Raticate', 0.71, 18.5, 'Normal'],
   ];
-  return <WindowTable columns={columns} rows={rows} checkbox onColumnResizeEnd={() => null}/>;
+  return <WindowTable columns={columns} rows={rows} checkbox />;
 }}
 </Playground>

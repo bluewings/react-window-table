@@ -539,6 +539,11 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
   const theme = useTheme(props.theme);
 
+  const guideline = useMemo(() => {
+    return typeof props.guideline === 'undefined' ? true : !!props.guideline;
+
+  }, [props.guideline || null]);
+
   // @ts-ignore
   return (
     <div ref={container} className={styles.root}>
@@ -559,6 +564,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
             fillerColumn="append"
             onResize={handleResize}
             theme={theme}
+            guideline={guideline}
           >
             {Cell}
           </WindowGrid>

@@ -43,7 +43,7 @@ function useColumns({ columns, columnWidth, checkbox }: UseColumnsParams): [Colu
           _system: true,
           name: '_checkbox',
           textAlign: 'center',
-          width: 60,
+          width: 40,
           // @ts-ignore
           header: (arg1, arg2, { selectedStatus }) => {
             let checked = selectedStatus === 'all';

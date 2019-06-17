@@ -13,12 +13,12 @@
   "dependencies": {
     "emotion": "^10.0.9",
     "react-draggable": "^3.3.0",
-    "react-window-grid": "^1.0.21"
+    "react-window-grid": "^1.0.25"
   },
   "peerDependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "react-window-grid": "^1.0.21"
+    "react-window-grid": "^1.0.23"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx-source": "^7.2.0",

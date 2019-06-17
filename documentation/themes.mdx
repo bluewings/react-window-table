@@ -1,0 +1,37 @@
+---
+name: Themes
+route: /themes
+---
+
+import { useState } from 'react';
+import { Props } from 'docz';
+import { Playground } from './resources';
+import WindowTable from '../src/core/components/WindowTable/WindowTable';
+// import { columns, rows } from './resources/data/fake-users.js'
+import mona from './resources/assets/mona.jpg';
+import useImage from './resources/hooks/useImage';
+
+import { columns, rows } from './resources/data/pokedex.js';
+
+# Introduction
+
+
+## Basic usage
+
+<Playground>
+{() => {
+  const columns = ['name', { name: 'height', textAlign: 'right' }, { name: 'weight', textAlign: 'right' }, 'type'];
+  const rows = [
+    ['Bulbasaur', 0.71, 6.9, 'Grass, Poison'], 
+    ['Ivysaur', 0.99, 13, 'Grass, Poison'], 
+    ['Venusaur', 2.01, 100, 'Grass, Poison'], 
+  ];
+  return (
+    <div>
+      <WindowTable columns={columns} rows={rows} checkbox />
+      <WindowTable columns={columns} rows={rows} checkbox theme="bordered" />
+      <WindowTable columns={columns} rows={rows} checkbox theme="striped" />
+    </div>
+  );
+}}
+</Playground>

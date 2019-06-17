@@ -14,7 +14,8 @@ const theme = (classNames: any) => {
       alignItems: 'center',
     },
     [classNames.HEADER]: {
-      background: '#f5f6f7',
+      // background: '#f5f6f7',
+      background: 'orange',
       borderBottom: `1px solid ${borderColor1}`,
       fontWeight: 700,
     },

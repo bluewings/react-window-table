@@ -123,26 +123,26 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
 
   const ownEvents = useMemo(() => {
     return {
-      mouseover: {
-        '.cell[data-row-index][data-column-index]': (event: SyntheticEvent, ui: any) => {
-          timer.current && clearTimeout(timer.current);
+      // mouseover: {
+      //   '.cell[data-row-index][data-column-index]': (event: SyntheticEvent, ui: any) => {
+      //     timer.current && clearTimeout(timer.current);
 
-          styleRef.current.innerHTML = '';
+      //     styleRef.current.innerHTML = '';
 
-          var styleNode = document.createElement('style');
-          styleNode.type = 'text/css';
-          var styleText = document.createTextNode(
-            `[data-row-index="${ui.rowIndex}"] { background:#e9eaeb !important } `,
-          );
-          styleNode.appendChild(styleText);
-          styleRef.current.appendChild(styleNode);
-        },
-      },
-      mouseout: {
-        '.cell[data-row-index]': (event: SyntheticEvent, ui: any) => {
-          styleRef.current.innerHTML = '';
-        },
-      },
+      //     var styleNode = document.createElement('style');
+      //     styleNode.type = 'text/css';
+      //     var styleText = document.createTextNode(
+      //       `[data-row-index="${ui.rowIndex}"] { background:#e9eaeb !important } `,
+      //     );
+      //     styleNode.appendChild(styleText);
+      //     styleRef.current.appendChild(styleNode);
+      //   },
+      // },
+      // mouseout: {
+      //   '.cell[data-row-index]': (event: SyntheticEvent, ui: any) => {
+      //     styleRef.current.innerHTML = '';
+      //   },
+      // },
       click: {
         [`.${classNames.CELL}[data-row-index] input[type=checkbox][data-rwt-checkbox-control]`]: (
           event: SyntheticEvent,

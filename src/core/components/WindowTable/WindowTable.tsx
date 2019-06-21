@@ -389,7 +389,8 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       // console.log()
       const className = className_ + className__ + ` ${getClassNames(rowIndex, columnIndex)}`;
 
-      const column_ = columns[columnIndex];
+      // dummy 컬럼은 없을 수 있다.
+      const column_ = columns[columnIndex] || {};
 
       return (
         <div

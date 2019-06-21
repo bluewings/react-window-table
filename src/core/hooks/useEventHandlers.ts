@@ -93,7 +93,7 @@ function useEventHandlers(ownEvents: StringFunctionMap, userEvents: StringFuncti
       };
     };
 
-    const mergedEvents = [...Object.entries(ownEvents), ...Object.entries(userEvents)].reduce(
+    const mergedEvents = [...Object.entries(ownEvents || {}), ...Object.entries(userEvents || {})].reduce(
       (accum: any, [k, v]) => ({ ...accum, [k]: { ...accum[k], ...v } }),
       {},
     );

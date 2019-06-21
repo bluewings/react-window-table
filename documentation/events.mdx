@@ -1,0 +1,32 @@
+---
+name: Events
+route: /events
+---
+
+import { useState } from 'react';
+import { Props } from 'docz';
+import { Playground } from './resources';
+import WindowTable from '../src/core/components/WindowTable/WindowTable';
+// import { columns, rows } from './resources/data/fake-users.js'
+import mona from './resources/assets/mona.jpg';
+import useImage from './resources/hooks/useImage';
+
+import { columns, rows } from './resources/data/pokedex.js';
+
+# Introduction
+
+
+## Basic usage
+
+<Playground>
+{() => {
+  const events = {
+    click: {
+      '[data-column]': (event, { column, data }) => {
+        alert(column + ': ' + data[column]);
+      }
+    }
+  };
+  return <WindowTable columns={columns} rows={rows} checkbox events={events} />;
+}}
+</Playground>

@@ -1,6 +1,6 @@
 {
   "name": "react-window-table",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "dist/react-window-table.cjs.js",
   "module": "dist/react-window-table.es.js",
   "browser": "dist/react-window-table.amd.js",
@@ -13,12 +13,12 @@
   "dependencies": {
     "emotion": "^10.0.9",
     "react-draggable": "^3.3.0",
-    "react-window-grid": "^1.0.25"
+    "react-window-grid": "^1.0.26"
   },
   "peerDependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "react-window-grid": "^1.0.23"
+    "react-window-grid": "^1.0.26"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx-source": "^7.2.0",

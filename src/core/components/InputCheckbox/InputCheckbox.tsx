@@ -6,7 +6,6 @@ function InputCheckbox(props: any) {
 
   useEffect(() => {
     if (checkbox && checkbox.current) {
-      console.log(props.indeterminate);
       checkbox.current.indeterminate = props.indeterminate === 'true';
     }
   });

@@ -54,6 +54,8 @@ type WindowTableProps = {
 
   status?: string;
 
+  theme?: Function | string;
+
   onColumnResizeEnd?: Function;
 };
 
@@ -91,7 +93,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     trackBy: props.trackBy,
   });
 
-  const maxHeight = useMemo(() => props.maxHeight || 400, [props.maxHeight || null])
+  const maxHeight = useMemo(() => props.maxHeight || 400, [props.maxHeight || null]);
 
   const fixedTopCount = (props.fixedTopCount || 0) + 1;
 
@@ -175,7 +177,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   }, [classNames, dataRows]);
 
   // @ts-ignore
-  const eventHandlers = useEventHandlers({ ...props.events, ...ownEvents }, rows);
+  const eventHandlers = useEventHandlers(ownEvents, props.events, rows);
 
   // const [resizeHelper, setResizeHelper] = useState();
 
@@ -387,8 +389,16 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
       // console.log()
       const className = className_ + className__ + ` ${getClassNames(rowIndex, columnIndex)}`;
 
+      const column_ = columns[columnIndex];
+
       return (
-        <div className={className} style={_style} data-row-index={rowIndex} data-column-index={columnIndex}>
+        <div
+          className={className}
+          style={_style}
+          data-row-index={rowIndex}
+          data-column-index={columnIndex}
+          data-column={column_.name}
+        >
           {renderCore(rowIndex, columnIndex, _style)}
         </div>
       );

@@ -13,21 +13,18 @@ const DEFAULT_COLUMN_WIDTH = 150;
 
 const noop = () => {};
 
-function getLabel(column = {}) {
+function getLabel(column: any = {}) {
   let label = '';
   if (column.label) {
     label = column.label;
   } else {
     label = column.name
-      .replace(/([a-z])([A-Z])/g, (all, p1, p2) => {
+      .replace(/([a-z])([A-Z])/g, (all: string, p1: string, p2: string) => {
         return p1 + ' ' + p2.toLowerCase();
       })
       .replace(/\s+/g, ' ');
   }
   return label.trim();
-  // if (column.name) {
-
-  // }
 }
 
 function useColumns({ columns, columnWidth, checkbox }: UseColumnsParams): [Column[], Function, number] {
@@ -41,7 +38,7 @@ function useColumns({ columns, columnWidth, checkbox }: UseColumnsParams): [Colu
       _tmp = [
         {
           _system: true,
-          name: '_checkbox',
+          name: '___CHECKBOX',
           textAlign: 'center',
           width: 40,
           // @ts-ignore

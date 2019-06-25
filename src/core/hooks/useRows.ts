@@ -67,7 +67,7 @@ function useRows({
         _isChildRow: typeof _childIndex !== 'undefined',
       };
     };
-  }, [trackBy || null]);
+  }, [toRowObj, toRowValues, trackBy || null]);
 
   const normalized = useMemo(() => {
     return [
@@ -85,7 +85,7 @@ function useRows({
         return [...accum, ...data];
       }, []),
     ];
-  }, [rows, columns, toRowObj, toRowValues, normalize, _getChildRows]);
+  }, [rows, columns, toRowObj, normalize, _getChildRows]);
 
   const dataRows = useMemo(() => {
     const baseIndex = normalized.findIndex((e) => e._isHeader !== true);

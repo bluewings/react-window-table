@@ -52,18 +52,19 @@ function useEventHandlers(ownEvents: StringFunctionMap, userEvents: StringFuncti
           if (rowIndex_ && columnIndex_) {
             let rowIndex = ~~rowIndex_;
             let columnIndex = ~~columnIndex_;
-            const row = rows[rowIndex_].obj;
-            const { _key, _index } = rows[rowIndex_];
-
+            const row: any = rows[rowIndex_] || {};
+            const { _key, _index, _isHeader, _isChildRow, obj: data } = row;
             return {
               target,
               rowIndex,
               columnIndex,
               column,
-              data: row,
+              data: data,
               // @ts-ignore
               _key,
               _index,
+              _isHeader: !!_isHeader,
+              _isChildRow: !!_isChildRow,
             };
           }
         }

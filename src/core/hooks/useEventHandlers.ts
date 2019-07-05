@@ -6,6 +6,7 @@ type EventTarget = {
   columnIndex: number;
   column: string;
   data: any;
+  context: any;
 } | null;
 
 const serialize = (() => {
@@ -13,7 +14,7 @@ const serialize = (() => {
   return (value: any) => JSON.stringify(value, replacer);
 })();
 
-function useEventHandlers(ownEvents: StringFunctionMap, userEvents: StringFunctionMap, rows: StringAnyMap[]) {
+function useEventHandlers(ownEvents: StringFunctionMap, userEvents: StringFunctionMap, rows: StringAnyMap[], context: any) {
   const dict: StringAnyMap = {
     click: 'onClick',
     mouseover: 'onMouseOver',
@@ -59,7 +60,8 @@ function useEventHandlers(ownEvents: StringFunctionMap, userEvents: StringFuncti
               rowIndex,
               columnIndex,
               column,
-              data: data,
+              data,
+              context,
               // @ts-ignore
               _key,
               _index,
@@ -109,7 +111,7 @@ function useEventHandlers(ownEvents: StringFunctionMap, userEvents: StringFuncti
       }
       return accum;
     }, {});
-  }, [ownEvents, eventsHash, rows]);
+  }, [ownEvents, eventsHash, rows, context]);
 
   return eventHandlers;
 }

@@ -177,7 +177,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   }, [classNames, dataRows]);
 
   // @ts-ignore
-  const eventHandlers = useEventHandlers(ownEvents, props.events, rows);
+  const eventHandlers = useEventHandlers(ownEvents, props.events, rows, context);
 
   // const [resizeHelper, setResizeHelper] = useState();
 

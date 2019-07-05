@@ -245,7 +245,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
         </>
       );
     };
-  }, [resizableKey, handleDragStart, handleDragStop, props.onColumnResizeEnd || null]);
+  }, [props.renderHeader, resizableKey, handleDragStart, handleDragStop, props.onColumnResizeEnd || null]);
 
   const renderCore = useMemo(() => {
     const seletedMap = selected.reduce((accum, curr) => {

@@ -32,7 +32,7 @@ function useRows({
   getChildRows,
   trackBy,
   context,
-}: UseRowsParams): [any[], any[], Function] {
+}: UseRowsParams): [any[], any[], Function, Function] {
   const _getChildRows = useGetChildRows(getChildRows);
   const _context = useContext(context);
 
@@ -69,24 +69,33 @@ function useRows({
     };
   }, [toRowObj, toRowValues, trackBy || null]);
 
-  const normalized = useMemo(() => {
-    return [
-      // header
-      { obj: {}, arr: columns.map(({ name }) => name), _isHeader: true },
-      // rows
-      ...rows.reduce((accum, row, i) => {
-        let rowObj = toRowObj(row);
-        const data = [
-          // parent row
-          normalize(rowObj, i),
-          // child rows
-          ..._getChildRows(rowObj).map((childRow, j) => normalize(childRow, i, j)),
-        ];
-        return [...accum, ...data];
-      }, []),
-    ];
-  }, [rows, columns, toRowObj, normalize, _getChildRows]);
 
+  const getRows = useMemo(() => {
+
+    return (rows: any[]) => {
+      return [
+        // header
+        { obj: {}, arr: columns.map(({ name }) => name), _isHeader: true },
+        // rows
+        ...rows.reduce((accum, row, i) => {
+          let rowObj = toRowObj(row);
+          const data = [
+            // parent row
+            normalize(rowObj, i),
+            // child rows
+            ..._getChildRows(rowObj).map((childRow, j) => normalize(childRow, i, j)),
+          ];
+          return [...accum, ...data];
+        }, []),
+      ];
+    }
+
+  }, [columns, toRowObj, normalize, _getChildRows]);
+
+  const normalized = useMemo(() => {
+    return getRows(rows);
+  }, [getRows, rows]);
+  
   const dataRows = useMemo(() => {
     const baseIndex = normalized.findIndex((e) => e._isHeader !== true);
     return normalized.slice(baseIndex);
@@ -97,6 +106,6 @@ function useRows({
     return (rowIndex: number) => _rowHeight(rowIndex, normalized[rowIndex]);
   }, [normalized, rowHeight || null]);
 
-  return [normalized, dataRows, getRowHeight];
+  return [normalized, dataRows, getRowHeight, getRows];
 }
 export default useRows;

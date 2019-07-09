@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, isValidElement } from 'react';
+import { useEffect, useImperativeHandle, forwardRef,isValidElement } from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
@@ -74,7 +74,7 @@ const toValidContent = (e: any) => {
   return null;
 };
 
-const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
+const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
   const context = useMemo(() => props.context || {}, [props.context || null]);
 
   const [columns, columnWidth, fixedLeftCount] = useColumns({
@@ -83,7 +83,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     checkbox: props.checkbox,
   });
 
-  const [rows, dataRows, rowHeight] = useRows({
+  const [rows, dataRows, rowHeight, getRows] = useRows({
     rows: props.rows,
     rowHeight: props.rowHeight,
     columns,
@@ -442,6 +442,22 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
     return typeof props.guideline === 'undefined' ? true : !!props.guideline;
   }, [props.guideline || null]);
 
+
+  useImperativeHandle(ref, () => {
+
+    return {
+      getData: (data?: any) => {
+        let rows_ = rows;
+        if (Array.isArray(data)) {
+          rows_ = getRows(data);
+        }
+        return rows_.map(row => {
+          return row.arr;
+        })
+      }
+    }
+  }, [rows, columns, getRows]);
+
   // @ts-ignore
   return (
     <div ref={container} className={styles.root}>
@@ -474,4 +490,4 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props) => {
   );
 };
 
-export default WindowTable;
+export default forwardRef(WindowTable);

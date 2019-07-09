@@ -1,6 +1,6 @@
 {
   "name": "react-window-table",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "main": "dist/react-window-table.cjs.js",
   "module": "dist/react-window-table.es.js",
   "browser": "dist/react-window-table.amd.js",

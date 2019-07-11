@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useImperativeHandle, forwardRef,isValidElement } from 'react';
+import { useEffect, useImperativeHandle, forwardRef, isValidElement } from 'react';
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
@@ -442,21 +442,23 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
     return typeof props.guideline === 'undefined' ? true : !!props.guideline;
   }, [props.guideline || null]);
 
-
-  useImperativeHandle(ref, () => {
-
-    return {
-      getData: (data?: any) => {
-        let rows_ = rows;
-        if (Array.isArray(data)) {
-          rows_ = getRows(data);
-        }
-        return rows_.map(row => {
-          return row.arr;
-        })
-      }
-    }
-  }, [rows, columns, getRows]);
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        getData: (data?: any) => {
+          const columns_ = (columns || []).map((column: any) => ({ ...column }));
+          const rows_ = (Array.isArray(data) ? getRows(data) : rows) || [];
+          const startIndex = columns_.findIndex((column: any) => !column._system);
+          return {
+            columns: columns_.slice(startIndex),
+            rows: rows_.filter((row: any) => !row._isHeader).map((row: any) => (row.arr || []).slice(startIndex)),
+          };
+        },
+      };
+    },
+    [rows, columns, getRows],
+  );
 
   // @ts-ignore
   return (

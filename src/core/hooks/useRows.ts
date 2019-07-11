@@ -69,9 +69,7 @@ function useRows({
     };
   }, [toRowObj, toRowValues, trackBy || null]);
 
-
   const getRows = useMemo(() => {
-
     return (rows: any[]) => {
       return [
         // header
@@ -88,14 +86,13 @@ function useRows({
           return [...accum, ...data];
         }, []),
       ];
-    }
-
+    };
   }, [columns, toRowObj, normalize, _getChildRows]);
 
   const normalized = useMemo(() => {
     return getRows(rows);
   }, [getRows, rows]);
-  
+
   const dataRows = useMemo(() => {
     const baseIndex = normalized.findIndex((e) => e._isHeader !== true);
     return normalized.slice(baseIndex);

@@ -14,7 +14,12 @@ const serialize = (() => {
   return (value: any) => JSON.stringify(value, replacer);
 })();
 
-function useEventHandlers(ownEvents: StringFunctionMap, userEvents: StringFunctionMap, rows: StringAnyMap[], context: any) {
+function useEventHandlers(
+  ownEvents: StringFunctionMap,
+  userEvents: StringFunctionMap,
+  rows: StringAnyMap[],
+  context: any,
+) {
   const dict: StringAnyMap = {
     click: 'onClick',
     mouseover: 'onMouseOver',

@@ -3,7 +3,7 @@ name: Child Rows
 route: /child-rows
 ---
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import { Props } from 'docz';
 import { Playground } from './resources';
 import WindowTable from '../src/core/components/WindowTable/WindowTable';
@@ -18,7 +18,11 @@ import { columns, rows } from './resources/data/pokedex.js';
   const columns_ = ['Year', 'Sales', 'Expenses'];
   const columns = {
     Year: {},
-    Sales: {},
+    Sales: {
+      batchData: async function(i) {
+        return `wow ${i}`
+      }
+    },
     Expenses: {}
   };
   const rows = [
@@ -62,11 +66,20 @@ const renderCell = useMemo(() => {
   }
 }, []);
 
+const tableRef = useRef();
+
+const handleClick = async function aaa()  {
+  console.log('aaa');
+  const data = await tableRef.current.getData()
+  console.log(data);
+};
 
   return (
     <div>
-      <pre>
+      <button onClick={handleClick}>test</button>
       <WindowTable        
+        ref={tableRef}
+        checkbox={true}
         columns={columns}
         rows={rows}
         rowHeight={rowHeight}
@@ -74,7 +87,7 @@ const renderCell = useMemo(() => {
         getClassNames={className}
         renderCell={renderCell}
       />
-      </pre>
+      
     </div>
   )
 }}

@@ -451,7 +451,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
           let rows_ = (Array.isArray(data) ? getRows(data) : rows) || [];
           const startIndex = columns_.findIndex((column: any) => !column._system);
 
-          rows_ = rows_.filter((row: any) => !row._isHeader).slice(startIndex);
+          rows_ = rows_.filter((row: any) => !row._isHeader);
           rows_ = await columns_.reduce(async (prevRows, col, i) => {
             if (typeof col.batchData === 'function') {
               const prev = await prevRows;
@@ -469,7 +469,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
 
           return {
             columns: columns_.slice(startIndex),
-            rows: rows_.map((row: any) => row.arr),
+            rows: rows_.map((row: any) => row.arr.slice(startIndex)),
             // rows: rows_.filter((row: any) => !row._isHeader).map((row: any) => (row.arr || []).slice(startIndex)),
           };
         },

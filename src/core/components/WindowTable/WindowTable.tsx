@@ -446,18 +446,36 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
     ref,
     () => {
       return {
-        getData: (data?: any) => {
+        getData: async (data?: any) => {
           const columns_ = (columns || []).map((column: any) => ({ ...column }));
-          const rows_ = (Array.isArray(data) ? getRows(data) : rows) || [];
+          let rows_ = (Array.isArray(data) ? getRows(data) : rows) || [];
           const startIndex = columns_.findIndex((column: any) => !column._system);
+
+          rows_ = rows_.filter((row: any) => !row._isHeader).slice(startIndex);
+          rows_ = await columns_.reduce(async (prevRows, col, i) => {
+            if (typeof col.batchData === 'function') {
+              const prev = await prevRows;
+              const nextRows = await Promise.all(
+                prev.map(async (row: any, j: number) => {
+                  const newRow = [...(row.arr || [])];
+                  newRow[i] = await col.batchData(newRow[i], { ...row.obj }, context);
+                  return { ...row, arr: newRow };
+                }),
+              );
+              return nextRows;
+            }
+            return prevRows;
+          }, Promise.resolve(rows_));
+
           return {
             columns: columns_.slice(startIndex),
-            rows: rows_.filter((row: any) => !row._isHeader).map((row: any) => (row.arr || []).slice(startIndex)),
+            rows: rows_.map((row: any) => row.arr),
+            // rows: rows_.filter((row: any) => !row._isHeader).map((row: any) => (row.arr || []).slice(startIndex)),
           };
         },
       };
     },
-    [rows, columns, getRows],
+    [rows, columns, getRows, context],
   );
 
   // @ts-ignore

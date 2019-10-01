@@ -106,3 +106,4 @@ function useColumns({ columns, columnWidth, checkbox }: UseColumnsParams): [Colu
 }
 
 export default useColumns;
+

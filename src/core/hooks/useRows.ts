@@ -5,7 +5,7 @@ export type GetChildRowsFunc = (row?: any) => any[];
 type UseRowsParams = {
   rows: any[];
   columns: Column[];
-  context: any;
+  context?: any;
   checkbox?: boolean;
   getChildRows?: GetChildRowsFunc;
   trackBy?: Function;
@@ -32,7 +32,7 @@ function useRows({
   getChildRows,
   trackBy,
   context,
-}: UseRowsParams): [any[], any[], Function, Function] {
+}: UseRowsParams): [any[], any[], Function, Function, Function] {
   const _getChildRows = useGetChildRows(getChildRows);
   const _context = useContext(context);
 
@@ -103,6 +103,38 @@ function useRows({
     return (rowIndex: number) => _rowHeight(rowIndex, normalized[rowIndex]);
   }, [normalized, rowHeight || null]);
 
-  return [normalized, dataRows, getRowHeight, getRows];
+  const getData = useMemo(() => {
+    return async (data?: any) => {
+      const columns_ = (columns || []).map((column: any) => ({ ...column }));
+      let rows_ = (Array.isArray(data) ? getRows(data) : rows) || [];
+      const startIndex = columns_.findIndex((column: any) => !column._system);
+    
+      rows_ = rows_.filter((row: any) => !row._isHeader);
+      rows_ = await columns_.reduce(async (prevRows: any, col: any, i: number) => {
+        if (typeof col.batchData === 'function') {
+          const prev = await prevRows;
+          const nextRows = await Promise.all(
+            prev.map(async (row: any, j: number) => {
+              const newRow = [...(row.arr || [])];
+              newRow[i] = await col.batchData(newRow[i], { ...row.obj }, context);
+              return { ...row, arr: newRow };
+            }),
+          );
+          return nextRows;
+        }
+        return prevRows;
+      }, Promise.resolve(rows_));
+    
+      return {
+        columns: columns_.slice(startIndex),
+        rows: rows_.map((row: any) => row.arr.slice(startIndex)),
+        // rows: rows_.filter((row: any) => !row._isHeader).map((row: any) => (row.arr || []).slice(startIndex)),
+      };
+    };
+  }, [columns, getRows, rows, context])
+
+
+
+  return [normalized, dataRows, getRowHeight, getRows, getData];
 }
 export default useRows;

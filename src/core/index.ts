@@ -1,3 +1,4 @@
 import WindowTable from './components/WindowTable';
+import { useColumns, useRows } from './hooks';
 
-export { WindowTable };
+export { WindowTable, useColumns, useRows };

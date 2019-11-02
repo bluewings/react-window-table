@@ -482,6 +482,16 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
 
   const onVisibleRangeChange = useHandle(props.onVisibleRangeChange);
 
+  const windowGrid = useRef<any>();
+
+  useImperativeHandle(ref, () => ({
+    scrollTo: (params: any) => {
+      if (windowGrid.current && typeof windowGrid.current.scrollTo === 'function') {
+        windowGrid.current.scrollTo(params);
+      }
+    }
+  }), []);
+
   // @ts-ignore
   return (
     <div ref={container} className={styles.root}>
@@ -489,6 +499,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
       <div onMouseMove={cancelMouseDown}>
         <div {...eventHandlers}>
           <WindowGrid
+            ref={windowGrid}
             {...props}
             classNames={classNames}
             rowHeight={rowHeight}

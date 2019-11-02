@@ -3,7 +3,7 @@ import { useEffect, useImperativeHandle, forwardRef, isValidElement } from 'reac
 import { WindowGrid } from 'react-window-grid';
 import { FunctionComponent, useMemo, SyntheticEvent, useState, useRef } from 'react';
 import Draggable from 'react-draggable';
-import { useColumns, useDragHandle, useEventHandlers, useRows, useTheme } from '../../hooks';
+import { useColumns, useDragHandle, useEventHandlers, useRows, useTheme, useHandle } from '../../hooks';
 import { GetChildRowsFunc } from '../../hooks/useRows';
 import styles from './WindowTable.module.scss';
 
@@ -57,6 +57,8 @@ type WindowTableProps = {
   theme?: Function | string;
 
   onColumnResizeEnd?: Function;
+
+  onVisibleRangeChange?: Function;
 };
 
 const cancelMouseDown = (e: any) => {
@@ -478,6 +480,8 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
     [rows, columns, getRows, context],
   );
 
+  const onVisibleRangeChange = useHandle(props.onVisibleRangeChange);
+
   // @ts-ignore
   return (
     <div ref={container} className={styles.root}>
@@ -500,6 +504,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
             theme={theme}
             guideline={guideline}
             maxHeight={maxHeight}
+            onVisibleRangeChange={onVisibleRangeChange}
           >
             {Cell}
           </WindowGrid>

@@ -444,6 +444,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
     return typeof props.guideline === 'undefined' ? true : !!props.guideline;
   }, [props.guideline || null]);
 
+  const windowGrid = useRef<any>();
   useImperativeHandle(
     ref,
     () => {
@@ -475,22 +476,17 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
             // rows: rows_.filter((row: any) => !row._isHeader).map((row: any) => (row.arr || []).slice(startIndex)),
           };
         },
+        scrollTo: (params: any) => {
+          if (windowGrid.current && typeof windowGrid.current.scrollTo === 'function') {
+            windowGrid.current.scrollTo(params);
+          }
+        },
       };
     },
     [rows, columns, getRows, context],
   );
 
   const onVisibleRangeChange = useHandle(props.onVisibleRangeChange);
-
-  const windowGrid = useRef<any>();
-
-  useImperativeHandle(ref, () => ({
-    scrollTo: (params: any) => {
-      if (windowGrid.current && typeof windowGrid.current.scrollTo === 'function') {
-        windowGrid.current.scrollTo(params);
-      }
-    }
-  }), []);
 
   // @ts-ignore
   return (

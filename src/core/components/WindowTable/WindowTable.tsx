@@ -49,6 +49,8 @@ type WindowTableProps = {
 
   trackBy?: Function;
 
+  cancelMouseMove?: boolean;
+
   onSelect?: Function;
   selected?: string[];
 
@@ -61,9 +63,11 @@ type WindowTableProps = {
   onVisibleRangeChange?: Function;
 };
 
-const cancelMouseDown = (e: any) => {
+const preventDefault = (e: any) => {
   e.preventDefault();
 };
+
+const noop = () => undefined;
 
 const toValidContent = (e: any) => {
   const type = typeof e;
@@ -488,11 +492,13 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
 
   const onVisibleRangeChange = useHandle(props.onVisibleRangeChange);
 
+  const handleMouseMove = useMemo(() => props.cancelMouseMove === false ?  noop : preventDefault, [props.cancelMouseMove]);
+
   // @ts-ignore
   return (
     <div ref={container} className={styles.root}>
       <div ref={styleRef} />
-      <div onMouseMove={cancelMouseDown}>
+      <div onMouseMove={handleMouseMove}>
         <div {...eventHandlers}>
           <WindowGrid
             ref={windowGrid}

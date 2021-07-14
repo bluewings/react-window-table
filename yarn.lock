@@ -11865,13 +11865,14 @@ react-simple-code-editor@^0.9.0:
   resolved "https://registry.yarnpkg.com/react-simple-code-editor/-/react-simple-code-editor-0.9.10.tgz#1ab5ea7215687ed918c6d0dae90736cf01890905"
   integrity sha512-80LJwRQS7Wi9Ugh/e6FRHWdcg4oQOpMBDFxyDpORILffrHdV3EIQ1IeX5x7488r05iFgLbVDV4nQ1LRKjgCm0g==
 
-react-window-grid@^1.0.26:
-  version "1.0.26"
-  resolved "https://registry.yarnpkg.com/react-window-grid/-/react-window-grid-1.0.26.tgz#2bdbc3fb4945978964220fc13133c220d18b9223"
-  integrity sha512-MBM36IJnPdQcXSVeeMmkRQMnjqroYEkzWrBlDC5N5O2oXkGJY0YM2wUhh8aRvggYqDbUWx1I6eNSeEl7fjsvqA==
+react-window-grid@^1.0.28:
+  version "1.0.29"
+  resolved "https://registry.yarnpkg.com/react-window-grid/-/react-window-grid-1.0.29.tgz#e85e80560c86c8edfd8e833db0f1a7cde28d1f53"
+  integrity sha512-eXkj8ksg5tbif1MGj6UW0k6LAvYRgfp2+3VhEb+h0JJ/oyHsEBLFDvZkGfA+o5UtJjZYBKGbqsDUgmVPWKqBfQ==
   dependencies:
     animejs "^3.0.1"
     emotion "^10.0.9"
+    tslib "^1.10.0"
 
 react@^16.8.0, react@^16.8.6:
   version "16.8.6"
@@ -14003,6 +14004,11 @@ tslib@1.9.3, tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
+
+tslib@^1.10.0:
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
+  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
 tty-browserify@0.0.0:
   version "0.0.0"

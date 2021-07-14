@@ -363,7 +363,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
     return () => '';
 
     // @ts-ignore
-  }, [props.classNames, rows, columns]);
+  }, [props.getClassNames, rows, columns]);
 
   const Cell = useMemo(() => {
     // @ts-ignore

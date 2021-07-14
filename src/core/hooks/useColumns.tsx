@@ -5,7 +5,7 @@ import styles from './useColumns.module.scss';
 
 type UseColumnsParams = {
   columns: (Column | string)[];
-  checkbox?: boolean;
+  checkbox?: boolean | 'left' | 'right';
   columnWidth?: Function | number;
 };
 
@@ -35,39 +35,41 @@ function useColumns({ columns, columnWidth, checkbox }: UseColumnsParams): [Colu
       _tmp = Object.keys(_tmp).map((e: string) => ({ ..._tmp[e], name: e }));
     }
     if (!!checkbox) {
-      _tmp = [
-        {
-          _system: true,
-          name: '___CHECKBOX',
-          textAlign: 'center',
-          width: 40,
-          // @ts-ignore
-          header: (arg1, arg2, { selectedStatus }) => {
-            let checked = selectedStatus === 'all';
-            let indeterminate = selectedStatus === 'some' ? 'true' : 'false';
-            return (
-              <InputCheckbox
-                type="checkbox"
-                data-rwt-checkbox-control
-                checked={checked}
-                indeterminate={indeterminate}
-                onChange={noop}
-              />
-            );
-          },
-          render: (arg1: any, arg2: any, arg3: any) => {
-            const { rowIndex, columnIndex, _key, isSelected, _isChildRow } = arg3;
-
-            const checked = !!isSelected;
-            if (_isChildRow) {
-              return null;
-            }
-
-            return <input type="checkbox" data-rwt-checkbox data-row-key={_key} checked={checked} onChange={noop} />;
-          },
+      const _checkbox = {
+        _system: true,
+        name: '___CHECKBOX',
+        textAlign: 'center',
+        width: 40,
+        // @ts-ignore
+        header: (arg1, arg2, { selectedStatus }) => {
+          let checked = selectedStatus === 'all';
+          let indeterminate = selectedStatus === 'some' ? 'true' : 'false';
+          return (
+            <InputCheckbox
+              type="checkbox"
+              data-rwt-checkbox-control
+              checked={checked}
+              indeterminate={indeterminate}
+              onChange={noop}
+            />
+          );
         },
-        ..._tmp,
-      ];
+        render: (arg1: any, arg2: any, arg3: any) => {
+          const { rowIndex, columnIndex, _key, isSelected, _isChildRow } = arg3;
+
+          const checked = !!isSelected;
+          if (_isChildRow) {
+            return null;
+          }
+
+          return <input type="checkbox" data-rwt-checkbox data-row-key={_key} checked={checked} onChange={noop} />;
+        },
+      };
+      if (checkbox === 'right') {
+        _tmp = [ ..._tmp, _checkbox ];
+      } else {
+        _tmp = [ _checkbox, ..._tmp ];
+      }
     }
 
     return (_tmp || [])

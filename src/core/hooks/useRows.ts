@@ -6,7 +6,7 @@ type UseRowsParams = {
   rows: any[];
   columns: Column[];
   context?: any;
-  checkbox?: boolean;
+  checkbox?: boolean | 'left' | 'right';
   getChildRows?: GetChildRowsFunc;
   trackBy?: Function;
   rowHeight?: number | Function;
@@ -37,10 +37,15 @@ function useRows({
   const _context = useContext(context);
 
   const toRowObj: (row: any) => any = useMemo(() => {
-    const availColumns = !!checkbox ? columns.slice(1) : columns;
+    let availColumns = [...columns];
+    if (checkbox === 'right') {
+      availColumns.pop();
+    } else if (checkbox) {
+      availColumns = availColumns.slice(1);
+    }
     return (row: any) =>
       Array.isArray(row) ? availColumns.reduce((accum, { name }, i) => ({ ...accum, [name]: row[i] }), {}) : row;
-  }, [columns, !!checkbox]);
+  }, [columns, checkbox]);
 
   const toRowValues: (rowObj: any) => any[] = useMemo(
     () => (rowObj: any) =>

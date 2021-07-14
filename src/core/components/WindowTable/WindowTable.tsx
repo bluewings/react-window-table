@@ -45,7 +45,7 @@ type WindowTableProps = {
 
   getChildRows?: GetChildRowsFunc;
   getClassNames?: Function;
-  checkbox?: boolean;
+  checkbox?: boolean | 'left' | 'right';
 
   trackBy?: Function;
 

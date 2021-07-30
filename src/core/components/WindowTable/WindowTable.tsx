@@ -387,7 +387,7 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
         className__ += ' ' + styles.ellipsis;
       }
       if (column.textAlign && styles['text-' + column.textAlign]) {
-        className__ += ' ' + styles['text-' + column.textAlign];
+        className__ += ' ' + styles['text-' + column.textAlign] + `text-align-${column.textAlign}`;
       }
       if (row._isHeader) {
         className__ += ' ' + classNames.HEADER;

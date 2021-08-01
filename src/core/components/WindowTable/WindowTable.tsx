@@ -485,6 +485,9 @@ const WindowTable: FunctionComponent<WindowTableProps> = (props, ref) => {
             windowGrid.current.scrollTo(params);
           }
         },
+        clearSelected: () => {
+          setSelected([]);
+        },
       };
     },
     [rows, columns, getRows, context],

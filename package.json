@@ -34,7 +34,7 @@
     "docz-theme-default": "^1.2.0",
     "faker": "^4.1.0",
     "json-loader": "^0.5.7",
-    "node-sass": "^4.11.0",
+    "node-sass": "^7.0.0",
     "postcss-flexbugs-fixes": "^4.1.0",
     "postcss-preset-env": "^6.5.0",
     "prettier": "^1.16.4",
